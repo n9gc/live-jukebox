@@ -1,12 +1,12 @@
 {
 	"$schema": "https://json.schemastore.org/package",
 	"private": true,
-	"name": "accurtype",
-	"description": "accurtype",
-	"license": "MIT",
-	"author": "accurtype",
+	"name": "live-jukebox",
+	"description": "直播用的弹幕点歌机",
+	"license": "GPL-2.0-or-later",
+	"author": "n9gc",
 	"repository": {
-		"url": "git+https://github.com/accurtype/monodemo",
+		"url": "git+https://github.com/n9gc/live-jukebox",
 		"type": "git"
 	},
 	"type": "module",

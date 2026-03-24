@@ -1,0 +1,45 @@
+{
+	"$schema": "https://json.schemastore.org/package",
+	"private": true,
+	"name": "view",
+	"version": "0.1.0",
+	"license": "GPL-2.0-or-later",
+	"author": "n9gc",
+	"description": "点歌机的界面",
+	"type": "module",
+	"main": "./lib",
+	"module": "./lib",
+	"types": "./lib",
+	"bugs": {
+		"url": "https://github.com/n9gc/live-jukebox/issues"
+	},
+	"homepage": "https://github.com/n9gc/live-jukebox/tree/master/packages/view#readme",
+	"repository": {
+		"url": "git+https://github.com/n9gc/live-jukebox",
+		"type": "git"
+	},
+	"scripts": {
+		"pretest": "tsc --noEmit",
+		"test": "tsx test.ts | colortape",
+		"build": "tsc",
+		"clear": "rimraf -g **/*.{d.ts,js}",
+		"prepublishOnly": "pnpm run build",
+		"postpublish": "pnpm run clear"
+	},
+	"files": [
+		"*",
+		"!tsconfig.json",
+		"!**/*.ts",
+		"**/*.d.ts",
+		"!*.swp",
+		"!pnpm-lock.yaml"
+	],
+	"dependencies": {
+		"@accurtype/mono-test-wasm": "workspace:^"
+	},
+	"devDependencies": {
+		"@types/tape": "latest",
+		"tape": "latest",
+		"colortape": "latest"
+	}
+}
