@@ -1,0 +1,61 @@
+{
+	"$schema": "https://json.schemastore.org/package",
+	"private": true,
+	"name": "accurtype",
+	"description": "accurtype",
+	"license": "MIT",
+	"author": "accurtype",
+	"repository": {
+		"url": "git+https://github.com/accurtype/monodemo",
+		"type": "git"
+	},
+	"type": "module",
+	"scripts": {
+		"prepare": "husky",
+		"cz": "pnpm -s lint && cz",
+
+		"fmt": "prettier --ignore-path config/.prettierignore -w . && eslint -c config/eslint.flat.js . --fix",
+		"postfmt": "cargo fmt && cargo clippy --fix --allow-dirty",
+		"lint": "prettier --ignore-path config/.prettierignore -c . && eslint -c config/eslint.flat.js .",
+		"postlint": "cargo fmt --check && cargo clippy",
+
+		"test": "pnpm run -r test",
+		"posttest": "cargo test",
+		"build": "pnpm run -r build",
+		"clear": "pnpm run -r clear",
+		"ci": "pnpm build && pnpm test && pnpm clear && pnpm lint"
+	},
+	"devDependencies": {
+		"husky": "^9.*.*",
+
+		"@commitlint/cli": "^20.*.*",
+		"commitizen": "^4.*.*",
+		"cz-customizable": "^7.*.*",
+
+		"eslint": "^9.*.*",
+		"prettier": "latest",
+
+		"rimraf": "latest",
+		"make-dir-cli": "latest",
+		"tsx": "latest",
+		"esbuild": "latest",
+		"typescript": "latest"
+	},
+	"config": {
+		"cz-customizable": {
+			"config": "./config/cz-config.cjs"
+		},
+		"commitizen": {
+			"path": "./node_modules/cz-customizable"
+		}
+	},
+	"prettier": {
+		"printWidth": 200,
+		"tabWidth": 4,
+		"useTabs": true,
+		"semi": true,
+		"singleQuote": true,
+		"jsxSingleQuote": false,
+		"trailingComma": "all"
+	}
+}
