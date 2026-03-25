@@ -1,2 +1,2 @@
 #! /bin/bash
-pnpm --no -- commitlint -g config/commitlint.ts --edit $1
+pnpm --no -- commitlint --edit $1
