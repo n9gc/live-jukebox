@@ -14,9 +14,9 @@
 		"prepare": "husky",
 		"cz": "pnpm -s lint && cz",
 
-		"fmt": "prettier --ignore-path config/.prettierignore -w . && eslint -c config/eslint.flat.js . --fix",
+		"fmt": "prettier --ignore-path config/.prettierignore --ignore-path .gitignore -w . && eslint -c config/eslint.flat.js . --fix",
 		"postfmt": "cargo fmt && cargo clippy --fix --allow-dirty",
-		"lint": "prettier --ignore-path config/.prettierignore -c . && eslint -c config/eslint.flat.js .",
+		"lint": "prettier --ignore-path config/.prettierignore --ignore-path .gitignore -c . && eslint -c config/eslint.flat.js .",
 		"postlint": "cargo fmt --check && cargo clippy",
 
 		"test": "pnpm run -r test",
