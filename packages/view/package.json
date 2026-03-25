@@ -34,6 +34,7 @@
 		"!pnpm-lock.yaml"
 	],
 	"dependencies": {
+		"lib": "workspace:^",
 		"clsx": "latest",
 
 		"react": "latest",
