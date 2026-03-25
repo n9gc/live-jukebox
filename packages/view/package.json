@@ -19,12 +19,11 @@
 		"type": "git"
 	},
 	"scripts": {
-		"pretest": "tsc --noEmit",
-		"test": "tsx test.ts | colortape",
-		"build": "tsc",
-		"clear": "rimraf -g **/*.{d.ts,js}",
-		"prepublishOnly": "pnpm run build",
-		"postpublish": "pnpm run clear"
+		"test": "tsc",
+		"build": "next build",
+		"dev": "next dev --turbopack",
+		"start": "next start",
+		"prepublishOnly": "pnpm run build"
 	},
 	"files": [
 		"*",
@@ -35,11 +34,14 @@
 		"!pnpm-lock.yaml"
 	],
 	"dependencies": {
-		"@accurtype/mono-test-wasm": "workspace:^"
+		"clsx": "latest",
+
+		"react": "latest",
+		"@types/react": "latest",
+		"react-dom": "latest",
+		"@types/react-dom": "latest",
+		"next": "latest"
 	},
 	"devDependencies": {
-		"@types/tape": "latest",
-		"tape": "latest",
-		"colortape": "latest"
 	}
 }

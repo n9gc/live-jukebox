@@ -35,6 +35,8 @@ const config = defineConfig(
 			'eslint.config.mjs',
 			'.*',
 			'**/dist',
+			'packages/*/.next',
+			'packages/*/next-env.d.ts',
 		],
 	},
 	{

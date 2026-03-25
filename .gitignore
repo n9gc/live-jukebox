@@ -7,3 +7,5 @@ packages/*/coverage
 **/dist
 target
 Cargo.lock
+.next
+next-env.d.ts

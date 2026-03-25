@@ -8,4 +8,5 @@ packages:
     # 剔除测试
     - '!**/test/**'
 allowBuilds:
+    sharp: true
     wasm-pack: true
