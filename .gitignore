@@ -9,3 +9,4 @@ target
 Cargo.lock
 .next
 next-env.d.ts
+.venv
