@@ -77,12 +77,13 @@ export function listenDm(config: ListenConfig, callback: (danmaku: Types.Danmaku
 	});
 
 	rl.on('line', n => {
-		const r = Types.danmakuSchema.safeParse(JSON.parse(n));
-		if (!r.success) {
-			console.error(z.treeifyError(r.error).properties);
-			return;
+		try {
+			const r = Types.danmakuSchema.safeParse(JSON.parse(n));
+			if (!r.success) throw z.treeifyError(r.error).properties;
+			callback(r.data);
+		} catch (err) {
+			console.error(err);
 		}
-		callback(r.data);
 	});
 }
 
