@@ -22,7 +22,7 @@ export interface Danmaku {
 }
 
 /**歌曲信息 */
-export interface Song {
+export interface BaseSong {
 	/**歌曲标题 */
 	readonly title: string;
 }

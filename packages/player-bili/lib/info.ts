@@ -5,17 +5,17 @@
  */
 declare module './info';
 
-import { Info } from 'lib/player';
-
 declare global {
 	interface PlayerInfoMap {
 		/**B 站视频 */
 		bili: BiliInfo;
 	}
 }
-
 /**B 站视频信息 */
-export interface BiliInfo extends Info {
-	readonly playerType: 'bili';
+export interface BiliInfo {
+	/**BV 号 */
+	bvid: string;
+	/**第几 p */
+	page: number;
 }
 
