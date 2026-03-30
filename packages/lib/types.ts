@@ -21,8 +21,19 @@ export interface Danmaku {
 	readonly ignore: boolean;
 }
 
+/**点歌的人，如果是备选歌单则为 `null` */
+export type Picker = string | null;
+
 /**歌曲信息 */
 export interface BaseSong {
 	/**歌曲标题 */
 	readonly title: string;
+	/**播放器名称 */
+	readonly playerName: string;
+	/**歌曲携带的播放器特定信息 */
+	readonly info: unknown;
+	/**点歌的人 */
+	readonly picker: Picker;
+	/**是否已经开始播放过 */
+	ran: boolean;
 }

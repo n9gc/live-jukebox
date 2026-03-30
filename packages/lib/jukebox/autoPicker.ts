@@ -6,14 +6,14 @@
 declare module 'lib/jukebox/autoPicker';
 
 import { Song } from 'lib/player';
-import { Result } from 'lib/util';
+import { ResultPick } from 'lib/result';
 
 /**备选点歌器 */
 export abstract class AutoPicker {
 	/**歌曲列表 */
 	songs: Song[] = [];
 	/**获得一首备选歌 */
-	abstract pick(this: this): Song | Result;
+	abstract pick(this: this): Song | ResultPick;
 
 	/**当前播放模式 */
 	protected abstract pickType: string;
@@ -50,21 +50,21 @@ export class CommonPicker extends AutoPicker implements PickerMap {
 	protected index = 0;
 	[PickType.Random](this: this) {
 		return this.songs.at(this.index = Math.floor(Math.random() * this.songs.length))
-			?? Result.PickNoMusic;
+			?? ResultPick.NoMusic;
 	};
 	[PickType.Sequential](this: this) {
 		return this.songs.at(this.index++)
 			?? this.songs.length
-			? Result.PickEnd
-			: Result.PickNoMusic;
+			? ResultPick.End
+			: ResultPick.NoMusic;
 	};
 	[PickType.Circular](this: this) {
 		return this.songs.at(this.index++)
 			?? this.songs.at(this.index = 0)
-			?? Result.PickNoMusic;
+			?? ResultPick.NoMusic;
 	};
 
-	override pick(this: this): Song | Result {
+	override pick(this: this): Song | ResultPick {
 		return this[this.pickType]();
 	}
 	override changeType(this: this): void {

@@ -6,8 +6,9 @@
 declare module 'lib/jukebox/OperationsMap';
 
 import { Song } from 'lib/player';
+import { isResult, ResultOperaMap } from 'lib/result';
 import { Picker } from 'lib/types';
-import { thr, Result, isResult } from 'lib/util';
+import { thr } from 'lib/util';
 
 /**点歌历史 */
 export default class OperationsMap {
@@ -42,14 +43,14 @@ export default class OperationsMap {
 	 * @param cancel 是否是以取消而非播完的形式抹去
 	 * @returns 被抹去的歌
 	 */
-	protected erase(this: this, picker: Picker, cancel: boolean): Song | Result {
+	protected erase(this: this, picker: Picker, cancel: boolean): Song | ResultOperaMap {
 		const operations = this.map.get(picker);
-		if (!operations) return Result.EraseNoOperation;
+		if (!operations) return ResultOperaMap.NoOperation;
 		const song = operations[cancel ? 'pop' : 'shift']()
 			?? this.thr(`点歌者 ${picker} 的记录为空，却仍在记录`);
 		if (song.ran && cancel) {
 			operations.push(song);
-			return Result.EraseErasingRan;
+			return ResultOperaMap.ErasingRan;
 		}
 		if (!operations.length) this.map.delete(picker);
 		return song;
@@ -60,7 +61,7 @@ export default class OperationsMap {
 	 * @param picker 啥人
 	 * @returns 要被取消的歌
 	 */
-	cancel(this: this, picker: Picker): Song | Result {
+	cancel(this: this, picker: Picker): Song | ResultOperaMap {
 		return this.erase(picker, true);
 	}
 
@@ -68,12 +69,12 @@ export default class OperationsMap {
 	 * 有一个歌播完了
 	 * @param song 啥歌
 	 */
-	end(this: this, song: Song): Result {
+	end(this: this, song: Song): ResultOperaMap | null {
 		if (!song.ran) this.thr('在尝试播完没播的歌', song);
 		const songEnd = this.erase(song.picker, true);
 		if (isResult(songEnd)) return songEnd;
 		if (songEnd !== song) this.thr('播完的歌不是播完的歌了', { songEnd, song });
-		return Result.Ok;
+		return ResultOperaMap.Ok;
 	}
 }
 
