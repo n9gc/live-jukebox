@@ -20,3 +20,9 @@ export interface Danmaku {
 	/**是否忽略这条弹幕 */
 	readonly ignore: boolean;
 }
+
+/**歌曲信息 */
+export interface Song {
+	/**歌曲标题 */
+	readonly title: string;
+}
