@@ -1,32 +1,17 @@
 /**
- * 调用 blivedm 库
+ * 实用函数和信息
  * @license GPL-2.0-or-later
  * @author n9gc
  */
-declare module '.';
+declare module './util';
 
 import { getDirname } from 'esm-entry';
-import { execSync, spawn } from 'node:child_process';
+import { run } from 'lib';
+import { ChildProcessWithoutNullStreams, execSync, spawn } from 'node:child_process';
 import path from 'node:path';
 import { createInterface } from 'node:readline';
 import z from 'zod';
-import * as Types from './types';
-
-export { Types };
-
-/**
- * 安全调用函数
- * @param fn 可能抛出错误的函数
- * @param ext 用来说亡语的函数，返回一个进程返回值
- */
-export function run<T>(fn: () => T, ext: (error: unknown) => number | void): T {
-	try {
-		return fn();
-	} catch (error) {
-		const num = ext(error) ?? 1;
-		process.exit(num);
-	}
-}
+import { PyBiliDanmaku } from './types';
 
 /**是不是 Win 平台 */
 export const isWindows = process.platform === 'win32';
@@ -37,28 +22,37 @@ export const pipPath = path.join(venvPath, isWindows ? 'Scripts/pip' : 'bin/pip'
 /**虚拟环境的 python */
 export const pyPath = path.join(venvPath, isWindows ? 'Scripts/python' : 'bin/python');
 /**py 对接脚本 */
-export const pyScriptPath = path.join(venvPath, '../listen.py');
+export const pyScriptPath = path.join(venvPath, '../py/listen.py');
 
-/**测试虚拟环境 */
-export function testPy() {
+/**
+ * 测试可执行文件
+ * @param where 可执行文件的路径
+ * @param info 如果找不到，提示什么
+ */
+export function testExe(where: string, info = 'not prepared') {
 	run(
-		() => execSync(`${pyPath} --version`, { stdio: 'inherit' }),
-		e => console.error(`not prepared`, e),
+		() => execSync(`${where} --version`, { stdio: 'inherit' }),
+		e => console.error(info, e),
 	);
 }
 
-export const ListenConfig = z.object({
+/**py 脚本需要的参数 */
+export const ListenDmConfig = z.object({
+	/**直播房间 URL 上面的 id */
 	roomId: z.number().gt(0),
+	/**已登录账号的 cookie 的 SESSDATA 字段的值 */
 	sessData: z.string().optional(),
 });
-export type ListenConfig = z.infer<typeof ListenConfig>;
+export type ListenDmConfig = z.infer<typeof ListenDmConfig>;
 
 /**
  * 监听弹幕
+ * @param config py 进程的参数
  * @param callback 监听器
+ * @returns py 进程
  */
-export function listenDm(config: ListenConfig, callback: (danmaku: Types.Danmaku) => void) {
-	testPy();
+export function listenDm(config: ListenDmConfig, callback: (danmaku: PyBiliDanmaku) => void): ChildProcessWithoutNullStreams {
+	testExe(pyPath);
 
 	config.sessData ??= '';
 
@@ -78,12 +72,14 @@ export function listenDm(config: ListenConfig, callback: (danmaku: Types.Danmaku
 
 	rl.on('line', n => {
 		try {
-			const r = Types.danmakuSchema.safeParse(JSON.parse(n));
+			const r = PyBiliDanmaku.safeParse(JSON.parse(n));
 			if (!r.success) throw z.treeifyError(r.error).properties;
 			callback(r.data);
 		} catch (err) {
 			console.error(err);
 		}
 	});
+
+	return proce;
 }
 

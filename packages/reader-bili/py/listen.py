@@ -6,8 +6,8 @@ import sys
 
 import aiohttp
 
-import lib.blivedm as blivedm
-import lib.blivedm.models.web as web_models
+import lib_dm.blivedm as blivedm
+import lib_dm.blivedm.models.web as web_models
 
 # 直播间ID的取值看直播间URL
 arg = json.loads(sys.argv[-1])
