@@ -6,7 +6,7 @@
 declare module 'lib/jukebox/OperationsMap';
 
 import { Song } from 'lib/player';
-import { isResult, ResultOperaMap } from 'lib/result';
+import { isNotOk, ResultOk, ResultOperaMap } from 'lib/result';
 import { Picker } from 'lib/types';
 import { thr } from 'lib/util';
 
@@ -69,12 +69,12 @@ export default class OperationsMap {
 	 * 有一个歌播完了
 	 * @param song 啥歌
 	 */
-	end(this: this, song: Song): ResultOperaMap | null {
+	end(this: this, song: Song): ResultOperaMap | ResultOk {
 		if (!song.ran) this.thr('在尝试播完没播的歌', song);
 		const songEnd = this.erase(song.picker, true);
-		if (isResult(songEnd)) return songEnd;
+		if (isNotOk(songEnd)) return songEnd;
 		if (songEnd !== song) this.thr('播完的歌不是播完的歌了', { songEnd, song });
-		return ResultOperaMap.Ok;
+		return ResultOk.Ok;
 	}
 }
 

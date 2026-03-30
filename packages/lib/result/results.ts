@@ -26,7 +26,6 @@ export namespace ResultPick {
 /**点歌历史类的结果 */
 export type ResultOperaMap = Enumified<typeof ResultOperaMap>;
 export namespace ResultOperaMap {
-	export import Ok = ResultOk.Ok;
 	/**找不到用户的点歌记录 */
 	export const NoOperation = Symbol();
 	/**播放已经开始 */

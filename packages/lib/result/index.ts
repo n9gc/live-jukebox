@@ -5,11 +5,18 @@
  */
 declare module 'lib/result';
 
+import { ResultOk } from 'lib/result/results';
+
 export * from './results';
 
-/**判断 `n` 是不是操作的结果 */
-export function isResult<T>(n: T | symbol): n is symbol {
-	return typeof n === 'symbol';
+/**判断 `n` 是不是成功的操作 */
+export function isOk<T>(n: T | symbol): n is ResultOk | Exclude<T, symbol> {
+	return typeof n !== 'symbol' || n === ResultOk.Ok;
+}
+
+/**判断 `n` 是不是失败的操作 */
+export function isNotOk<T>(n: T | symbol): n is Exclude<T extends symbol ? T : never, ResultOk> {
+	return typeof n === 'symbol' && n !== ResultOk.Ok;
 }
 
 /**把 N 的内容物作为联合类型 */
