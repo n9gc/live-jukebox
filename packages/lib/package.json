@@ -7,37 +7,31 @@
 	"author": "n9gc",
 	"description": "函数库",
 	"type": "module",
-	"main": "./lib",
-	"module": "./lib",
-	"types": "./lib",
+	"main": "./index.ts",
+	"module": "./index.ts",
+	"types": "./index.ts",
 	"bugs": {
-		"url": "https://github.com/accurtype/monodemo/issues"
+		"url": "https://github.com/n9gc/live-jukebox/issues"
 	},
-	"homepage": "https://github.com/accurtype/monodemo/tree/master/packages/lib#readme",
+	"homepage": "https://github.com/n9gc/live-jukebox/tree/master/packages/lib#readme",
 	"repository": {
-		"url": "git+https://github.com/accurtype/monodemo",
+		"url": "git+https://github.com/n9gc/live-jukebox",
 		"type": "git"
 	},
 	"scripts": {
-		"pretest": "tsc --noEmit",
-		"test": "tsx test.ts | colortape",
-		"build": "tsc",
-		"clear": "rimraf -g **/*.{d.ts,js}",
-		"prepublishOnly": "pnpm run build",
-		"postpublish": "pnpm run clear"
+		"prepare": "make-dir dist && ts-to-zod -k types.ts dist/types-schema.ts",
+		"test": "tsc"
 	},
-	"files": [
-		"*",
-		"!tsconfig.json",
-		"!**/*.ts",
-		"**/*.d.ts",
-		"!*.swp",
-		"!pnpm-lock.yaml"
-	],
-	"dependencies": {},
+	"dependencies": {
+		"lib": "workspace:^",
+		"zod": "latest",
+		"react": "latest",
+		"@types/react": "latest",
+		"react-dom": "latest",
+		"@types/react-dom": "latest"
+	},
 	"devDependencies": {
-		"@types/tape": "latest",
-		"tape": "latest",
-		"colortape": "latest"
+		"make-dir-cli": "latest",
+		"ts-to-zod": "latest"
 	}
 }
