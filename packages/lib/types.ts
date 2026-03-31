@@ -24,7 +24,11 @@ export interface Danmaku {
 /**点歌的人，如果是备选歌单则为 `null` */
 export type Picker = string | null;
 
-/**歌曲信息 */
+/**
+ * 歌曲信息
+ *
+ * 不要相信对象引用，使用 id 来比较两个歌曲是否相同
+ */
 export interface BaseSong {
 	/**唯一标记一首歌的代码 */
 	readonly id: bigint;

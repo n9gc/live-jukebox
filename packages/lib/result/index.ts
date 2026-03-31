@@ -35,7 +35,7 @@ export interface Enum extends Readonly<Record<string, Enum | symbol>> { }
 
 /**
  * 给所有 symbol 打上方便调试的标记
- * @param results `./results.ts` 的导出
+ * @param results 导出枚举的模块
  */
 export function mark(results: Enum): true {
 	const mem = new WeakMap<symbol, symbol>();

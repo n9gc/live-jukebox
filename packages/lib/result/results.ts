@@ -23,33 +23,44 @@ export namespace ResultPick {
 	export const End = Symbol();
 }
 
-/**点歌历史类的结果 */
-export type ResultOperaMap = Enumified<typeof ResultOperaMap>;
-export namespace ResultOperaMap {
-	/**找不到用户的点歌记录 */
-	export const NoOperation = Symbol();
-	/**播放已经开始 */
-	export const ErasingRan = Symbol();
+/**歌曲列表切换下一首歌的结果 */
+export type ResultListEnd = Enumified<typeof ResultListEnd>;
+export namespace ResultListEnd {
+	/**已经被结束过了 */
+	export const EndBefore = Symbol();
+	/**歌单里没有歌 */
+	export const NotExist = Symbol();
+	/**还没开始就停止了 */
+	export const NotPlayed = Symbol();
+	export import Ok = ResultOk;
 }
 
-/**歌曲列表切换下一首歌的结果 */
-export type ResultListNext = Enumified<typeof ResultListNext>;
-export namespace ResultListNext {
-	/**播完的不是头上的歌 */
-	export const NotHead = Symbol();
-	/**播完的歌不存在 */
-	export const NotExist = Symbol();
+/**歌曲列表添加歌曲的结果 */
+export type ResultListAdd = Enumified<typeof ResultListAdd>;
+export namespace ResultListAdd {
+	/**重复添加歌曲 */
+	export const SameId = Symbol();
 	export import Ok = ResultOk;
-	export import OperaMap = ResultOperaMap;
+}
+
+/**歌曲列表取消播放的结果 */
+export type ResultListCancel = Enumified<typeof ResultListCancel>;
+export namespace ResultListCancel {
+	/**没有可以取消的歌 */
+	export const NoCancelable = Symbol();
+	/**要被取消的歌还在放 */
+	export const Playing = Symbol();
+	export import Ok = ResultOk;
 }
 
 /**所有操作的结果 */
 export type Result = Enumified<typeof Result>;
 export const Result = {
 	ResultOk,
-	ResultOperaMap,
 	ResultPick,
-	ResultListNext,
+	ResultListEnd,
+	ResultListAdd,
+	ResultListCancel,
 };
 export default Result;
 
