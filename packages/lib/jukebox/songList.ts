@@ -6,7 +6,7 @@
 declare module 'lib/jukebox/songList';
 
 import { AutoPicker, CommonPicker } from 'lib/jukebox/autoPicker';
-import { Song } from 'lib/player';
+import { playerNames, Song } from 'lib/player';
 import {
 	Enumified,
 	isNotOk,
@@ -101,13 +101,16 @@ export class SongList {
 	 * @param song 添加的歌曲
 	 */
 	add(song: Song): ResultListAdd {
+		if (
+			!playerNames.has(song.playerName)
+		) return ResultListAdd.UnknownPlayer;
+		if (
+			this.songs.some(({ song: { id } }) => id === song.id)
+		) return ResultListAdd.SameId;
 		const {
 			promise: endPromise,
 			resolve: end,
 		} = Promise.withResolvers<void>();
-		if (
-			this.songs.some(({ song: { id } }) => id === song.id)
-		) return ResultListAdd.SameId;
 		const handle: SongHandle = {
 			song,
 			end,

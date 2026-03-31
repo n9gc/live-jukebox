@@ -40,6 +40,8 @@ export type ResultListAdd = Enumified<typeof ResultListAdd>;
 export namespace ResultListAdd {
 	/**重复添加歌曲 */
 	export const SameId = Symbol();
+	/**谁家没播放器的曲子 */
+	export const UnknownPlayer = Symbol();
 	export import Ok = ResultOk;
 }
 
