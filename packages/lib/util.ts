@@ -23,3 +23,10 @@ export function thr(why: string, ...params: unknown[]): never {
 	throw Error(why, { cause: params });
 }
 
+/**全局 id */
+let id = 0n;
+/**获得一个全局 id */
+export function getId(): bigint {
+	return id++;
+}
+

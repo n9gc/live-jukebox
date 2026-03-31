@@ -26,6 +26,8 @@ export type Picker = string | null;
 
 /**歌曲信息 */
 export interface BaseSong {
+	/**唯一标记一首歌的代码 */
+	readonly id: bigint;
 	/**歌曲标题 */
 	readonly title: string;
 	/**播放器名称 */
@@ -34,6 +36,4 @@ export interface BaseSong {
 	readonly info: unknown;
 	/**点歌的人 */
 	readonly picker: Picker;
-	/**是否已经开始播放过 */
-	ran: boolean;
 }

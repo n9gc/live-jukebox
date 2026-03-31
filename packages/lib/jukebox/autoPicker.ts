@@ -6,7 +6,8 @@
 declare module 'lib/jukebox/autoPicker';
 
 import { Song } from 'lib/player';
-import { ResultPick } from 'lib/result';
+import { isNotOk, ResultPick } from 'lib/result';
+import { getId } from 'lib/util';
 
 /**备选点歌器 */
 export abstract class AutoPicker {
@@ -65,7 +66,12 @@ export class CommonPicker extends AutoPicker implements PickerMap {
 	};
 
 	override pick(this: this): Song | ResultPick {
-		return this[this.pickType]();
+		const song = this[this.pickType]();
+		if (isNotOk(song)) return song;
+		return {
+			...song,
+			id: getId(),
+		};
 	}
 	override changeType(this: this): void {
 		this.pickType = typeChangeMap[this.pickType];
