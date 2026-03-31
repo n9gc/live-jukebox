@@ -5,7 +5,7 @@
  */
 declare module 'lib/jukebox/songList';
 
-import { AutoPicker, CommonPicker } from 'lib/jukebox/autoPicker';
+import { AutoPicker } from 'lib/jukebox/autoPicker';
 import { playerNames, Song } from 'lib/player';
 import {
 	Enumified,
@@ -67,9 +67,9 @@ export interface SongHandle {
 export class SongList {
 	constructor(
 		/**备选点歌器 */
-		public autoPicker: AutoPicker = new CommonPicker(),
+		public autoPicker: AutoPicker,
 		/**取消的方法 */
-		public cancelMethod: CancelMethod = CancelMethod.ExceptPlaying,
+		public cancelMethod: CancelMethod,
 		/**发送要播放的歌曲信息的函数 */
 		protected readonly sender: (song: Song) => void,
 	) { }
