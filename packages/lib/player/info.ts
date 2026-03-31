@@ -16,10 +16,11 @@ declare global {
 export type PlayerName = keyof PlayerInfoMap;
 
 /**基本的信息结构 */
-export interface Song<K extends PlayerName> extends BaseSong {
-	/**播放器名称 */
+export interface Song<K extends PlayerName = PlayerName> extends BaseSong {
 	readonly playerName: K;
-	/**歌曲携带的播放器特定信息 */
-	readonly data: PlayerInfoMap[K];
+	readonly info: PlayerInfoMap[K];
 }
+
+/**注册过的播放器 */
+export const playerNames = new Set<PlayerName>();
 

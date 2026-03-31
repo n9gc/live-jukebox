@@ -5,10 +5,12 @@
  */
 declare module 'lib/player';
 
-import { Danmaku } from 'lib/types';
-
-export * from './info';
 export { default as Player } from './Player';
+export * from './info';
+
+import { Danmaku } from 'lib/types';
+import Player, { registered } from './Player';
+import { PlayerName, playerNames } from './info';
 
 /**
  * 检查评论是不是点歌弹幕
@@ -22,5 +24,18 @@ export function fmtPlayCmd(danmaku: Danmaku): Danmaku | null {
 			message: message.slice(3),
 		}
 		: null;
+}
+
+/**
+ * 方便地获得播放器的基类并注册
+ * @param name 播放器注册的名字
+ */
+export function RegisteredPlayer<K extends PlayerName>(name: K) {
+	playerNames.add(name);
+	abstract class Base extends Player<K> {
+		protected readonly registered: typeof registered = registered;
+		readonly playerName = name;
+	}
+	return Base;
 }
 
