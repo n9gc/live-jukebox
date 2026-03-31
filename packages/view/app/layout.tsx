@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { WebSocketProvider } from 'next-ws/client';
 
 export const metadata = {
 	title: {

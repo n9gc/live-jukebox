@@ -7,9 +7,6 @@
 	"author": "n9gc",
 	"description": "点歌机的界面",
 	"type": "module",
-	"main": "./lib",
-	"module": "./lib",
-	"types": "./lib",
 	"bugs": {
 		"url": "https://github.com/n9gc/live-jukebox/issues"
 	},
@@ -19,30 +16,25 @@
 		"type": "git"
 	},
 	"scripts": {
+		"prepare": "next-ws patch",
 		"test": "tsc",
 		"build": "next build",
 		"dev": "next dev --turbopack",
-		"start": "next start",
-		"prepublishOnly": "pnpm run build"
+		"start": "next start"
 	},
-	"files": [
-		"*",
-		"!tsconfig.json",
-		"!**/*.ts",
-		"**/*.d.ts",
-		"!*.swp",
-		"!pnpm-lock.yaml"
-	],
 	"dependencies": {
 		"lib": "workspace:^",
+		"config": "workspace:^",
 		"clsx": "latest",
+		"ws": "latest",
+		"zod": "latest",
+		"@types/ws": "latest",
+		"next-ws": "latest",
 
 		"react": "latest",
 		"@types/react": "latest",
 		"react-dom": "latest",
 		"@types/react-dom": "latest",
 		"next": "latest"
-	},
-	"devDependencies": {
 	}
 }
