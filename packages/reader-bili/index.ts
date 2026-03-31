@@ -32,7 +32,7 @@ export default class BiliReader extends Reader {
 				...pyDanmaku,
 				ignore: config.isIgnored?.(pyDanmaku) ?? false,
 			};
-			this.dispatch(damaku);
+			this.dispatch('danmaku', damaku);
 		});
 	}
 }

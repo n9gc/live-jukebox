@@ -4,6 +4,6 @@ const reader = new BiliReader({
 	roomId: 123,
 });
 
-reader.addListener(danmaku => {
+reader.addListener('danmaku', danmaku => {
 	console.log(danmaku);
 });
