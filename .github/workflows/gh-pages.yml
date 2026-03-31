@@ -30,6 +30,7 @@ jobs:
 
             - name: Build
               run: |
+                  git submodule update --init --recursive
                   npm i pnpm -g
                   rm -rf package-lock.json
                   pnpm i
@@ -49,6 +50,7 @@ jobs:
             - name: Save changes
               run: |
                   find . -name '.gitignore' -type f -print | xargs rm -rf
+                  find . -type f -size +95M -delete
                   rm -rf .husky
                   git add .
 
