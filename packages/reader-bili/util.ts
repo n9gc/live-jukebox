@@ -6,7 +6,7 @@
 declare module './util';
 
 import { getDirname } from 'esm-entry';
-import { run } from 'lib';
+import { run } from 'lib/util';
 import { ChildProcessWithoutNullStreams, execSync, spawn } from 'node:child_process';
 import path from 'node:path';
 import { createInterface } from 'node:readline';

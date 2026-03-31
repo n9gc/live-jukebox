@@ -6,7 +6,7 @@
 declare module './types';
 
 import z from 'zod';
-import { danmakuSchema } from 'lib';
+import { danmakuSchema } from 'lib/types';
 
 /**文本 */
 export const DmTypeTexts = z.literal(0);

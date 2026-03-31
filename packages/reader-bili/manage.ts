@@ -1,5 +1,5 @@
 import { execSync } from 'child_process';
-import { run } from 'lib';
+import { run } from 'lib/util';
 import { pipPath, testExe } from './util';
 
 const scripts = new Map([[
