@@ -5,7 +5,7 @@
  */
 declare module 'lib/result/results';
 
-import { Enumified } from 'lib/result';
+import type { Enumified } from 'lib/result';
 
 /**成功的结果 */
 export type ResultOk = Enumified<typeof ResultOk>;
@@ -32,11 +32,24 @@ export namespace ResultOperaMap {
 	export const ErasingRan = Symbol();
 }
 
+/**歌曲列表切换下一首歌的结果 */
+export type ResultListNext = Enumified<typeof ResultListNext>;
+export namespace ResultListNext {
+	/**播完的不是头上的歌 */
+	export const NotHead = Symbol();
+	/**播完的歌不存在 */
+	export const NotExist = Symbol();
+	export import Ok = ResultOk;
+	export import OperaMap = ResultOperaMap;
+}
+
 /**所有操作的结果 */
 export type Result = Enumified<typeof Result>;
 export const Result = {
 	ResultOk,
 	ResultOperaMap,
 	ResultPick,
+	ResultListNext,
 };
+export default Result;
 
