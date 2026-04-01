@@ -5,10 +5,8 @@
  */
 declare module 'lib/reader';
 
-import Eventer from './Eventer';
+import { Eventer } from 'lib/util';
 import { Danmaku } from 'lib/types';
-
-export { Eventer };
 
 /**读取器 */
 export abstract class Reader extends Eventer<{ danmaku: Danmaku }> { }

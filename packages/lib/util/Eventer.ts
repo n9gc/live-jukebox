@@ -3,7 +3,7 @@
  * @license GPL-2.0-or-later
  * @author n9gc
  */
-declare module 'lib/reader/Eventer';
+declare module 'lib/util/Eventer';
 
 /**监听器 */
 export type Listener<T> = (n: T) => void;
@@ -18,19 +18,16 @@ export default class Eventer<O> {
 	 * @param listener 监听器
 	 */
 	addListener<T extends keyof O>(this: this, event: T, listener: Listener<O[T]>) {
-		let listeners = this.listenerMap[event];
-		if (!listeners) {
-			listeners = new Set();
-			this.listenerMap[event] = listeners;
-		}
-		listeners.add(listener);
+		(this.listenerMap[event]
+			?? (this.listenerMap[event] = new Set())
+		).add(listener);
 	}
 	/**
 	 * 把一个数据发给各个监听器
 	 * @param event 事件
 	 * @param data 数据
 	 */
-	protected dispatch<T extends keyof O>(this: this, event: T, data: O[T]) {
+	dispatch<T extends keyof O>(this: this, event: T, data: O[T]) {
 		this.listenerMap[event]?.forEach(listener => listener(data));
 	}
 	/**
@@ -39,8 +36,7 @@ export default class Eventer<O> {
 	 * @param listener 要被删除的监听器
 	 */
 	removeListener<T extends keyof O>(this: this, event: T, listener: Listener<O[T]>) {
-		const listeners = this.listenerMap[event];
-		listeners?.delete(listener as any);
+		this.listenerMap[event]?.delete(listener);
 	}
 }
 
