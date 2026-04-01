@@ -19,6 +19,7 @@
 		"type": "git"
 	},
 	"scripts": {
+		"prepare": "make-dir dist && ts-to-zod -k lib/types.ts dist/types-schema.ts",
 		"test": "tsc"
 	},
 	"dependencies": {
@@ -30,5 +31,7 @@
 		"react-dom": "latest",
 		"@types/react-dom": "latest"
 	},
-	"devDependencies": {}
+	"devDependencies": {
+		"ts-to-zod": "latest"
+	}
 }

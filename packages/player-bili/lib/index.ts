@@ -6,4 +6,6 @@
 declare module '.';
 
 export { default as BiliPlayer } from './BiliPlayer';
+export * from './api';
+export * from './types';
 

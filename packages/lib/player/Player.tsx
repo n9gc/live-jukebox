@@ -5,9 +5,10 @@
  */
 declare module 'lib/player/Player';
 
-import { PlayerName, Song } from 'lib/player/info';
+import { Song } from 'lib/player';
 import { Danmaku } from 'lib/types';
 import { JSX } from 'react';
+import z from 'zod';
 
 /**被注册过 */
 export const registered = Symbol();
@@ -26,7 +27,8 @@ export const registered = Symbol();
  * 即可在声明时就注册你的播放器
  */
 export default abstract class Player<
-	K extends PlayerName = PlayerName,
+	K extends string = string,
+	S extends z.ZodType = z.ZodType,
 > {
 	/**被注册过 */
 	protected abstract readonly registered: typeof registered;
@@ -34,12 +36,14 @@ export default abstract class Player<
 	abstract readonly playerName: K;
 	/**点歌的简单教学 */
 	abstract readonly desc: string;
+	/**歌曲额外信息的 zod schema */
+	abstract readonly infoSchema: S;
 	/**解析去掉开头“点歌 ”的弹幕为播放信息，若无法解析就返回 null */
-	abstract parse(this: this, damaku: Danmaku): Promise<Song<K> | null>;
+	abstract parse(this: this, damaku: Danmaku): Promise<Song<K, S> | null>;
 	/**用于播放的元素 */
-	abstract PlayEle(info: Song<K>): JSX.Element;
+	abstract PlayEle(info: Song<K, S>): JSX.Element;
 	/**显示在列表的元素 */
-	TitleEle(song: Song<K>): JSX.Element {
+	TitleEle(song: Song<K, S>): JSX.Element {
 		return <div>{song.title}</div>;
 	}
 }

@@ -25,8 +25,11 @@ const scripts = new Map([[
 	},
 ]]);
 
-(scripts.get(process.argv.at(-1) ?? '') ?? (() => {
-	console.error('what do you want to do?');
-	process.exit(1);
-}))();
+(
+	scripts.get(process.argv.at(-1) ?? '')
+	?? (() => {
+		console.error('what do you want to do?');
+		process.exit(1);
+	})
+)();
 

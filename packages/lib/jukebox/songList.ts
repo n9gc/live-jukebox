@@ -6,7 +6,7 @@
 declare module 'lib/jukebox/songList';
 
 import { AutoPicker } from 'lib/jukebox/autoPicker';
-import { playerNames, Song } from 'lib/player';
+import { Song } from 'lib/player';
 import {
 	isNotOk,
 	ResultListAdd,
@@ -99,9 +99,6 @@ export class SongList {
 	 * @param song 添加的歌曲
 	 */
 	add(this: this, song: Song): ResultListAdd {
-		if (
-			!playerNames.has(song.playerName)
-		) return ResultListAdd.UnknownPlayer;
 		if (
 			this.songs.some(({ song: { id } }) => id === song.id)
 		) return ResultListAdd.SameId;

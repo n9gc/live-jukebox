@@ -3,14 +3,10 @@
  * @license GPL-2.0-or-later
  * @author n9gc
  */
-declare module './info';
+declare module './types';
 
-declare global {
-	interface PlayerInfoMap {
-		/**B 站视频 */
-		bili: BiliInfo;
-	}
-}
+export * from '../dist/types-schema';
+
 /**B 站视频信息 */
 export interface BiliInfo {
 	/**BV 号 */
