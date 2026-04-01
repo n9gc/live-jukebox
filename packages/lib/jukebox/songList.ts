@@ -8,9 +8,7 @@ declare module 'lib/jukebox/songList';
 import { AutoPicker } from 'lib/jukebox/autoPicker';
 import { playerNames, Song } from 'lib/player';
 import {
-	Enumified,
 	isNotOk,
-	mark,
 	ResultListAdd,
 	ResultListCancel,
 	ResultListEnd,
@@ -18,7 +16,7 @@ import {
 	ResultPick,
 } from 'lib/result';
 import { Picker } from 'lib/types';
-import { thr } from 'lib/util';
+import { Enumified, mark, thr } from 'lib/util';
 
 /**歌曲的状态 */
 export type SongState = Enumified<typeof SongState>;
@@ -80,7 +78,7 @@ export class SongList {
 	 * 获取当前歌曲队列
 	 * @returns 歌曲队列，如果为空则告诉你为啥为空
 	 */
-	getSongs(): Song[] | ResultPick {
+	getSongs(this: this): Song[] | ResultPick {
 		if (this.songs.length) {
 			return this
 				.songs
@@ -100,7 +98,7 @@ export class SongList {
 	 * 添加一个歌曲
 	 * @param song 添加的歌曲
 	 */
-	add(song: Song): ResultListAdd {
+	add(this: this, song: Song): ResultListAdd {
 		if (
 			!playerNames.has(song.playerName)
 		) return ResultListAdd.UnknownPlayer;
@@ -130,7 +128,7 @@ export class SongList {
 	 * 歌曲播完了
 	 * @param song 播完的歌曲
 	 */
-	end(song: Song): ResultListEnd {
+	end(this: this, song: Song): ResultListEnd {
 		const handle = this.songs.shift();
 		if (!handle) return ResultListEnd.NotExist;
 		if (handle.state === SongState.Waiting) return ResultListEnd.NotPlayed;
@@ -149,7 +147,7 @@ export class SongList {
 	 * 取消歌曲
 	 * @param picker 要取消的人
 	 */
-	cancel(picker: Picker): ResultListCancel {
+	cancel(this: this, picker: Picker): ResultListCancel {
 		const handle = this
 			.songs
 			.filter(({ song }) => song.picker === picker)

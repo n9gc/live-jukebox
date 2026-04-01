@@ -5,7 +5,7 @@
  */
 declare module 'lib/result/results';
 
-import type { Enumified } from 'lib/result';
+import type { Enumified } from 'lib/util';
 
 /**成功的结果 */
 export type ResultOk = Enumified<typeof ResultOk>;

@@ -5,6 +5,8 @@
  */
 declare module 'lib/util';
 
+export * from './enum';
+
 /**
  * 安全调用函数
  * @param fn 可能抛出错误的函数
