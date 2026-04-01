@@ -3,21 +3,24 @@
  * @license GPL-2.0-or-later
  * @author n9gc
  */
-declare module 'lib/util/enum';
+declare module 'lib/types/enum';
 
 import { thr } from 'lib/util';
+import z from 'zod';
 
 /**把 N 的内容物作为联合类型 */
 type ValueOf<N> = N[keyof N];
 /**强制让 T 变成联合对象的形式 */
 type UnionForced<T> = T extends T ? T : never;
-/**类型没有限制 */
+/**类型没有限制的实现 */
 type EnumifiedImpl<T extends Enum | symbol> = (T extends Enum
 	? UnionForced<ValueOf<{ [I in keyof T]: EnumifiedImpl<T[I]> }>>
 	: T
 );
+/**约束类型 */
+type Asserted<A, B> = A extends B ? A : never;
 /**得到枚举对象或者嵌套了枚举对象的枚举对象的枚举类型 */
-export type Enumified<T extends Enum> = EnumifiedImpl<T>;
+export type Enumified<T extends Enum> = Asserted<EnumifiedImpl<T>, symbol>;
 /**枚举对象 */
 export interface Enum extends Readonly<Record<string, Enum | symbol>> { }
 
@@ -48,22 +51,5 @@ export function mark(enums: Record<string, Enum>): true {
 		}
 	}
 	return true;
-}
-
-/**
- * 获取一个枚举所有的成员
- * @param enumObj 枚举对象
- * @returns 集合里装着各个成员
- */
-export function getVariants<T extends Enum>(enumObj: T, r = new Set<symbol>()): Set<Enumified<T>> {
-	for (const key of Object.keys(enumObj)) {
-		const obj = enumObj[key];
-		if (typeof obj === 'symbol') {
-			r.add(obj);
-		} else {
-			getVariants(obj, r);
-		}
-	}
-	return r as any;
 }
 

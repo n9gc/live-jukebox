@@ -15,8 +15,8 @@ import {
 	ResultOk,
 	ResultPick,
 } from 'lib/result';
-import { Picker } from 'lib/types';
-import { Enumified, mark, thr } from 'lib/util';
+import { Enumified, mark, Picker } from 'lib/types';
+import { thr } from 'lib/util';
 
 /**歌曲的状态 */
 export type SongState = Enumified<typeof SongState>;

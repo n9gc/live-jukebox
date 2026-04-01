@@ -7,6 +7,7 @@ declare module 'lib/types';
 
 export * from 'lib/dist/types-schema';
 export * from './defines';
+export * from './enum';
 
 /**弹幕 */
 export interface Danmaku {
