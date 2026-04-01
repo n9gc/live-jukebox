@@ -6,7 +6,7 @@
 declare module './types';
 
 import z from 'zod';
-import { danmakuSchema } from 'lib/types';
+import { danmakuSchema, getJsonCodec } from 'lib/types';
 
 /**文本 */
 export const DmTypeTexts = z.literal(0);
@@ -45,5 +45,5 @@ export const BiliDanmaku = danmakuSchema
 export type BiliDanmaku = z.infer<typeof BiliDanmaku>;
 
 /**Py 传进来的 bili 弹幕 */
-export const PyBiliDanmaku = BiliDanmaku.omit({ ignore: true });
+export const PyBiliDanmaku = getJsonCodec(BiliDanmaku.omit({ ignore: true }));
 export type PyBiliDanmaku = z.infer<typeof PyBiliDanmaku>;

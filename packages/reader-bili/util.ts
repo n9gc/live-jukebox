@@ -71,9 +71,9 @@ export function listenDm(config: ListenDmConfig, callback: (danmaku: PyBiliDanma
 	});
 
 	rl.on('line', n => {
+		const r = PyBiliDanmaku.safeDecode(n);
+		if (!r.success) throw z.treeifyError(r.error).properties;
 		try {
-			const r = PyBiliDanmaku.safeParse(JSON.parse(n));
-			if (!r.success) throw z.treeifyError(r.error).properties;
 			callback(r.data);
 		} catch (err) {
 			console.error(err);

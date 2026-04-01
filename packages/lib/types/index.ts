@@ -6,6 +6,7 @@
 declare module 'lib/types';
 
 export * from 'lib/dist/types-schema';
+export * from './defines';
 
 /**弹幕 */
 export interface Danmaku {
@@ -41,3 +42,4 @@ export interface BaseSong {
 	/**点歌的人 */
 	readonly picker: Picker;
 }
+

@@ -12,10 +12,10 @@ import { BiliDanmaku, PyBiliDanmaku } from './types';
 import { ChildProcessWithoutNullStreams } from 'node:child_process';
 
 /**b 站弹幕读取器的配置 */
-export const BiliReaderConfig = ListenDmConfig.extend({
+export const BiliReaderConfig = ListenDmConfig.safeExtend({
 	/**判断是否忽略一个评论 */
 	isIgnored: z.function({
-		input: [PyBiliDanmaku],
+		input: [PyBiliDanmaku.out],
 		output: z.boolean(),
 	}).optional(),
 });
