@@ -53,3 +53,74 @@ export function mark(enums: Record<string, Enum>): true {
 	return true;
 }
 
+/**
+ * 获取一个枚举所有的成员
+ * @param enumObj 枚举对象
+ * @returns 集合里装着各个成员
+ */
+export function getVariants<T extends Enum>(enumObj: T, r = new Set<symbol>()): Set<Enumified<T>> {
+	for (const key of Object.keys(enumObj)) {
+		const obj = enumObj[key];
+		if (typeof obj === 'symbol') {
+			r.add(obj);
+		} else {
+			getVariants(obj, r);
+		}
+	}
+	return r as any;
+}
+
+/**获得一个 Symbol 的 zod schema */
+export function getSymbolSchema<T extends symbol>(sym: T): z.ZodCustom<T, T> {
+	return z.custom<T>(
+		n => n === sym,
+		{ error: `is not ${sym.toString()}` },
+	);
+}
+
+/**
+ * 给一个 symbol 实现 Codec ，通过 Symbol.for 实现
+ * @param sym 通过 Symbol.for 产生的 symbol ，比如被 mark 过的枚举
+ */
+export function getSymbolCodec<T extends symbol>(sym: T): z.ZodCodec<z.ZodString, z.ZodCustom<T, T>> {
+	const oriKey = Symbol.keyFor(sym)
+		?? thr('这个不是 Symbol.for 产生的 symbol', sym);
+	return z.codec(
+		z.string(),
+		getSymbolSchema(sym),
+		{
+			encode: () => oriKey,
+			decode(key, ctx) {
+				if (key === oriKey) return sym;
+				ctx.issues.push({
+					code: 'invalid_value',
+					input: key,
+					values: [oriKey],
+				});
+				return z.NEVER;
+			},
+		},
+	);
+}
+
+/**把枚举 T 里的每个成员全部弄成 Codec 后套成一个 Union */
+type CodecUnion<T extends symbol> = z.ZodUnion<
+	readonly (
+		T extends T
+			? z.ZodCodec<z.ZodString, z.ZodCustom<T, T>>
+			: never
+	)[]
+>;
+/**
+ * 得到一个枚举对象的联合 Codec
+ * @param enumObj 枚举对象
+ * @returns Codec 的联合类型的 Schema
+ */
+export function getEnumCodec<T extends Enum>(enumObj: T): CodecUnion<Enumified<T>> {
+	return z.union(
+		Array
+			.from(getVariants(enumObj))
+			.map(getSymbolCodec),
+	) as any;
+}
+
