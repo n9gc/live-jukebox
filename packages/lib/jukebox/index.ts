@@ -6,6 +6,7 @@
 declare module 'lib/jukebox';
 
 export * from './autoPicker';
+export * from './parser';
 export * from './songList';
 
 import { AutoPicker, CommonPicker } from 'lib/jukebox/autoPicker';

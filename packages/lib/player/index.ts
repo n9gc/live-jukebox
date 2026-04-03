@@ -8,7 +8,7 @@ declare module 'lib/player';
 export { default as Player } from './Player';
 
 import Player, { registered } from 'lib/player/Player';
-import { BaseSong, Danmaku } from 'lib/types';
+import { BaseSong, Danmaku, Picker } from 'lib/types';
 import z from 'zod';
 
 /**
@@ -29,6 +29,11 @@ export function fmtPlayCmd(danmaku: Danmaku): Danmaku | null {
 export interface Song<K extends string = string, S extends z.ZodType = z.ZodType> extends BaseSong {
 	readonly playerName: K;
 	readonly info: z.infer<S>;
+}
+
+/**获得点歌人名 */
+export function getPicker({ uname, face }: Danmaku): Picker {
+	return `${uname.trim()}:${face.trim()}`;
 }
 
 /**
