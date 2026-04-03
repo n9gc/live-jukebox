@@ -24,30 +24,29 @@ export type Enumified<T extends Enum> = Asserted<EnumifiedImpl<T>, symbol>;
 /**枚举对象 */
 export interface Enum extends Readonly<Record<string, Enum | symbol>> { }
 
-/**放着全局所有 enum 定义的位置 */
-const symbolMap = new Map<string, Error>();
+/**全局所有标记名称定义的位置 */
+const defMap = new Map<symbol, Error>();
+/**全局所有被标记过的枚举对应的标记 */
+const markedMap = new WeakMap<symbol, symbol>();
 /**
- * 给所有 symbol 打上方便调试的标记
+ * 给所有 symbol 打上标记
  * @param enums 导出枚举的模块
  */
 export function mark(enums: Record<string, Enum>): true {
-	const mem = new WeakMap<symbol, symbol>();
 	for (const name of Object.keys(enums).reverse()) {
-		const space = enums[name];
-		for (const key of Object.keys(space)) {
-			const obj = space[key];
-			if (typeof obj !== 'symbol') continue;
-			let sym = mem.get(obj);
+		const enumObj = enums[name];
+		for (const key of Object.keys(enumObj)) {
+			const oriSym = enumObj[key];
+			if (typeof oriSym !== 'symbol') continue;
+			let sym = markedMap.get(oriSym);
 			if (!sym) {
-				const symName = `${name}.${key}`;
-				const lastDef = symbolMap.get(symName);
-				if (lastDef) thr('枚举重名', lastDef);
-				symbolMap.set(symName, Error());
-				sym = Symbol.for(symName);
-				mem.set(obj, sym);
+				sym = Symbol.for(`${name}.${key}`);
+				if (defMap.get(sym)) thr('枚举重名', defMap.get(sym));
+				defMap.set(sym, Error());
+				markedMap.set(oriSym, sym);
 			}
 			// @ts-ignore
-			space[key] = sym;
+			enumObj[key] = sym;
 		}
 	}
 	return true;
@@ -79,44 +78,49 @@ export function getSymbolSchema<T extends symbol>(sym: T): z.ZodCustom<T, T> {
 }
 
 /**
+ * 得到一个枚举对象的联合 Schema
+ * @param enumObj 枚举对象
+ * @returns Schema 的联合类型
+ */
+export function getEnumSchema<T extends Enum>(enumObj: T): z.ZodUnion<
+	readonly (T extends T ? z.ZodCustom<T, T> : never)[]
+> {
+	return z.union(
+		Array
+			.from(getVariants(enumObj))
+			.map(getSymbolSchema),
+	) as any;
+}
+
+/**
  * 给一个 symbol 实现 Codec ，通过 Symbol.for 实现
  * @param sym 通过 Symbol.for 产生的 symbol ，比如被 mark 过的枚举
  */
 export function getSymbolCodec<T extends symbol>(sym: T): z.ZodCodec<z.ZodString, z.ZodCustom<T, T>> {
 	const oriKey = Symbol.keyFor(sym)
 		?? thr('这个不是 Symbol.for 产生的 symbol', sym);
-	return z.codec(
-		z.string(),
-		getSymbolSchema(sym),
-		{
-			encode: () => oriKey,
-			decode(key, ctx) {
-				if (key === oriKey) return sym;
-				ctx.issues.push({
-					code: 'invalid_value',
-					input: key,
-					values: [oriKey],
-				});
-				return z.NEVER;
-			},
+	return z.codec(z.string(), getSymbolSchema(sym), {
+		encode: () => oriKey,
+		decode(key, ctx) {
+			if (key === oriKey) return sym;
+			ctx.issues.push({
+				code: 'invalid_value',
+				input: key,
+				values: [oriKey],
+			});
+			return z.NEVER;
 		},
-	);
+	});
 }
 
-/**把枚举 T 里的每个成员全部弄成 Codec 后套成一个 Union */
-type CodecUnion<T extends symbol> = z.ZodUnion<
-	readonly (
-		T extends T
-			? z.ZodCodec<z.ZodString, z.ZodCustom<T, T>>
-			: never
-	)[]
->;
 /**
  * 得到一个枚举对象的联合 Codec
  * @param enumObj 枚举对象
  * @returns Codec 的联合类型的 Schema
  */
-export function getEnumCodec<T extends Enum>(enumObj: T): CodecUnion<Enumified<T>> {
+export function getEnumCodec<T extends Enum>(enumObj: T): z.ZodUnion<
+	readonly (T extends T ? z.ZodCodec<z.ZodString, z.ZodCustom<T, T>> : never)[]
+> {
 	return z.union(
 		Array
 			.from(getVariants(enumObj))
