@@ -39,7 +39,7 @@ export default abstract class Player<
 	/**歌曲额外信息的 zod schema */
 	abstract readonly infoSchema: S;
 	/**解析去掉开头“点歌 ”的弹幕为播放信息，若无法解析就返回 null */
-	abstract parse(this: this, damaku: Danmaku): Promise<Song<K, S> | null>;
+	abstract parse(this: this, danmaku: Danmaku): Promise<Song<K, S> | null>;
 	/**用于播放的元素 */
 	abstract PlayEle(info: Song<K, S>): JSX.Element;
 	/**显示在列表的元素 */
