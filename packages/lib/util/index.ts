@@ -5,6 +5,7 @@
  */
 declare module 'lib/util';
 
+export * from './config';
 export * from './Eventer';
 export { default as Eventer } from './Eventer';
 
