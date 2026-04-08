@@ -27,7 +27,7 @@ export interface ParserEvent {
 	/**不是命令 */
 	[Command.Idk]: Danmaku;
 	/**来歌曲了 */
-	[Command.Song]: Song | Danmaku;
+	[Command.Song]: Song;
 	/**有人取消歌曲了 */
 	[Command.Cancel]: Picker;
 }
@@ -41,7 +41,9 @@ export function distinguishChinese({ message }: Danmaku): Command {
 }
 
 /**命令类型对应的解析函数 */
-type ParserMap = { [I in Command]: (danmaku: Danmaku) => Promise<ParserEvent[I]> };
+type ParserMap = {
+	[I in Command]: (danmaku: Danmaku) => Promise<ParserEvent[I] | typeof Command.Idk>;
+};
 /**弹幕解析器 */
 export class Parser extends Eventer<ParserEvent> implements ParserMap {
 	constructor(
@@ -68,7 +70,13 @@ export class Parser extends Eventer<ParserEvent> implements ParserMap {
 			message: danmaku.message.trim(),
 		};
 		const type = this.distinguisher(danmaku);
-		this[type](danmaku).then(parsed => this.dispatch(type, parsed));
+		this[type](danmaku).then(parsed => {
+			if (parsed === Command.Idk) {
+				this.dispatch(Command.Idk, danmaku);
+				return;
+			}
+			this.dispatch(type, parsed);
+		});
 	}
 	async [Command.Idk](danmaku: Danmaku) {
 		return danmaku;
@@ -78,7 +86,7 @@ export class Parser extends Eventer<ParserEvent> implements ParserMap {
 			const parsed = await player.parse(danmaku);
 			if (parsed) return parsed;
 		}
-		return danmaku;
+		return Command.Idk;
 	}
 	async [Command.Cancel](danmaku: Danmaku) {
 		return getPicker(danmaku);
