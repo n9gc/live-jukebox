@@ -34,7 +34,7 @@ export interface ParserEvent {
 /**分辨弹幕属于哪种命令 */
 export type Distinguisher = (danmaku: Danmaku) => Command;
 /**分辨中文弹幕命令 */
-export function DistinguishChinese({ message }: Danmaku): Command {
+export function distinguishChinese({ message }: Danmaku): Command {
 	if (message.startsWith('点歌 ')) return Command.Song;
 	if (message === '取消') return Command.Cancel;
 	return Command.Idk;
@@ -62,13 +62,13 @@ export class Parser extends Eventer<ParserEvent> implements ParserMap {
 	 * 分析弹幕，并以事件的形式派发给自己的监听器
 	 * @param danmaku 弹幕
 	 */
-	async parse(this: this, danmaku: Danmaku) {
+	parse(this: this, danmaku: Danmaku) {
 		danmaku = {
 			...danmaku,
 			message: danmaku.message.trim(),
 		};
 		const type = this.distinguisher(danmaku);
-		this.dispatch(type, await this[type](danmaku));
+		this[type](danmaku).then(parsed => this.dispatch(type, parsed));
 	}
 	async [Command.Idk](danmaku: Danmaku) {
 		return danmaku;
