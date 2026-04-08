@@ -77,14 +77,14 @@ export function getSymbolSchema<T extends symbol>(sym: T): z.ZodCustom<T, T> {
 	);
 }
 
+/**给联合类型的每个类型套一个 ZodCustom 之后放到一个 ZodUnion 里 */
+type SchemaUnion<T> = z.ZodUnion<readonly (T extends T ? z.ZodCustom<T, T> : never)[]>;
 /**
  * 得到一个枚举对象的联合 Schema
  * @param enumObj 枚举对象
  * @returns Schema 的联合类型
  */
-export function getEnumSchema<T extends Enum>(enumObj: T): z.ZodUnion<
-	readonly (T extends T ? z.ZodCustom<T, T> : never)[]
-> {
+export function getEnumSchema<T extends Enum>(enumObj: T): SchemaUnion<Enumified<T>> {
 	return z.union(
 		Array
 			.from(getVariants(enumObj))
@@ -113,14 +113,14 @@ export function getSymbolCodec<T extends symbol>(sym: T): z.ZodCodec<z.ZodString
 	});
 }
 
+/**给联合类型的每个类型套一个 codec 之后放到一个 ZodUnion 里 */
+type CodecUnion<T> = z.ZodUnion<readonly (T extends T ? z.ZodCodec<z.ZodString, z.ZodCustom<T, T>> : never)[]>;
 /**
  * 得到一个枚举对象的联合 Codec
  * @param enumObj 枚举对象
  * @returns Codec 的联合类型的 Schema
  */
-export function getEnumCodec<T extends Enum>(enumObj: T): z.ZodUnion<
-	readonly (T extends T ? z.ZodCodec<z.ZodString, z.ZodCustom<T, T>> : never)[]
-> {
+export function getEnumCodec<T extends Enum>(enumObj: T): CodecUnion<Enumified<T>> {
 	return z.union(
 		Array
 			.from(getVariants(enumObj))

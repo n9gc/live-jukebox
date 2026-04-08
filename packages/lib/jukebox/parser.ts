@@ -78,9 +78,11 @@ export class Parser extends Eventer<ParserEvent> implements ParserMap {
 			this.dispatch(type, parsed);
 		});
 	}
+	/**不知道弹幕是啥意思，那就直接返回吧 */
 	async [Command.Idk](danmaku: Danmaku) {
 		return danmaku;
 	}
+	/**尝试解析这个弹幕是点的哪种歌，尝试失败就说不知道弹幕意思 */
 	async [Command.Song](danmaku: Danmaku) {
 		for (const player of this.players) {
 			const parsed = await player.parse(danmaku);
@@ -88,6 +90,7 @@ export class Parser extends Eventer<ParserEvent> implements ParserMap {
 		}
 		return Command.Idk;
 	}
+	/**找到发送取消弹幕的人的点歌身份 */
 	async [Command.Cancel](danmaku: Danmaku) {
 		return getPicker(danmaku);
 	}

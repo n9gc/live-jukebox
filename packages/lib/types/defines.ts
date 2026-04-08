@@ -11,7 +11,7 @@ import z from 'zod';
  * 得到一个类型的 json codec
  * @param schema 类型的 schema
  */
-export function getJsonCodec<T extends z.core.$ZodType>(schema: T) {
+export function getJsonCodec<T extends z.ZodType>(schema: T) {
 	return z.codec(z.string(), schema, {
 		decode(input, ctx) {
 			try {

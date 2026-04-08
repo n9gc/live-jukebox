@@ -72,7 +72,10 @@ export function listenDm(config: ListenDmConfig, callback: (danmaku: PyBiliDanma
 
 	rl.on('line', n => {
 		const r = PyBiliDanmaku.safeDecode(n);
-		if (!r.success) throw z.treeifyError(r.error).properties;
+		if (!r.success) {
+			console.error(z.prettifyError(r.error));
+			return;
+		}
 		try {
 			callback(r.data);
 		} catch (err) {
