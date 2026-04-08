@@ -21,6 +21,7 @@ export default class Eventer<O> {
 		(this.listenerMap[event]
 			?? (this.listenerMap[event] = new Set())
 		).add(listener);
+		return this;
 	}
 	/**
 	 * 把一个数据发给各个监听器
@@ -29,6 +30,7 @@ export default class Eventer<O> {
 	 */
 	dispatch<T extends keyof O>(this: this, event: T, data: O[T]) {
 		this.listenerMap[event]?.forEach(listener => listener(data));
+		return this;
 	}
 	/**
 	 * 删除一个监听器
@@ -37,6 +39,7 @@ export default class Eventer<O> {
 	 */
 	removeListener<T extends keyof O>(this: this, event: T, listener: Listener<O[T]>) {
 		this.listenerMap[event]?.delete(listener);
+		return this;
 	}
 }
 
