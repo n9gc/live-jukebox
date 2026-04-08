@@ -1,32 +1,43 @@
 import { execSync } from 'child_process';
 import { run } from 'lib/util';
-import { pipPath, testExe } from './util';
+import { pipPath, testExe, venvPath } from './util';
+import fs from 'node:fs';
 
-const scripts = new Map([[
-	'prepare', () => {
-		const pyExe = process.env.PY_EXE ?? 'python';
+/**创建 .venv 文件夹 */
+function createVenv() {
+	if (fs.existsSync(venvPath)) return;
 
-		testExe(pyExe, `Cannot find '${pyExe}', use $PY_EXE instead.`);
+	const pyExe = process.env.PY_EXE ?? 'python';
 
-		run(
-			() => execSync(`${pyExe} -m venv .venv`, { stdio: 'inherit' }),
-			e => console.error('init venv failed', e),
-		);
+	testExe(pyExe, `Cannot find '${pyExe}', use $PY_EXE instead.`);
 
-		const mirror = process.env.PY_MIRROR ?? '';
-		const mirrorCmd = mirror && `-i ${mirror}`;
+	run(
+		() => execSync(`${pyExe} -m venv ${venvPath}`, { stdio: 'inherit' }),
+		e => console.error('init venv failed', e),
+	);
+}
 
-		testExe(pipPath, 'prepare failed');
+/**prepare 脚本 */
+function prepare() {
+	createVenv();
 
-		run(
-			() => execSync(`"${pipPath}" install ${mirrorCmd} -r requirements.txt`, { stdio: 'inherit' }),
-			e => console.error('pip install failed', e),
-		);
-	},
-]]);
+	const mirror = process.env.PY_MIRROR ?? '';
+	const mirrorCmd = mirror && `-i ${mirror}`;
+
+	testExe(pipPath, 'venv pip not found');
+
+	run(
+		() => execSync(`"${pipPath}" install ${mirrorCmd} -r requirements.txt`, { stdio: 'inherit' }),
+		e => console.error('pip install failed', e),
+	);
+}
+
+const scripts: Partial<Record<string, () => void>> = {
+	prepare,
+};
 
 (
-	scripts.get(process.argv.at(-1) ?? '')
+	scripts[process.argv.at(-1) ?? '']
 	?? (() => {
 		console.error('what do you want to do?');
 		process.exit(1);
