@@ -27,11 +27,9 @@ export namespace ResultPick {
 export type ResultListEnd = Enumified<typeof ResultListEnd>;
 export namespace ResultListEnd {
 	/**已经被结束过了 */
-	export const EndBefore = Symbol();
-	/**歌单里没有歌 */
-	export const NotExist = Symbol();
-	/**还没开始就停止了 */
-	export const NotPlayed = Symbol();
+	export const EndTooLate = Symbol();
+	/**要结束的歌前面还有歌没结束呢 */
+	export const EndTooEarly = Symbol();
 	export import Ok = ResultOk;
 }
 
@@ -40,8 +38,6 @@ export type ResultListAdd = Enumified<typeof ResultListAdd>;
 export namespace ResultListAdd {
 	/**重复添加歌曲 */
 	export const SameId = Symbol();
-	/**谁家没播放器的曲子 */
-	export const UnknownPlayer = Symbol();
 	export import Ok = ResultOk;
 }
 
