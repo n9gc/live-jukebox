@@ -48,7 +48,6 @@ export namespace ResultListCancel {
 	export const NoCancelable = Symbol();
 	/**要被取消的歌还在放 */
 	export const Playing = Symbol();
-	export import Ok = ResultOk;
 }
 
 /**所有操作的结果 */

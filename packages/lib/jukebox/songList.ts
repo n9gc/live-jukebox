@@ -16,37 +16,26 @@ import {
 	ResultPick,
 } from 'lib/result';
 import { Enumified, mark, Picker } from 'lib/types';
-import { thr } from 'lib/util';
 
-// TODO
-// /**取消播放的方法 */
-// export type CancelMethod = Enumified<typeof CancelMethod>;
-// export namespace CancelMethod {
-// 	// TODO
-// 	// /**不论如何都可以取消，包括已经播放时 */
-// 	// export const Anyway = Symbol();
-// 	/**如果播放，则不算可以取消的曲目，剩下仍然可取消 */
-// 	export const ExceptPlaying = Symbol();
-// 	/**如果播放，则不能取消任何曲目，直到播放完成 */
-// 	export const Blocking = Symbol();
-// 	mark({ CancelMethod });
-// }
-//
-// /**不同取消播放方法下对歌曲的筛选函数 */
-// const cancelablePredicates = {
-// 	[CancelMethod.Blocking]: ({ state }) => state !== SongState.Canceled,
-// 	[CancelMethod.ExceptPlaying]: ({ state }) => state === SongState.Waiting,
-// } satisfies Record<CancelMethod, (handle: SongHandle) => boolean>;
+/**取消播放的方法 */
+export type CancelMethod = Enumified<typeof CancelMethod>;
+export namespace CancelMethod {
+	/**不论如何都可以取消，包括已经播放时 */
+	export const Anyway = Symbol();
+	/**如果播放，则不算可以取消的曲目，剩下仍然可取消 */
+	export const ExceptPlaying = Symbol();
+	/**如果播放，则不能取消任何曲目，直到播放完成 */
+	export const Blocking = Symbol();
+	mark({ CancelMethod });
+}
 
 /**歌单 */
 export class SongList {
 	constructor(
 		/**备选点歌器 */
 		public autoPicker: AutoPicker,
-		// /**取消的方法 */
-		// public cancelMethod: CancelMethod,
-		/**发送要播放的歌曲信息的函数 */
-		protected readonly sender: (song: Song) => void,
+		/**取消的方法 */
+		public cancelMethod: CancelMethod,
 	) { }
 
 	/**歌曲队列 */
@@ -95,21 +84,25 @@ export class SongList {
 		return ResultOk.Ok;
 	}
 
-	// /**
-	//  * 取消歌曲
-	//  * @param picker 要取消的人
-	//  */
-	// cancel(this: this, picker: Picker): ResultListCancel {
-	// 	const handle = this
-	// 		.songs
-	// 		.filter(({ song }) => song.picker === picker)
-	// 		.find(cancelablePredicates[this.cancelMethod]);
-
-	// 	if (!handle) return ResultListCancel.NoCancelable;
-	// 	if (handle.state === SongState.Playing) return ResultListCancel.Playing;
-	// 	handle.state = SongState.Canceled;
-	// 	return ResultOk.Ok;
-	// }
+	/**
+	 * 取消歌曲
+	 * @param picker 要取消的人
+	 */
+	cancel(this: this, picker: Picker): ResultListCancel | Song {
+		if (
+			this.cancelMethod === CancelMethod.Blocking
+			&& this.songs.at(0)?.picker === picker
+		) return ResultListCancel.Playing;
+		const song = this.songs.find(
+			(song, i) => song.picker === picker
+				&& (
+					this.cancelMethod !== CancelMethod.ExceptPlaying
+					|| i !== 0
+				),
+		);
+		if (!song) return ResultListCancel.NoCancelable;
+		return song;
+	}
 }
 
 
