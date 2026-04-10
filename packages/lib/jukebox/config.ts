@@ -21,7 +21,7 @@ namespace JukeboxConfigIniter {
 	/**备选点歌器 */
 	export const autoPicker = (): AutoPicker => new CommonPicker();
 	/**取消的方法 */
-	export const cancelMethod = (): CancelMethod => CancelMethod.Blocking;
+	export const cancelMethod = (): CancelMethod => CancelMethod.Anyway;
 	/**分辨弹幕属于哪种命令 */
 	export const distinguisher = (): Distinguisher => distinguishChinese;
 }

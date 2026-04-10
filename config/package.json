@@ -18,6 +18,10 @@
 
 		"@types/node": "latest",
 		"@pnpm/types": "latest",
-		"esm-entry": "latest"
+		"esm-entry": "latest",
+
+		"lib": "workspace:^",
+		"reader-bili": "workspace:^",
+		"player-bili": "workspace:^"
 	}
 }
