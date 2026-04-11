@@ -7,9 +7,9 @@
 	"author": "n9gc",
 	"description": "使用 xfgryujk/blivedm 库来读取 B 站弹幕",
 	"type": "module",
-	"main": "./index.ts",
-	"module": "./index.ts",
-	"types": "./index.ts",
+	"main": "./lib/index.ts",
+	"module": "./lib/index.ts",
+	"types": "./lib/index.ts",
 	"bugs": {
 		"url": "https://github.com/n9gc/live-jukebox/issues"
 	},

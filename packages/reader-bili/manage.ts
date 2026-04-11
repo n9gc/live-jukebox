@@ -1,6 +1,6 @@
 import { execSync } from 'child_process';
 import { run } from 'lib/util';
-import { pipPath, testExe, venvPath } from './util';
+import { pipPath, testExe, venvPath } from './lib/util';
 import fs from 'node:fs';
 
 /**创建 .venv 文件夹 */

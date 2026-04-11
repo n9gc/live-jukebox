@@ -1,4 +1,4 @@
-import BiliReader from '.';
+import BiliReader from './lib';
 
 const reader = new BiliReader({
 	roomId: 123,

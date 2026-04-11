@@ -16,7 +16,7 @@ import { PyBiliDanmaku } from './types';
 /**是不是 Win 平台 */
 export const isWindows = process.platform === 'win32';
 /**虚拟环境 */
-export const venvPath = path.join(getDirname(import.meta.url), '.venv');
+export const venvPath = path.join(getDirname(import.meta.url), '../.venv');
 /**虚拟环境的 pip */
 export const pipPath = path.join(venvPath, isWindows ? 'Scripts/pip' : 'bin/pip');
 /**虚拟环境的 python */
