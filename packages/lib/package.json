@@ -19,7 +19,7 @@
 		"type": "git"
 	},
 	"scripts": {
-		"prepare": "make-dir dist && ts-to-zod -k types/index.ts dist/types-schema.ts",
+		"prepare": "make-dir dist && ts-to-zod --all",
 		"test": "tsc"
 	},
 	"dependencies": {
