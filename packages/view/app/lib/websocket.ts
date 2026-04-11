@@ -4,7 +4,7 @@
  * 找到的
  * @link https://github.com/k0d13/next-ws/blob/main/examples/_shared/src/websocket.ts
  */
-declare module './websocket';
+declare module '@/app/lib/websocket';
 
 import { useEffect, useRef, useState } from 'react';
 

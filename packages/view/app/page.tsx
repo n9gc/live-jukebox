@@ -1,17 +1,24 @@
 'use client';
 
-import z from 'zod';
-import { getUseDialog } from './lib/talk';
+/**
+ * 主页面
+ * @license GPL-2.0-or-later
+ * @author n9gc
+ */
+declare module '@/app/layout';
 
-const useMessage = getUseDialog(z.string());
+import { DialogContext, useDialog } from '@/app/lib/dialog';
+import List from '@/app/ui/List';
+import { useMemo } from 'react';
 
-export default function SSEComponent() {
-	const [message, sendMessage] = useMessage(
-		() => `ws://${location.host}/api/test`,
+
+export default function Page() {
+	const dialog = useDialog();
+	const dialogValue = useMemo(() => dialog, dialog);
+
+	return (
+		<DialogContext value={dialogValue}>
+			<List />
+		</DialogContext>
 	);
-
-	return <div>
-		{message.map(msg => <div>{msg}</div>)}
-		<button onClick={() => sendMessage('abc')}>send</button>
-	</div>;
 }

@@ -1,5 +1,11 @@
+/**
+ * 布局
+ * @license GPL-2.0-or-later
+ * @author n9gc
+ */
+declare module '@/app/layout';
+
 import { Metadata } from 'next';
-import { WebSocketProvider } from 'next-ws/client';
 
 export const metadata = {
 	title: {
