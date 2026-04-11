@@ -9,12 +9,12 @@ import { RegisteredPlayer, Song } from 'lib/player';
 import { Danmaku } from 'lib/types';
 import { JSX } from 'react';
 import { getVideoInfo } from './api';
-import { biliInfoSchema } from './types';
+import { BiliInfo } from './types';
 
 const bvRegexp = /^(BV[a-zA-Z0-9]{10})(?:_p([0-9]+))?$/;
 
 /**B 站播放器 */
-export default class BiliPlayer extends RegisteredPlayer('bili', biliInfoSchema) {
+export default class BiliPlayer extends RegisteredPlayer('bili', BiliInfo) {
 	readonly desc = '发送“点歌<空格>BV号”可点播b站视频。可指定播放第几p，如 BV123_p3，未指定则播放所有p。';
 	async parse({ message }: Danmaku): Promise<Song<'bili'> | null> {
 		// 符合格式吗

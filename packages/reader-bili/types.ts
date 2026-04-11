@@ -6,7 +6,7 @@
 declare module './types';
 
 import z from 'zod';
-import { danmakuSchema, getJsonCodec } from 'lib/types';
+import { Danmaku, getJsonCodec } from 'lib/types';
 
 /**文本 */
 export const DmTypeTexts = z.literal(0);
@@ -27,8 +27,8 @@ export const DmType = z.union([
 export type DmType = z.infer<typeof DmType>;
 
 /**bili 弹幕 */
-export const BiliDanmaku = danmakuSchema
-	.extend({
+export const BiliDanmaku = Danmaku
+	.safeExtend({
 		/**弹幕类型 */
 		dmType: DmType,
 		/**用户ID */

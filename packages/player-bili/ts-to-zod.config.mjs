@@ -4,7 +4,7 @@
 const configs = [
 	{
 		name: 'types',
-		input: 'types/pure.ts',
+		input: 'lib/types.ts',
 		output: 'dist/types-schema.ts',
 		keepComments: true,
 		getSchemaName: id => id,

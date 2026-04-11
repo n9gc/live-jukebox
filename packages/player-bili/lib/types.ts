@@ -5,13 +5,17 @@
  */
 declare module './types';
 
-export * from '../dist/types-schema';
+import * as Schema from '../dist/types-schema';
 
-/**B 站视频信息 */
+/**
+ * B 站视频信息
+ * @schema .readonly()
+ */
 export interface BiliInfo {
 	/**BV 号 */
-	bvid: string;
+	readonly bvid: string;
 	/**第几 p */
-	page: number;
+	readonly page: number;
 }
+export const BiliInfo = Schema.BiliInfo;
 

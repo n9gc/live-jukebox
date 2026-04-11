@@ -5,15 +5,19 @@
  */
 declare module 'lib/types/dialog';
 
-import { ResultListCancel, ResultListEnd, ResultPick } from 'lib/result';
 import {
-	baseSongSchema,
+	ResultListCancel,
+	ResultListEnd,
+	ResultPick,
+} from 'lib/result';
+import { getJsonCodec } from 'lib/types/defines';
+import {
 	Enumified,
 	getEnumCodec,
-	getJsonCodec,
 	getSymbolCodec,
 	mark,
-} from 'lib/types';
+} from 'lib/types/enum';
+import { BaseSong } from 'lib/types/pure';
 import { Eventer } from 'lib/util';
 import z from 'zod';
 
@@ -43,14 +47,14 @@ function getCodec<T extends Meaning, D extends z.ZodType>(meaning: T, data: D) {
 export type ClientEnd = z.infer<typeof ClientEnd>;
 export const ClientEnd = getCodec(
 	Meaning.ClientEnd,
-	baseSongSchema.readonly(),
+	BaseSong.readonly(),
 );
 /**歌单信息 */
 export type ServerSongs = z.infer<typeof ServerSongs>;
 export const ServerSongs = getCodec(
 	Meaning.ServerSongs,
 	z.union([
-		z.array(baseSongSchema.readonly()).readonly(),
+		z.array(BaseSong.readonly()).readonly(),
 		getEnumCodec(ResultPick),
 	]),
 );
@@ -67,7 +71,7 @@ export type ServerCancelResult = z.infer<typeof ServerCancelResult>;
 export const ServerCancelResult = getCodec(
 	Meaning.ServerCancelResult,
 	z.union([
-		baseSongSchema.readonly(),
+		BaseSong.readonly(),
 		getEnumCodec(ResultListCancel),
 	]),
 );

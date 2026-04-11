@@ -16,7 +16,7 @@ export const VideoInfo = z.object({
 		cid: z.number(),
 		page: z.number(),
 	})),
-});
+}).readonly();
 export type VideoInfo = z.infer<typeof VideoInfo>;
 
 /**获取视频信息 */

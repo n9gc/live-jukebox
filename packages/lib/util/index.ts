@@ -9,6 +9,8 @@ export * from './config';
 export * from './Eventer';
 export { default as Eventer } from './Eventer';
 
+import z from 'zod';
+
 /**
  * 安全调用函数
  * @param fn 可能抛出错误的函数
@@ -30,7 +32,6 @@ export function thr(why: string, ...params: unknown[]): never {
 /**全局 id */
 let id = 0n;
 /**获得一个全局 id */
-export function getId(): bigint {
-	return id++;
+export function getId(): `song:${bigint}` & z.core.$brand<'SongId'> {
+	return `song:${id++}` as any;
 }
-
