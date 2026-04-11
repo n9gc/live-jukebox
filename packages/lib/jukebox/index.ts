@@ -15,7 +15,12 @@ import { Command, Parser } from 'lib/jukebox/parser';
 import { SongList } from 'lib/jukebox/songList';
 import { isNotOk, isOk } from 'lib/result';
 import { DialogEventer, Meaning } from 'lib/types';
-import { thr } from 'lib/util';
+import { initLogger } from 'lib/util';
+
+const {
+	logger,
+	thr,
+} = initLogger('jukebox');
 
 /**点播机 */
 export class Jukebox {
@@ -45,15 +50,19 @@ export class Jukebox {
 			.addListener(
 				Command.Cancel,
 				this.songsAfter(picker => {
-					const r = songList.cancel(picker);
-					this.dialogEventer.dispatch(Meaning.ServerCancelResult, r);
+					const result = songList.cancel(picker);
+					isNotOk(result)
+						? logger.warn('{picker} canceled and failed with {result}', { picker, result })
+						: logger.info('{picker} canceled song {title} of {playerName}', result as {});
+					this.dialogEventer.dispatch(Meaning.ServerCancelResult, result);
 				}),
 			)
 			.addListener(
 				Command.Song,
 				this.songsAfter(song => {
-					const r = songList.add(song);
-					if (isNotOk(r)) thr('有重复添加的歌曲', song);
+					const result = songList.add(song);
+					logger.info('A song of {playerName} named {title} picked by {picker}', song as {});
+					if (isNotOk(result)) thr('Adding a same song {*}', song as {});
 				}),
 			);
 
@@ -61,9 +70,11 @@ export class Jukebox {
 			.addListener(
 				Meaning.ClientEnd,
 				this.songsAfter(song => {
-					const r = songList.end(song);
-					if (isOk(r)) return;
-					this.dialogEventer.dispatch(Meaning.ServerEndResult, r);
+					logger.info('song named {title} of {playerName} picked by {picker} end', song as {});
+					const result = songList.end(song);
+					if (isOk(result)) return;
+					logger.warn('but end with {result}', { result, song });
+					this.dialogEventer.dispatch(Meaning.ServerEndResult, result);
 				}),
 			);
 	}
@@ -81,10 +92,9 @@ export class Jukebox {
 
 	/**手动触发一次歌曲列表的同步 */
 	dispatchSongs(this: this) {
-		this.dialogEventer.dispatch(
-			Meaning.ServerSongs,
-			this.songList.getSongs(),
-		);
+		const songs = this.songList.getSongs();
+		logger.info(`dispath song list`, { songs });
+		this.dialogEventer.dispatch(Meaning.ServerSongs, songs);
 	}
 }
 

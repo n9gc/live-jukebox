@@ -8,7 +8,10 @@ declare module 'lib/jukebox/parser';
 import { getPicker, Player, Song } from 'lib/player';
 import { Reader } from 'lib/reader';
 import { Danmaku, Enumified, mark, Picker } from 'lib/types';
-import { Eventer } from 'lib/util';
+import { Eventer, initLogger } from 'lib/util';
+
+/**弹幕解析器的日志器 */
+const { logger } = initLogger(['jukebox', 'parser']);
 
 /**命令类型 */
 export type Command = Enumified<typeof Command>;
@@ -25,7 +28,12 @@ export namespace Command {
 /**解析出的事件的表 */
 export interface ParserEvent {
 	/**不是命令 */
-	[Command.Idk]: Danmaku;
+	[Command.Idk]: {
+		/**之前被解析的命令 */
+		readonly previous: Command;
+		/**原弹幕 */
+		readonly danmaku: Danmaku;
+	};
 	/**来歌曲了 */
 	[Command.Song]: Song;
 	/**有人取消歌曲了 */
@@ -65,7 +73,12 @@ export class Parser extends Eventer<ParserEvent> implements ParserMap {
 	) {
 		super();
 		for (const reader of readers) {
-			reader.addListener('danmaku', n => this.parse(n));
+			reader.addListener('danmaku', n => {
+				logger.info(`${n.ignore
+					? '(ignored) '
+					: ''}{uname} said: {message}`, n as {});
+				this.parse(n);
+			});
 		}
 	}
 
@@ -84,15 +97,18 @@ export class Parser extends Eventer<ParserEvent> implements ParserMap {
 			: r;
 		this[type](danmakuDised).then(parsed => {
 			if (parsed === Command.Idk) {
-				this.dispatch(Command.Idk, danmaku);
+				const idkObj = { previous: type, danmaku } as const;
+				logger.warn('idk, "{danmaku.message}" is not a {previous}', idkObj);
+				this.dispatch(Command.Idk, idkObj);
 				return;
 			}
+			logger.info('"{danmaku.message}" is a {type}', { danmaku, type });
 			this.dispatch(type, parsed);
 		});
 	}
 	/**不知道弹幕是啥意思，那就直接返回吧 */
 	async [Command.Idk](danmaku: Danmaku) {
-		return danmaku;
+		return { previous: Command.Idk, danmaku } as const;
 	}
 	/**尝试解析这个弹幕是点的哪种歌，尝试失败就说不知道弹幕意思 */
 	async [Command.Song](danmaku: Danmaku) {

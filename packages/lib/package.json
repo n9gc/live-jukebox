@@ -25,6 +25,8 @@
 	"dependencies": {
 		"lib": "workspace:^",
 		"zod": "latest",
+		"@logtape/logtape": "latest",
+
 		"react": "latest",
 		"@types/react": "latest",
 		"react-dom": "latest",

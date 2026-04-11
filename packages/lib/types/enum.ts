@@ -5,8 +5,11 @@
  */
 declare module 'lib/types/enum';
 
-import { thr } from 'lib/util';
+import { getThr, initLogger } from 'lib/util';
+import { libLogger } from 'lib/util';
 import z from 'zod';
+
+const { logger, thr } = initLogger(['types', 'enum']);
 
 /**把 N 的内容物作为联合类型 */
 type ValueOf<N> = N[keyof N];
@@ -35,16 +38,20 @@ const markedMap = new WeakMap<symbol, symbol>();
 export function mark(enums: Record<string, Enum>): true {
 	for (const name of Object.keys(enums).reverse()) {
 		const enumObj = enums[name];
+		logger.trace('marking {name}', { enumObj, name });
 		for (const key of Object.keys(enumObj)) {
 			const oriSym = enumObj[key];
 			if (typeof oriSym !== 'symbol') continue;
 			let sym = markedMap.get(oriSym);
 			if (!sym) {
 				sym = Symbol.for(`${name}.${key}`);
-				if (defMap.get(sym)) thr('枚举重名', defMap.get(sym));
+				if (defMap.get(sym)) {
+					thr('double defined {sym} in {defPos}', { sym, defPos: defMap.get(sym) });
+				}
 				defMap.set(sym, Error());
 				markedMap.set(oriSym, sym);
 			}
+			logger.trace('{name}.{key} is {sym}', { sym, key, name });
 			// @ts-ignore
 			enumObj[key] = sym;
 		}
@@ -98,7 +105,7 @@ export function getEnumSchema<T extends Enum>(enumObj: T): SchemaUnion<Enumified
  */
 export function getSymbolCodec<T extends symbol>(sym: T): z.ZodCodec<z.ZodString, z.ZodCustom<T, T>> {
 	const oriKey = Symbol.keyFor(sym)
-		?? thr('这个不是 Symbol.for 产生的 symbol', sym);
+		?? thr('The {sym} is not a symbol got by `Symbol.for`', { sym });
 	return z.codec(z.string(), getSymbolSchema(sym), {
 		encode: () => oriKey,
 		decode(key, ctx) {
