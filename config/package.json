@@ -16,6 +16,9 @@
 		"typescript-eslint": "^8.*.*",
 		"globals": "^17.*.*",
 
+		"@logtape/logtape": "latest",
+		"@logtape/pretty": "latest",
+
 		"@types/node": "latest",
 		"@pnpm/types": "latest",
 		"esm-entry": "latest",
