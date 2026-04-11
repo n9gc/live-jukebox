@@ -1,3 +1,4 @@
+import 'config/logtape.config';
 import BiliReader from './lib';
 
 const reader = new BiliReader({

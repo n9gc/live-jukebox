@@ -6,12 +6,15 @@
 declare module './util';
 
 import { getDirname } from 'esm-entry';
-import { run } from 'lib/util';
+import { initLogger, rawLog } from 'lib/util';
 import { ChildProcessWithoutNullStreams, execSync, spawn } from 'node:child_process';
 import path from 'node:path';
 import { createInterface } from 'node:readline';
 import z from 'zod';
 import { PyBiliDanmaku } from './types';
+import { getLogger } from '@logtape/logtape';
+
+const { run, logger } = initLogger(getLogger('reader-bili'));
 
 /**是不是 Win 平台 */
 export const isWindows = process.platform === 'win32';
@@ -29,10 +32,10 @@ export const pyScriptPath = path.join(venvPath, '../py/listen.py');
  * @param where 可执行文件的路径
  * @param info 如果找不到，提示什么
  */
-export function testExe(where: string, info = 'not prepared') {
-	run(
+export function testExe(where: string, info = 'not prepared {error}', runDef = run) {
+	runDef(
 		() => execSync(`${where} --version`, { stdio: 'inherit' }),
-		e => console.error(info, e),
+		info,
 	);
 }
 
@@ -58,12 +61,13 @@ export function listenDm(config: ListenDmConfig, callback: (danmaku: PyBiliDanma
 
 	const proce = run(
 		() => spawn(pyPath, ['-u', pyScriptPath, JSON.stringify(config)]),
-		console.error,
+		'spawn python failed: {error}',
 	);
 
-	proce.stderr.on('data', n => console.error('blivedm err:', n.toString()));
-	proce.on('error', n => console.error('proce err:', n));
-	proce.on('close', code => console.log(`blivedm 退出: ${code}`));
+	const pyLogger = logger.getChild('blivedm');
+	proce.stderr.on('data', n => pyLogger.error(rawLog(n.toString())));
+	proce.on('error', error => logger.error('process error {error}', { error }));
+	proce.on('close', code => logger.info`blivedm exit: ${code}`);
 
 	const rl = createInterface({
 		input: proce.stdout,
@@ -73,13 +77,13 @@ export function listenDm(config: ListenDmConfig, callback: (danmaku: PyBiliDanma
 	rl.on('line', n => {
 		const r = PyBiliDanmaku.safeDecode(n);
 		if (!r.success) {
-			console.error(z.prettifyError(r.error));
+			pyLogger.error(z.prettifyError(r.error));
 			return;
 		}
 		try {
 			callback(r.data);
-		} catch (err) {
-			console.error(err);
+		} catch (error) {
+			logger.error('catched error {error}', { error });
 		}
 	});
 

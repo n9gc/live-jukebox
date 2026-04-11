@@ -30,6 +30,7 @@
 		"zod": "latest",
 		"@types/ws": "latest",
 		"next-ws": "latest",
+		"@logtape/logtape": "latest",
 
 		"react": "latest",
 		"@types/react": "latest",

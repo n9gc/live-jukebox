@@ -26,6 +26,10 @@
 		"lib": "workspace:^",
 		"@types/node": "latest",
 		"zod": "latest",
+		"@logtape/logtape": "latest",
 		"esm-entry": "latest"
+	},
+	"devDependencies": {
+		"config": "workspace:^"
 	}
 }

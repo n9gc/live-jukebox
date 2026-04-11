@@ -1,7 +1,11 @@
+import { getLogger } from '@logtape/logtape';
 import { execSync } from 'child_process';
-import { run } from 'lib/util';
-import { pipPath, testExe, venvPath } from './lib/util';
+import 'config/logtape.config';
+import { initLogger } from 'lib/util';
 import fs from 'node:fs';
+import { pipPath, testExe, venvPath } from './lib/util';
+
+const { run, thr } = initLogger(getLogger(['reader-bili', 'manage']));
 
 /**创建 .venv 文件夹 */
 function createVenv() {
@@ -9,11 +13,11 @@ function createVenv() {
 
 	const pyExe = process.env.PY_EXE ?? 'python';
 
-	testExe(pyExe, `Cannot find '${pyExe}', use $PY_EXE instead.`);
+	testExe(pyExe, `Cannot find '${pyExe}', use $PY_EXE instead. {error}`, run);
 
 	run(
 		() => execSync(`${pyExe} -m venv ${venvPath}`, { stdio: 'inherit' }),
-		e => console.error('init venv failed', e),
+		'init venv failed {error}',
 	);
 }
 
@@ -24,11 +28,11 @@ function prepare() {
 	const mirror = process.env.PY_MIRROR ?? '';
 	const mirrorCmd = mirror && `-i ${mirror}`;
 
-	testExe(pipPath, 'venv pip not found');
+	testExe(pipPath, 'venv pip not found {error}', run);
 
 	run(
 		() => execSync(`"${pipPath}" install ${mirrorCmd} -r requirements.txt`, { stdio: 'inherit' }),
-		e => console.error('pip install failed', e),
+		'pip install failed {error}',
 	);
 }
 
@@ -39,7 +43,7 @@ const scripts: Partial<Record<string, () => void>> = {
 (
 	scripts[process.argv.at(-1) ?? '']
 	?? (() => {
-		console.error('what do you want to do?');
+		thr('what do you want to do?');
 		process.exit(1);
 	})
 )();

@@ -73,7 +73,7 @@ export class Jukebox {
 					logger.info('song named {title} of {playerName} picked by {picker} end', song as {});
 					const result = songList.end(song);
 					if (isOk(result)) return;
-					logger.warn('but end with {result}', { result, song });
+					logger.warn('{song.title} end with {result}', { result, song });
 					this.dialogEventer.dispatch(Meaning.ServerEndResult, result);
 				}),
 			);
