@@ -1,0 +1,65 @@
+@startuml
+
+cloud "平台 A 直播间" as liveA
+cloud "平台 B 直播间" as liveB
+cloud "平台 C 直播间" as liveC
+
+package 后端 as backend {
+  package 直播读取器 as Reader {
+    package "平台 A 读取器" as ReaderA
+    package "平台 B 读取器" as ReaderB
+    package "平台 C 读取器" as ReaderC
+  }
+
+  package 库 as lib {
+    component 指令解析器 as Parser
+    component 点歌机 as Jukebox
+    component 歌单管理器 as SongList
+    component 备选点歌器 as AutoPicker
+    component 对话事件 as DialogEventer
+  }
+}
+
+liveA <.. ReaderA
+liveB <.. ReaderB
+liveC <.. ReaderC
+ReaderA ..> Parser : 派发弹幕
+ReaderB ..> Parser : 派发弹幕
+ReaderC ..> Parser : 派发弹幕
+Parser --> Jukebox : 派发指令
+Jukebox *-left- SongList
+SongList *-up- AutoPicker
+DialogEventer <-left- Jukebox : 派发服务端信息
+DialogEventer -left-> Jukebox : 派发客户端信息
+
+package 前端 as frontend {
+  package 页面 as view {
+    component 对话状态 as DialogState
+    component 音乐列表显示 as ListDisplay
+    component 文本提示 as Prompt
+    component 播放调度 as PlayController
+  }
+  package 音乐播放器 as Player {
+    package "平台 A 播放器" as PlayerA
+    package "平台 B 播放器" as PlayerB
+    package "平台 C 播放器" as PlayerC
+  }
+}
+
+DialogState <-up-> DialogEventer : "Web Socket"
+Prompt -up-> DialogState
+PlayController -up-> DialogState
+ListDisplay -right-> DialogState
+PlayController <.. PlayerA : 被挂载
+PlayController <.. PlayerB : 被挂载
+PlayController <.. PlayerC : 被挂载
+
+cloud "音乐平台 A" as musicA
+cloud "音乐平台 B" as musicB
+cloud "音乐平台 C" as musicC
+
+musicA <.up. PlayerA
+musicB <.up. PlayerB
+musicC <.up. PlayerC
+
+@enduml
