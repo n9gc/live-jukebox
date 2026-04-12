@@ -1,0 +1,11 @@
+{
+  "name": "test_wasm",
+  "version": "0.1.0",
+  "files": [
+    "test_wasm_bg.wasm",
+    "test_wasm.js",
+    "test_wasm.d.ts"
+  ],
+  "main": "test_wasm.js",
+  "types": "test_wasm.d.ts"
+}
