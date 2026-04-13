@@ -34,7 +34,7 @@
 		"commitizen": "^4.*.*",
 		"cz-customizable": "^7.*.*",
 
-		"eslint": "^9.*.*",
+		"eslint": "^10.0.0",
 		"prettier": "latest",
 
 		"rimraf": "latest",
