@@ -12,6 +12,7 @@
 		"@types/eslint": "^9.*.*",
 		"@eslint/js": "^10.0.0",
 		"@eslint/markdown": "^7.*.*",
+		"@eslint/compat": "^2.*.*",
 		"eslint-config-accurtype-style": "^1.0.1",
 		"typescript-eslint": "^8.*.*",
 		"globals": "^17.*.*",

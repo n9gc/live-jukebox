@@ -1,10 +1,10 @@
-**/node_modules
+node_modules/
 package-lock.json
 pnpm-lock.yaml
-**/.nyc_output
+.nyc_output/
 packages/*/coverage
-**/*.swp
-**/dist
+*.swp
+dist
 target
 Cargo.lock
 .next

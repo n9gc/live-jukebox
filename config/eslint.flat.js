@@ -1,11 +1,14 @@
 /**@import { ConfigArray } from 'typescript-eslint' */
+import { includeIgnoreFile } from '@eslint/compat';
 import eslint from '@eslint/js';
 import accurtypeStyle from 'eslint-config-accurtype-style';
 import { defineConfig } from 'eslint/config';
-import { getDirname } from 'esm-entry';
 import globals from 'globals';
-import path from 'path';
+import { fileURLToPath } from 'node:url';
 import tseslint from 'typescript-eslint';
+
+/**@type {(n: string) => string} */
+const pathTo = n => fileURLToPath(new URL(n, import.meta.url));
 
 /**@type {ConfigArray} */
 const config = defineConfig(
@@ -16,7 +19,7 @@ const config = defineConfig(
 		name: 'TS Base Config',
 		languageOptions: {
 			parserOptions: {
-				tsconfigRootDir: path.join(getDirname(import.meta.url), '..'),
+				tsconfigRootDir: pathTo('..'),
 				project: [
 					'config/tsconfig.json',
 					'packages/*/tsconfig.json',
@@ -28,6 +31,7 @@ const config = defineConfig(
 		name: 'Opt Rules',
 		rules: { 'no-unused-vars': 'off' },
 	},
+	includeIgnoreFile(pathTo('../.gitignore')),
 	{
 		name: 'Global Ignore',
 		ignores: [
