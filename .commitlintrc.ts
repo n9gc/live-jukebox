@@ -1,1 +1,1 @@
-export { default as default } from './config/commitlint';
+export { default as default } from './config/commitlint.ts';

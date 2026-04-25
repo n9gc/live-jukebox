@@ -20,12 +20,15 @@
 		"@logtape/logtape": "latest",
 		"@logtape/pretty": "latest",
 
-		"@types/node": "latest",
-		"@pnpm/types": "latest",
 		"esm-entry": "latest",
 
 		"lib": "workspace:^",
 		"reader-bili": "workspace:^",
-		"player-bili": "workspace:^"
+		"player-bili": "workspace:^",
+		"simple-git": "latest",
+		"@types/node": "latest",
+		"cz-git": "latest",
+		"@pnpm/find-workspace-packages": "latest",
+		"@pnpm/types": "latest"
 	}
 }

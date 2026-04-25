@@ -1,8 +1,8 @@
 {
 	"$schema": "https://json.schemastore.org/package",
 	"private": true,
-	"name": "live-jukebox",
-	"description": "直播用的弹幕点歌机",
+	"name": "root",
+	"description": "root",
 	"license": "GPL-2.0-or-later",
 	"author": "n9gc",
 	"repository": {
@@ -12,7 +12,7 @@
 	"type": "module",
 	"scripts": {
 		"prepare": "husky",
-		"cz": "pnpm -s lint && cz",
+		"cz": "czg",
 
 		"fmt": "prettier -w . && eslint . --fix",
 		"postfmt": "cargo fmt && cargo clippy --fix --allow-dirty",
@@ -27,12 +27,14 @@
 		"clear": "pnpm run -r clear",
 		"ci": "pnpm build && pnpm test && pnpm clear && pnpm lint"
 	},
+	"engines": {
+		"node": ">=22.18.0"
+	},
 	"devDependencies": {
 		"husky": "^9.*.*",
 
 		"@commitlint/cli": "^20.*.*",
-		"commitizen": "^4.*.*",
-		"cz-customizable": "^7.*.*",
+		"czg": "latest",
 
 		"eslint": "^10.0.0",
 		"prettier": "latest",
@@ -42,14 +44,6 @@
 		"tsx": "latest",
 		"esbuild": "latest",
 		"typescript": "latest"
-	},
-	"config": {
-		"cz-customizable": {
-			"config": "./config/cz-config.cjs"
-		},
-		"commitizen": {
-			"path": "./node_modules/cz-customizable"
-		}
 	},
 	"prettier": {
 		"printWidth": 200,

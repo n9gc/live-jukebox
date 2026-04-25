@@ -27,8 +27,7 @@ export function isNotOk<T>(n: T | symbol): n is Exclude<T extends symbol ? T : n
  * - `./results.ts` 确实只包含了枚举定义且顶层没有单独的 symbol
  * - `Result` 确实包含了所有枚举
  */
-export const marked: (Enumified<typeof results> extends Result
+export const marked: Enumified<typeof results> extends Result
 	? true
-	: false
-) = mark(results);
+	: false = mark(results);
 

@@ -1,20 +1,115 @@
-import { RuleConfigSeverity, UserConfig } from '@commitlint/types';
-import * as czConfig from './cz-config.cjs';
+import { RuleConfigSeverity } from '@commitlint/types';
+import { findWorkspacePackages } from '@pnpm/find-workspace-packages';
+import type { UserConfig } from 'cz-git';
+import { fileURLToPath } from 'node:url';
+import { simpleGit } from 'simple-git';
+import packageRoot from '../package.json' with { type: 'json' };
 
-function allList<T>(s: Set<T>): Set<T[]> {
+export function pathTo(n: string) {
+	return fileURLToPath(new URL(n, import.meta.url));
+}
+
+export const rootPath = pathTo('..');
+
+const packagesWithRoot = await findWorkspacePackages(rootPath);
+for (const { manifest: { name }, dir } of packagesWithRoot) {
+	if (!name) throw new Error(`package ${dir} has no name`);
+}
+
+export const packages = packagesWithRoot.filter(({ manifest: { name } }) => name !== packageRoot.name);
+
+export const enableMultipleScopes = packages.length < 8;
+export const scopeEnumSeparator = ', ';
+
+export function allList<T>(s: Iterable<T>) {
 	const r = new Set<T[]>([[]]);
-	s.forEach(k => {
+	for (const k of s) {
 		const b = new Set(s);
 		b.delete(k);
-		allList(b).forEach(n => r.add([k, ...n]));
-	});
+		for (const n of allList(b)) r.add([k, ...n]);
+	}
 	return r;
 }
-const scopeEnum = czConfig.packages.length >= 8
-	? czConfig.packages.map(({ name }) => name)
-	: Array
-		.from(allList(new Set(czConfig.packages.map(({ name }) => name))))
-		.map(n => n.join(', '));
+export let scopeEnum = packages.map(({ manifest: { name = '' } }) => name);
+if (enableMultipleScopes) {
+	scopeEnum = [...allList(new Set(scopeEnum))].map(n => n.join(scopeEnumSeparator));
+}
+
+export const git = simpleGit(rootPath);
+async function getChangedScopes() {
+	const statusNow = await git.status();
+	const scpoes = new Set(
+		statusNow
+			.files
+			.map(function *({ from, path }) {
+				yield path;
+				if (from) yield from;
+			})
+			.flatMap(n => [...n])
+			.map(relative => rootPath + relative)
+			.map(filePath => packages
+				.filter(({ dir }) => filePath.startsWith(dir))
+				.map(({ manifest: { name = '' } }) => name))
+			.flatMap(n => (n.length > 0 ? n : [packageRoot.name])),
+	);
+	if (scpoes.has(packageRoot.name)) return [];
+	return [...scpoes];
+}
+export const changedScopes = await getChangedScopes();
+
+const prompt = {
+	types: [
+		{ value: 'init', name: 'init		初始化' },
+		{ value: 'fix', name: 'fix		修复' },
+		{ value: 'refactor', name: 'refactor	重构' },
+		{ value: 'add', name: 'add		添加' },
+		{ value: 'test', name: 'test		测试相关' },
+		{ value: 'doc', name: 'doc		添加文档' },
+		{ value: 'style', name: 'style		风格修改' },
+		{ value: 'revert', name: 'revert	撤销提交' },
+		{ value: 'env', name: 'env		非代码部分' },
+	],
+	allowBreakingChanges: ['add', 'refactor', 'fix', 'revert'],
+
+	scopes: packages.map(({ manifest: { name = '' } }) => name),
+	enableMultipleScopes,
+	scopeEnumSeparator,
+	allowEmptyScopes: true,
+	customScopesAlias: '<自己写>',
+	allowCustomScopes: false,
+	customScopesAlign: 'bottom',
+	emptyScopesAlias: '<空>',
+	defaultScope: changedScopes,
+
+	messages: {
+		type: '本次提交的类型',
+		scope: '[可选] 本次提交影响的范围',
+		customScope: '本次提交影响的范围\n',
+		subject: '简述提交',
+		body: '[可选] 详细描述提交，用 "|" 来换行\n',
+		breaking: '[可选] 列出破坏性更新\n',
+		footer: '[可选] 列出解决的议题号，比如: #31, #34\n',
+		confirmCommit: '确认以上提交信息？',
+		footerPrefixesSelect: '[可选] 选择议题类型',
+		customFooterPrefix: '输入议题前缀',
+	},
+	skipQuestions: ['footer'],
+
+	breaklineNumber: 80,
+	maxHeaderLength: Infinity,
+	maxSubjectLength: Infinity,
+	minSubjectLength: 0,
+
+	issuePrefixes: [
+		{ value: 'closed', name: 'closed	议题已被关闭' },
+	],
+	allowCustomIssuePrefix: true,
+	customIssuePrefixAlias: '<自己写>',
+	customIssuePrefixAlign: 'top',
+	allowEmptyIssuePrefix: true,
+	emptyIssuePrefixAlias: '<跳过>',
+	defaultIssues: '',
+} satisfies UserConfig['prompt'];
 
 const config: UserConfig = {
 	/*
@@ -34,7 +129,7 @@ const config: UserConfig = {
 		'body-leading-blank': [RuleConfigSeverity.Error, 'always'],
 		'scope-enum': [RuleConfigSeverity.Error, 'always', scopeEnum],
 		'subject-empty': [RuleConfigSeverity.Error, 'never'],
-		'type-enum': [RuleConfigSeverity.Error, 'always', czConfig.types.map(({ value }) => value)],
+		'type-enum': [RuleConfigSeverity.Error, 'always', prompt.types.map(({ value }) => value)],
 		'type-case': [RuleConfigSeverity.Error, 'always', 'kebab-case'],
 		'type-empty': [RuleConfigSeverity.Error, 'never'],
 	},
@@ -53,9 +148,6 @@ const config: UserConfig = {
 	/*
 	 * Custom prompt configs
 	 */
-	prompt: {
-		messages: {},
-		questions: { type: { description: 'please input type:' } },
-	},
+	prompt,
 };
 export default config;

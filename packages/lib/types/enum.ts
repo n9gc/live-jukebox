@@ -16,10 +16,9 @@ type ValueOf<N> = N[keyof N];
 /**强制让 T 变成联合对象的形式 */
 type UnionForced<T> = T extends T ? T : never;
 /**类型没有限制的实现 */
-type EnumifiedImpl<T extends Enum | symbol> = (T extends Enum
+type EnumifiedImpl<T extends Enum | symbol> = T extends Enum
 	? UnionForced<ValueOf<{ [I in keyof T]: EnumifiedImpl<T[I]> }>>
-	: T
-);
+	: T;
 /**约束类型 */
 type Asserted<A, B> = A extends B ? A : never;
 /**得到枚举对象或者嵌套了枚举对象的枚举对象的枚举类型 */
