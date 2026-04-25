@@ -1,75 +1,14 @@
 import { RuleConfigSeverity } from '@commitlint/types';
-import { findWorkspacePackages } from '@pnpm/find-workspace-packages';
 import type { UserConfig } from 'cz-git';
-import { openRepository } from 'es-git';
-import { fileURLToPath } from 'node:url';
-import packageRoot from '../package.json' with { type: 'json' };
+import { scanChangedScopes, listPackages, permuteScope } from './utility.ts';
 
-export function pathTo(n: string) {
-	return fileURLToPath(new URL(n, import.meta.url));
-}
-
-export const rootPath = pathTo('..');
-
-const packagesWithRoot = await findWorkspacePackages(rootPath);
-for (const { manifest: { name }, dir } of packagesWithRoot) {
-	if (!name) throw new Error(`package ${dir} has no name`);
-}
-
-export const packages = packagesWithRoot.filter(({ manifest: { name } }) => name !== packageRoot.name);
-
-export const enableMultipleScopes = packages.length < 8;
+export const { packages, rootName } = await listPackages();
 export const scopeEnumSeparator = ', ';
-
-export function allList<T>(s: Iterable<T>) {
-	const r = new Set<T[]>([[]]);
-	for (const k of s) {
-		const b = new Set(s);
-		b.delete(k);
-		for (const n of allList(b)) r.add([k, ...n]);
-	}
-	return r;
-}
-export let scopeEnum = packages.map(({ manifest: { name = '' } }) => name);
-if (enableMultipleScopes) {
-	scopeEnum = [...allList(new Set(scopeEnum))].map(n => n.join(scopeEnumSeparator));
-}
-
-const repo = await openRepository(rootPath);
-async function getChangedScopes(): Promise<string[]> {
-	const statusNow = repo.statuses();
-	const scpoes = new Set(new Set(statusNow
-		.iter()
-		.filter(entry => {
-			const status = entry.status();
-			return status.indexNew
-				|| status.indexDeleted
-				|| status.indexRenamed
-				|| status.indexModified
-				|| status.indexTypechange;
-		})
-		.flatMap(entry => [
-			entry.path(),
-			entry
-				.headToIndex()
-				?.newFile()
-				.path(),
-			entry
-				.headToIndex()
-				?.oldFile()
-				.path(),
-		])
-		.filter(n => typeof n === 'string'))
-		.values()
-		.map(relative => rootPath + relative)
-		.map(filePath => packages
-			.filter(({ dir }) => filePath.startsWith(dir))
-			.map(({ manifest: { name = '' } }) => name))
-		.flatMap(n => (n.length > 0 ? n : [packageRoot.name])));
-	if (scpoes.has(packageRoot.name)) return [];
-	return [...scpoes];
-}
-export const changedScopes = await getChangedScopes();
+export const {
+	enableMultipleScopes,
+	scopeEnum,
+} = permuteScope(packages, scopeEnumSeparator);
+export const defaultScope = await scanChangedScopes(packages, rootName);
 
 const prompt = {
 	types: [
@@ -93,7 +32,7 @@ const prompt = {
 	allowCustomScopes: false,
 	customScopesAlign: 'bottom',
 	emptyScopesAlias: '<空>',
-	defaultScope: changedScopes,
+	defaultScope,
 
 	messages: {
 		type: '本次提交的类型',
