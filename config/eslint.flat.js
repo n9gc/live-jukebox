@@ -2,19 +2,29 @@
 import { includeIgnoreFile } from '@eslint/compat';
 import eslint from '@eslint/js';
 import accurtypeStyle from 'eslint-config-accurtype-style';
+import { importX } from 'eslint-plugin-import-x';
+import securityImp from 'eslint-plugin-security';
+import sonarjsImp from 'eslint-plugin-sonarjs';
+import unicorn from 'eslint-plugin-unicorn';
 import { defineConfig } from 'eslint/config';
 import globals from 'globals';
-import { fileURLToPath } from 'node:url';
-import tseslint from 'typescript-eslint';
+import { configs as tseslintConfigs } from 'typescript-eslint';
+import { pathTo } from './commitlint.ts';
 
-/**@type {(n: string) => string} */
-const pathTo = n => fileURLToPath(new URL(n, import.meta.url));
-
+/**@type {any} */
+const security = securityImp;
+/**@type {any} */
+const sonarjs = sonarjsImp;
 /**@type {ConfigArray} */
 const config = defineConfig(
 	...accurtypeStyle,
 	eslint.configs.recommended,
-	...tseslint.configs.stylisticTypeChecked,
+	...tseslintConfigs.stylisticTypeChecked,
+	// unicorn.configs.recommended,
+	// security.configs.recommended,
+	// sonarjs.configs.recommended,
+	// importX.flatConfigs.recommended,
+	// importX.flatConfigs.typescript,
 	{
 		name: 'TS Base Config',
 		languageOptions: {

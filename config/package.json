@@ -14,6 +14,12 @@
 		"@eslint/markdown": "^7.*.*",
 		"@eslint/compat": "^2.*.*",
 		"eslint-config-accurtype-style": "^1.0.1",
+		"eslint-plugin-sonarjs": "latest",
+		"eslint-plugin-security": "latest",
+		"eslint-plugin-import-x": "latest",
+		"eslint-import-resolver-typescript": "latest",
+		"@types/eslint-plugin-security": "latest",
+		"eslint-plugin-unicorn": "latest",
 		"typescript-eslint": "^8.*.*",
 		"globals": "^17.*.*",
 

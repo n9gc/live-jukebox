@@ -9,4 +9,5 @@ packages:
     - '!**/test/**'
 allowBuilds:
     sharp: true
+    unrs-resolver: true
     wasm-pack: true

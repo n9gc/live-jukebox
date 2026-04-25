@@ -13,7 +13,7 @@ import { fibonacci } from '@accurtype/mono-test-wasm';
  * @returns 问候
  */
 export default function hello(n: number): string {
-	const str = `hello, ${fibonacci(n)}!`;
-	console.log(str);
-	return str;
+	const helloString = `hello, ${fibonacci(n)}!`;
+	console.log(helloString);
+	return helloString;
 }
