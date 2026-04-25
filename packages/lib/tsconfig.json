@@ -7,5 +7,6 @@
 			"lib/*": ["./*"]
 		}
 	},
-	"include": ["**/*"]
+	"files": ["index.ts", "ts-to-zod.config.mjs", "dist/types-schema.ts"],
+	"include": ["./*/*.ts", "./*/*.tsx"]
 }

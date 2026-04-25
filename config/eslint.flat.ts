@@ -45,6 +45,8 @@ const config: ConfigArray = defineConfig(
 			'**/*.md',
 			'packages/*/.next',
 			'packages/*/next-env.d.ts',
+			'packages/reader-bili/py',
+			'packages/test-wasm',
 		],
 	},
 	{

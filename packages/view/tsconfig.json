@@ -13,5 +13,5 @@
 		}
 	},
 	"references": [{ "path": "../lib" }],
-	"include": ["**/*"]
+	"include": ["*.ts", "app/**/*.ts", "app/**/*.tsx"]
 }

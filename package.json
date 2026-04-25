@@ -49,7 +49,7 @@
 		"typescript": "latest"
 	},
 	"prettier": {
-		"printWidth": 200,
+		"printWidth": 80,
 		"tabWidth": 4,
 		"useTabs": true,
 		"semi": true,

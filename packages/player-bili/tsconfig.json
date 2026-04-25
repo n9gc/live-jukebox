@@ -5,5 +5,6 @@
 		"outDir": "dist"
 	},
 	"references": [{ "path": "../lib" }],
-	"include": ["**/*"]
+	"files": ["dist/types-schema.ts", "./ts-to-zod.config.mjs"],
+	"include": ["lib/*.ts", "lib/*.tsx"]
 }

@@ -32,5 +32,5 @@
 		"emitDeclarationOnly": true,
 		"declaration": true
 	},
-	"exclude": ["**/dist/**/*.d.ts", "**/dist/**/*.d.mts", "**/dist/**/*.d.cts", "**/dist/**/*.d.tsx"]
+	"exclude": ["**/dist", "**/node_modules"]
 }

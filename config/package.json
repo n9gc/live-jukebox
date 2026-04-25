@@ -21,7 +21,7 @@
 		"eslint-import-resolver-typescript": "latest",
 		"@types/eslint-plugin-security": "latest",
 		"eslint-plugin-unicorn": "latest",
-		"typescript-eslint": "^8.*.*",
+		"typescript-eslint": "^8.58.2",
 		"globals": "^17.*.*",
 
 		"@logtape/logtape": "latest",

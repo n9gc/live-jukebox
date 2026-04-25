@@ -8,6 +8,10 @@
 		"moduleResolution": "nodenext",
 		"types": ["node"]
 	},
-	"references": [{ "path": "../packages/lib" }, { "path": "../packages/reader-bili" }, { "path": "../packages/player-bili" }],
-	"include": ["**/*", "../*.ts", "../*.json"]
+	"references": [
+		{ "path": "../packages/lib" },
+		{ "path": "../packages/reader-bili" },
+		{ "path": "../packages/player-bili" }
+	],
+	"include": ["*.ts", "../*.ts", "../*.json"]
 }
