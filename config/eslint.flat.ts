@@ -45,11 +45,6 @@ const config: ConfigArray = defineConfig(
 		],
 	},
 	{
-		name: 'JS Ignore',
-		ignores: [
-		],
-	},
-	{
 		name: 'Node Env',
 		files: [
 			'config/cz-config.cjs',
