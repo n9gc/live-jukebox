@@ -10,6 +10,16 @@
 	"main": "./index.ts",
 	"module": "./index.ts",
 	"types": "./index.ts",
+	"exports": {
+		".": "./index.ts",
+		"./jukebox": "./jukebox/index.ts",
+		"./player": "./player/index.ts",
+		"./reader": "./reader/index.ts",
+		"./result": "./result/index.ts",
+		"./types": "./types/index.ts",
+		"./util": "./util/index.ts",
+		"./*": "./*.ts"
+	},
 	"bugs": {
 		"url": "https://github.com/n9gc/live-jukebox/issues"
 	},
@@ -19,14 +29,12 @@
 		"type": "git"
 	},
 	"scripts": {
-		"prepare": "make-dir dist && ts-to-zod --all",
-		"test": "tsc"
+		"prepare": "make-dir dist && ts-to-zod --all"
 	},
 	"dependencies": {
 		"lib": "workspace:^",
 		"zod": "latest",
 		"@logtape/logtape": "latest",
-
 		"react": "latest",
 		"@types/react": "latest",
 		"react-dom": "latest",

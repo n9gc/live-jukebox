@@ -7,9 +7,9 @@
 	"author": "n9gc",
 	"description": "放 b 站的视频",
 	"type": "module",
-	"main": "./lib",
-	"module": "./lib",
-	"types": "./lib",
+	"main": "./lib/index.ts",
+	"module": "./lib/index.ts",
+	"types": "./lib/index.ts",
 	"bugs": {
 		"url": "https://github.com/n9gc/live-jukebox/issues"
 	},
@@ -19,8 +19,7 @@
 		"type": "git"
 	},
 	"scripts": {
-		"prepare": "make-dir dist && ts-to-zod --all",
-		"test": "tsc"
+		"prepare": "make-dir dist && ts-to-zod --all"
 	},
 	"dependencies": {
 		"lib": "workspace:^",

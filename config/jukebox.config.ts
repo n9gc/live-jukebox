@@ -1,5 +1,5 @@
 import { JukeboxConfig } from 'lib/jukebox';
-import { BiliPlayer } from 'player-bili/lib';
+import { BiliPlayer } from 'player-bili';
 import BiliReader from 'reader-bili';
 
 /**点歌机配置 */

@@ -90,3 +90,10 @@ export function listenDm(config: ListenDmConfig, callback: (danmaku: PyBiliDanma
 	return proce;
 }
 
+/**
+ * 加载输出配置，同时避免类型超出 tsconfig 的根目录
+ */
+export async function loadLogConfig() {
+	await import('../../../config/' + 'logtape.config.ts');
+}
+

@@ -28,7 +28,7 @@ export function getPicker({ uname, face }: Danmaku): Picker {
  */
 export function RegisteredPlayer<K extends string, S extends z.ZodType>(name: K, schema: S) {
 	abstract class Base extends Player<K, S> {
-		protected readonly registered: typeof registered = registered;
+		readonly registered: typeof registered = registered;
 		readonly playerName = name;
 		readonly infoSchema = schema;
 	}

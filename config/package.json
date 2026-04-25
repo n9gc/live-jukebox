@@ -4,7 +4,7 @@
 	"name": "config",
 	"type": "module",
 	"scripts": {
-		"test": "tsc"
+		"prepare": "node prepare.ts > ../tsconfig.json"
 	},
 	"dependencies": {
 		"@commitlint/types": "^20.*.*",
@@ -33,6 +33,7 @@
 		"reader-bili": "workspace:^",
 		"player-bili": "workspace:^",
 		"es-git": "latest",
+		"tsconfig-type": "latest",
 		"@types/node": "latest",
 		"cz-git": "latest",
 		"@pnpm/find-workspace-packages": "latest",

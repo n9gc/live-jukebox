@@ -11,3 +11,4 @@ Cargo.lock
 next-env.d.ts
 .venv
 tsconfig.tsbuildinfo
+/tsconfig.json

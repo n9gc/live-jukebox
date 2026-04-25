@@ -27,10 +27,10 @@
 		"alwaysStrict": true,
 		"noImplicitThis": true,
 
-		"noEmit": true,
-		"incremental": true,
+		"composite": true,
 		"noEmitOnError": true,
+		"emitDeclarationOnly": true,
 		"declaration": true
 	},
-	"exclude": ["**/dist"]
+	"exclude": ["**/dist/**/*.d.ts", "**/dist/**/*.d.mts", "**/dist/**/*.d.cts", "**/dist/**/*.d.tsx"]
 }

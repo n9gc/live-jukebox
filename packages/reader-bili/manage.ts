@@ -2,8 +2,9 @@ import { getLogger } from '@logtape/logtape';
 import { execSync } from 'child_process';
 import { initLogger } from 'lib/util';
 import fs from 'node:fs';
-import '../../config/logtape.config';
-import { pipPath, testExe, venvPath } from './lib/util';
+import { loadLogConfig, pipPath, testExe, venvPath } from './lib/util';
+
+await loadLogConfig();
 
 const { run, thr } = initLogger(getLogger(['reader-bili', 'manage']));
 

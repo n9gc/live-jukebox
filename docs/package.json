@@ -4,6 +4,7 @@
 	"name": "docs",
 	"type": "module",
 	"scripts": {
+		"test": "echo hh",
 		"build": "echo hh",
 		"clear": "echo hh"
 	},

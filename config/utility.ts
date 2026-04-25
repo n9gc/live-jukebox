@@ -1,8 +1,11 @@
 import { findWorkspacePackages, type Project } from '@pnpm/find-workspace-packages';
 import { openRepository } from 'es-git';
+import { constants } from 'node:fs';
+import fsp from 'node:fs/promises';
+import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import type { Tsconfig } from 'tsconfig-type';
 import packageRoot from '../package.json' with { type: 'json' };
-
 
 export function pathTo(n: string) {
 	return fileURLToPath(new URL(n, import.meta.url));
@@ -86,4 +89,30 @@ export async function scanChangedScopes(
 	return [...scpoes];
 }
 
+
+export async function isExist(filePath: string) {
+	try {
+		await fsp.access(filePath, constants.F_OK);
+		return true;
+	} catch {
+		return false;
+	}
+}
+
+export async function referTsProjects(packages: readonly Project[]) {
+	const references = await Promise.all(packages
+		.map(({ dir }) => dir)
+		.map(async directory => (await isExist(`${directory}/tsconfig.json`) ? [directory] : [])))
+		.then(n => n
+			.flat()
+			.map(directory => path.relative(rootPath, directory))
+			.map(directory => `./${directory}`)
+			.map(path => ({ path })));
+	const tsconfig: Tsconfig = {
+		$schema: 'https://json.schemastore.org/tsconfig.json',
+		files: [],
+		references,
+	};
+	console.log(JSON.stringify(tsconfig, void 0, '\t'));
+}
 

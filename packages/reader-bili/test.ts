@@ -1,5 +1,7 @@
-import '../../config/logtape.config';
 import BiliReader from './lib';
+import { loadLogConfig } from './lib/util';
+
+await loadLogConfig();
 
 const reader = new BiliReader({
 	roomId: 123,

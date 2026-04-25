@@ -21,6 +21,7 @@
 
 		"dev": "pnpm -F view dev",
 		"start": "pnpm -F view start",
+		"pretest": "tsc -b",
 		"test": "pnpm run -r test",
 		"posttest": "cargo test",
 		"build": "pnpm run -r build",

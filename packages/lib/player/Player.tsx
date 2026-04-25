@@ -31,7 +31,7 @@ export default abstract class Player<
 	S extends z.ZodType = z.ZodType,
 > {
 	/**被注册过 */
-	protected abstract readonly registered: typeof registered;
+	abstract readonly registered: typeof registered;
 	/**播放器注册的名字 */
 	abstract readonly playerName: K;
 	/**点歌的简单教学 */

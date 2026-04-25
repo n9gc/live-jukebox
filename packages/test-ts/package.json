@@ -22,7 +22,6 @@
 		"type": "git"
 	},
 	"scripts": {
-		"pretest": "tsc --noEmit",
 		"test": "tsx test.ts | colortape",
 		"build": "tsc",
 		"clear": "rimraf -g **/*.{d.ts,js}",

@@ -19,8 +19,7 @@
 		"type": "git"
 	},
 	"scripts": {
-		"prepare": "tsx ./manage.ts prepare",
-		"test": "tsc"
+		"prepare": "tsx ./manage.ts prepare"
 	},
 	"dependencies": {
 		"lib": "workspace:^",

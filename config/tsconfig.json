@@ -1,11 +1,13 @@
 {
 	"$schema": "https://json.schemastore.org/tsconfig",
-	"extends": "./tsbase.json",
+	"extends": "../tsbase.json",
 	"compilerOptions": {
+		"outDir": "dist",
+		"rootDir": "..",
 		"module": "nodenext",
 		"moduleResolution": "nodenext",
-		"types": ["node"],
-		"noEmit": true
+		"types": ["node"]
 	},
-	"include": ["**/*"]
+	"references": [{ "path": "../packages/lib" }, { "path": "../packages/reader-bili" }, { "path": "../packages/player-bili" }],
+	"include": ["**/*", "../*.ts", "../*.json"]
 }
