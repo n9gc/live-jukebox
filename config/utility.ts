@@ -55,9 +55,10 @@ const repo = await openRepository(rootPath);
 export async function scanChangedScopes(
 	packages: readonly Project[],
 	rootName: string,
-): Promise<string[]> {
+	enableMultipleScopes: boolean,
+): Promise<string[] | string> {
 	const statusNow = repo.statuses();
-	const scpoes = new Set(new Set(statusNow
+	const scopes = new Set(new Set(statusNow
 		.iter()
 		.filter(entry => {
 			const status = entry.status();
@@ -85,8 +86,9 @@ export async function scanChangedScopes(
 			.filter(({ dir }) => filePath.startsWith(dir))
 			.map(({ manifest: { name = '' } }) => name))
 		.flatMap(n => (n.length > 0 ? n : [rootName])));
-	if (scpoes.has(rootName)) return [];
-	return [...scpoes];
+	if (scopes.has(rootName)) return enableMultipleScopes ? [] : '';
+	if (enableMultipleScopes) return [...scopes];
+	return scopes.size === 1 ? scopes.values().next().value! : '';
 }
 
 
