@@ -23,7 +23,6 @@
 	},
 	"scripts": {
 		"build": "wasm-pack build --release -d dist -t nodejs",
-		"clear": "rimraf ./dist",
 		"prepublishOnly": "pnpm run build",
 		"postpublish": "pnpm run clear"
 	},
