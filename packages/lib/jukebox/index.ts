@@ -83,16 +83,16 @@ export class Jukebox {
 	 * 在 fn 后触发一次歌曲列表的同步
 	 * @param fn 要干的事
 	 */
-	protected songsAfter<T>(this: this, fn: (n: T) => void) {
-		return (n: T) => {
-			fn(n);
-			this.dispatchSongs();
+	protected songsAfter<T>(this: this, fn: (n: T) => Promise<void> | void) {
+		return async (n: T) => {
+			await fn(n);
+			await this.dispatchSongs();
 		};
 	}
 
 	/**手动触发一次歌曲列表的同步 */
-	dispatchSongs(this: this) {
-		const songs = this.songList.getSongs();
+	async dispatchSongs(this: this) {
+		const songs = await this.songList.getSongs();
 		logger.info(`dispath song list`, { songs });
 		this.dialogEventer.dispatch(Meaning.ServerSongs, songs);
 	}

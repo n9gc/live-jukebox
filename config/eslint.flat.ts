@@ -4,9 +4,9 @@ import eslint from '@eslint/js';
 import accurtypeStyle from 'eslint-config-accurtype-style';
 import { importX } from 'eslint-plugin-import-x';
 import importZod from 'eslint-plugin-import-zod';
-import { configs as securityConfigs } from 'eslint-plugin-security';
+// import { configs as securityConfigs } from 'eslint-plugin-security';
 import { configs as sonarjsConfigs } from 'eslint-plugin-sonarjs';
-import unicorn from 'eslint-plugin-unicorn';
+// import unicorn from 'eslint-plugin-unicorn';
 import { defineConfig } from 'eslint/config';
 import globals from 'globals';
 import { ConfigArray, configs as tseslintConfigs } from 'typescript-eslint';
@@ -18,7 +18,7 @@ const config: ConfigArray = defineConfig(
 	...tseslintConfigs.stylisticTypeChecked,
 	// unicorn.configs.recommended,
 	// security.configs.recommended,
-	// sonarjs.configs.recommended,
+	sonarjsConfigs.recommended,
 	importX.flatConfigs.recommended,
 	importX.flatConfigs.typescript,
 	...importZod.configs.recommended,
@@ -33,7 +33,10 @@ const config: ConfigArray = defineConfig(
 	},
 	{
 		name: 'Opt Rules',
-		rules: { 'no-unused-vars': 'off' },
+		rules: {
+			'no-unused-vars': 'off',
+			'sonarjs/function-return-type': 'warn',
+		},
 	},
 	includeIgnoreFile(pathTo('../.gitignore')),
 	{

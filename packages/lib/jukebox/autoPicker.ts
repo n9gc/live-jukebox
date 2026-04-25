@@ -8,6 +8,7 @@ declare module 'lib/jukebox/autoPicker';
 import { Song } from 'lib/player';
 import { isNotOk, ResultPick } from 'lib/result';
 import { getId, initLogger } from 'lib/util';
+import { RandomGenerator } from '@diplomatiq/crypto-random';
 
 const { logger } = initLogger(['jukebox', 'CommonPicker']);
 
@@ -16,7 +17,7 @@ export abstract class AutoPicker {
 	/**歌曲列表 */
 	songs: Song[] = [];
 	/**获得一首备选歌 */
-	abstract pick(this: this): Song | ResultPick;
+	abstract pick(this: this): Promise<Song | ResultPick>;
 
 	/**当前播放模式 */
 	protected abstract pickType: string;
@@ -51,24 +52,28 @@ const typeChangeMap: Record<PickType, PickType> = {
 export class CommonPicker extends AutoPicker implements PickerMap {
 	/**当前点到哪了 */
 	protected index = 0;
-	[PickType.Random](this: this) {
-		return this.songs.at(this.index = Math.floor(Math.random() * this.songs.length))
+	protected randomer = new RandomGenerator();
+	async [PickType.Random](this: this) {
+		const numbers = await this.randomer.integer(0, this.songs.length - 1, 1);
+		this.index = numbers.at(0) ?? 0;
+		return this.songs.at(this.index)
 			?? ResultPick.NoMusic;
 	};
-	[PickType.Sequential](this: this) {
+	async [PickType.Sequential](this: this) {
 		return this.songs.at(this.index++)
 			?? this.songs.length
 			? ResultPick.End
 			: ResultPick.NoMusic;
 	};
-	[PickType.Circular](this: this) {
+	async [PickType.Circular](this: this) {
+		this.index = 0;
 		return this.songs.at(this.index++)
-			?? this.songs.at(this.index = 0)
+			?? this.songs.at(this.index)
 			?? ResultPick.NoMusic;
 	};
 
-	override pick(this: this): Song | ResultPick {
-		const song = this[this.pickType]();
+	override async pick(this: this): Promise<Song | ResultPick> {
+		const song = await this[this.pickType]();
 		if (isNotOk(song)) {
 			logger.warn('auto pick failed cause {result}', { result: song });
 			return song;

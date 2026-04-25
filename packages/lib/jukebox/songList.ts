@@ -44,9 +44,9 @@ export class SongList {
 	 * 获取当前歌曲队列
 	 * @returns 歌曲队列，如果为空则告诉你为啥为空
 	 */
-	getSongs(this: this): readonly Song[] | ResultPick {
+	async getSongs(this: this): Promise<readonly Song[] | ResultPick> {
 		if (this.songs.length) return this.songs;
-		const song = this.autoPicker.pick();
+		const song = await this.autoPicker.pick();
 		if (isNotOk(song)) return song;
 		this.add(song);
 		return this.getSongs();

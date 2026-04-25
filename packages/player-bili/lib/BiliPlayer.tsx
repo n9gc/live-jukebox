@@ -11,17 +11,19 @@ import { JSX } from 'react';
 import { getVideoInfo } from './api';
 import { BiliInfo } from './types';
 
-const bvRegexp = /^(BV[a-zA-Z0-9]{10})(?:_p([0-9]+))?$/;
+const bvRegexp = /^(BV[a-zA-Z0-9]{10})(?:_p(\d+))?$/;
 
 /**B 站播放器 */
 export default class BiliPlayer extends RegisteredPlayer('bili', BiliInfo) {
 	readonly desc = '发送“点歌<空格>BV号”可点播b站视频。可指定播放第几p，如 BV123_p3，未指定则播放所有p。';
+	// eslint-disable-next-line sonarjs/no-invariant-returns
 	async parse({ message }: Danmaku): Promise<Song<'bili'> | null> {
 		// 符合格式吗
 		const match = bvRegexp.exec(message);
 		if (!match) return null;
 
 		const bvid = match[1];
+		// eslint-disable-next-line sonarjs/no-dead-store, sonarjs/no-unused-vars
 		const page = match[2] ? parseInt(match[2], 10) : null;
 		const videoInfo = await getVideoInfo(bvid);
 		if (!videoInfo) return null;
