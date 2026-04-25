@@ -31,7 +31,7 @@
 		"lib": "workspace:^",
 		"reader-bili": "workspace:^",
 		"player-bili": "workspace:^",
-		"simple-git": "latest",
+		"es-git": "latest",
 		"@types/node": "latest",
 		"cz-git": "latest",
 		"@pnpm/find-workspace-packages": "latest",

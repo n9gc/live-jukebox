@@ -1,8 +1,8 @@
 import { RuleConfigSeverity } from '@commitlint/types';
 import { findWorkspacePackages } from '@pnpm/find-workspace-packages';
 import type { UserConfig } from 'cz-git';
+import { openRepository } from 'es-git';
 import { fileURLToPath } from 'node:url';
-import { simpleGit } from 'simple-git';
 import packageRoot from '../package.json' with { type: 'json' };
 
 export function pathTo(n: string) {
@@ -35,23 +35,37 @@ if (enableMultipleScopes) {
 	scopeEnum = [...allList(new Set(scopeEnum))].map(n => n.join(scopeEnumSeparator));
 }
 
-export const git = simpleGit(rootPath);
-async function getChangedScopes() {
-	const statusNow = await git.status();
-	const scpoes = new Set(
-		statusNow
-			.files
-			.map(function *({ from, path }) {
-				yield path;
-				if (from) yield from;
-			})
-			.flatMap(n => [...n])
-			.map(relative => rootPath + relative)
-			.map(filePath => packages
-				.filter(({ dir }) => filePath.startsWith(dir))
-				.map(({ manifest: { name = '' } }) => name))
-			.flatMap(n => (n.length > 0 ? n : [packageRoot.name])),
-	);
+const repo = await openRepository(rootPath);
+async function getChangedScopes(): Promise<string[]> {
+	const statusNow = repo.statuses();
+	const scpoes = new Set(new Set(statusNow
+		.iter()
+		.filter(entry => {
+			const status = entry.status();
+			return status.indexNew
+				|| status.indexDeleted
+				|| status.indexRenamed
+				|| status.indexModified
+				|| status.indexTypechange;
+		})
+		.flatMap(entry => [
+			entry.path(),
+			entry
+				.headToIndex()
+				?.newFile()
+				.path(),
+			entry
+				.headToIndex()
+				?.oldFile()
+				.path(),
+		])
+		.filter(n => typeof n === 'string'))
+		.values()
+		.map(relative => rootPath + relative)
+		.map(filePath => packages
+			.filter(({ dir }) => filePath.startsWith(dir))
+			.map(({ manifest: { name = '' } }) => name))
+		.flatMap(n => (n.length > 0 ? n : [packageRoot.name])));
 	if (scpoes.has(packageRoot.name)) return [];
 	return [...scpoes];
 }
