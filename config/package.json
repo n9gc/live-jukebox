@@ -17,6 +17,7 @@
 		"eslint-plugin-sonarjs": "latest",
 		"eslint-plugin-security": "latest",
 		"eslint-plugin-import-x": "latest",
+		"eslint-plugin-import-zod": "latest",
 		"eslint-import-resolver-typescript": "latest",
 		"@types/eslint-plugin-security": "latest",
 		"eslint-plugin-unicorn": "latest",
