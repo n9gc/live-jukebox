@@ -5,14 +5,14 @@
  */
 declare module './util';
 
+import { getLogger } from '@logtape/logtape';
 import { getDirname } from 'esm-entry';
 import { initLogger, rawLog } from 'lib/util';
-import { ChildProcessWithoutNullStreams, execSync, spawn } from 'node:child_process';
+import { ChildProcessWithoutNullStreams, spawn } from 'node:child_process';
 import path from 'node:path';
 import { createInterface } from 'node:readline';
 import * as z from 'zod';
 import { PyBiliDanmaku } from './types';
-import { getLogger } from '@logtape/logtape';
 
 const { run, logger } = initLogger(getLogger('reader-bili'));
 
@@ -34,7 +34,7 @@ export const pyScriptPath = path.join(venvPath, '../py/listen.py');
  */
 export function testExe(where: string, info = 'not prepared {error}', runDef = run) {
 	runDef(
-		() => execSync(`${where} --version`, { stdio: 'inherit' }),
+		() => spawn(where, ['--version'], { stdio: 'inherit' }),
 		info,
 	);
 }
