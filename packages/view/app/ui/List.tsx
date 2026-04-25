@@ -8,8 +8,7 @@
 declare module '@/app/ui/List';
 
 import { DialogContext } from '@/app/lib/dialog';
-import { Meaning } from 'lib/types';
-import { Dialog } from 'lib/types';
+import { Meaning, Dialog } from 'lib/types';
 import { getId } from 'lib/util';
 import { use, useEffect, useState } from 'react';
 

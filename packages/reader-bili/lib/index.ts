@@ -6,7 +6,7 @@
 declare module '.';
 
 import { Reader } from 'lib/reader';
-import z from 'zod';
+import * as z from 'zod';
 import { listenDm, ListenDmConfig } from './util';
 import { BiliDanmaku, PyBiliDanmaku } from './types';
 import { ChildProcessWithoutNullStreams } from 'node:child_process';

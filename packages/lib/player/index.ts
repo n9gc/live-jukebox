@@ -7,9 +7,9 @@ declare module 'lib/player';
 
 export { default as Player } from './Player';
 
-import Player, { registered } from 'lib/player/Player';
+import Player, { registered } from './Player';
 import { BaseSong, Danmaku, Picker } from 'lib/types';
-import z from 'zod';
+import * as z from 'zod';
 
 /**基本的信息结构 */
 export interface Song<K extends string = string, S extends z.ZodType = z.ZodType> extends BaseSong {

@@ -9,7 +9,7 @@ declare module '@/app/lib/dialog';
 
 import { createContext, useCallback, useEffect, useState } from 'react';
 import { useWebSocket } from './websocket';
-import z from 'zod';
+import * as z from 'zod';
 import { Dialog } from 'lib/types';
 
 /**当前对话和发送对话的元组 */

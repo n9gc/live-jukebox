@@ -8,7 +8,7 @@ declare module '@/app/api/ws/route';
 import { dialogEventer, jukebox } from '@/app/lib/jukebox';
 import { Dialog, Meaning } from 'lib/types';
 import type { WebSocket } from 'ws';
-import z from 'zod';
+import * as z from 'zod';
 
 export function UPGRADE(
 	client: WebSocket,

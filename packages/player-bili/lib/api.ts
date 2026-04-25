@@ -5,7 +5,7 @@
  */
 declare module './api';
 
-import z from 'zod';
+import * as z from 'zod';
 
 /**视频信息 */
 export const VideoInfo = z.object({

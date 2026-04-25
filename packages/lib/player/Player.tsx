@@ -8,7 +8,7 @@ declare module 'lib/player/Player';
 import { Song } from 'lib/player';
 import { Danmaku } from 'lib/types';
 import { JSX } from 'react';
-import z from 'zod';
+import * as z from 'zod';
 
 /**被注册过 */
 export const registered = Symbol();

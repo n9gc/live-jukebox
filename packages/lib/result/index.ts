@@ -9,7 +9,7 @@ export * from './results';
 
 import { Enumified, mark } from 'lib/types/enum';
 import * as results from './results';
-import Result, { ResultOk } from './results';
+import { Result, ResultOk } from './results';
 
 /**判断 `n` 是不是成功的操作 */
 export function isOk<T>(n: T | symbol): n is ResultOk | Exclude<T, symbol> {

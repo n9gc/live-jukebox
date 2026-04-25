@@ -5,9 +5,8 @@
  */
 declare module 'lib/types/enum';
 
-import { getThr, initLogger } from 'lib/util';
-import { libLogger } from 'lib/util';
-import z from 'zod';
+import { getThr, initLogger, libLogger } from 'lib/util';
+import * as z from 'zod';
 
 const { logger, thr } = initLogger(['types', 'enum']);
 

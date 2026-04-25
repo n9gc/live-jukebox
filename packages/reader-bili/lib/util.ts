@@ -10,7 +10,7 @@ import { initLogger, rawLog } from 'lib/util';
 import { ChildProcessWithoutNullStreams, execSync, spawn } from 'node:child_process';
 import path from 'node:path';
 import { createInterface } from 'node:readline';
-import z from 'zod';
+import * as z from 'zod';
 import { PyBiliDanmaku } from './types';
 import { getLogger } from '@logtape/logtape';
 

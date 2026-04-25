@@ -5,7 +5,7 @@
  */
 declare module 'lib/types/defines';
 
-import z from 'zod';
+import * as z from 'zod';
 
 /**
  * 得到一个类型的 json codec

@@ -5,7 +5,7 @@
  */
 declare module './types';
 
-import z from 'zod';
+import * as z from 'zod';
 import { Danmaku, getJsonCodec } from 'lib/types';
 
 /**文本 */

@@ -19,7 +19,7 @@ import {
 } from 'lib/types/enum';
 import { BaseSong } from 'lib/types/pure';
 import { Eventer } from 'lib/util';
-import z from 'zod';
+import * as z from 'zod';
 
 /**对话的意思 */
 export type Meaning = Enumified<typeof Meaning>;

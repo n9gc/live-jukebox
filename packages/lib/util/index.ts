@@ -10,7 +10,7 @@ export * from './Eventer';
 export { default as Eventer } from './Eventer';
 
 import { getLogger, Logger } from '@logtape/logtape';
-import z from 'zod';
+import * as z from 'zod';
 
 /**
  * 得到一个可以安全调用函数的

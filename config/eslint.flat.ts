@@ -19,9 +19,9 @@ const config: ConfigArray = defineConfig(
 	// unicorn.configs.recommended,
 	// security.configs.recommended,
 	// sonarjs.configs.recommended,
-	// importX.flatConfigs.recommended,
-	// importX.flatConfigs.typescript,
-	// ...importZod.configs.recommended,
+	importX.flatConfigs.recommended,
+	importX.flatConfigs.typescript,
+	...importZod.configs.recommended,
 	{
 		name: 'TS Base Config',
 		languageOptions: {
