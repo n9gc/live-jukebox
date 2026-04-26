@@ -13,25 +13,26 @@ import * as z from 'zod';
 /**被注册过 */
 export const registered = Symbol();
 
-/**
- * 播放器
- *
- * 不要直接继承这个类，而是像这样
- *
- * ```ts
- * class MyPlayer extends RegisteredPlayer('my') {
- *     // ...
- * }
- * ```
- *
- * 即可在声明时就注册你的播放器
- */
+// /**
+//  * 播放器
+//  *
+//  * 不要直接继承这个类，而是像这样
+//  *
+//  * ```ts
+//  * class MyPlayer extends RegisteredPlayer('my') {
+//  *     // ...
+//  * }
+//  * ```
+//  *
+//  * 即可在声明时就注册你的播放器
+//  */
+/**播放器 */
 export default abstract class Player<
 	K extends string = string,
 	S extends z.ZodType = z.ZodType,
 > {
-	/**被注册过 */
-	abstract readonly registered: typeof registered;
+	// /**被注册过 */
+	// abstract readonly registered: typeof registered;
 	/**播放器注册的名字 */
 	abstract readonly playerName: K;
 	/**点歌的简单教学 */

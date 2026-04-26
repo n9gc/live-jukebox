@@ -23,15 +23,25 @@ export function getPicker({ uname, face }: Danmaku): Picker {
 }
 
 /**
- * 方便地获得播放器的基类并注册
+ * 注册播放器的方法
  * @param name 播放器注册的名字
+ * @param schema 播放器信息的 schema
+ * @deprecated 不需要注册了先
  */
-export function RegisteredPlayer<K extends string, S extends z.ZodType>(name: K, schema: S) {
-	abstract class Base extends Player<K, S> {
+export function registerPlayer<
+	K extends string,
+	S extends z.ZodType,
+	A extends any[],
+>(
+	name: K,
+	schema: S,
+	player: new (...parameters: A) => Omit<Player<K, S>, 'registered' | 'playerName' | 'infoSchema'>,
+): new (...parameters: A) => Player<K, S> {
+	class Registered extends player {
 		readonly registered: typeof registered = registered;
 		readonly playerName = name;
 		readonly infoSchema = schema;
 	}
-	return Base;
+	return Registered;
 }
 
