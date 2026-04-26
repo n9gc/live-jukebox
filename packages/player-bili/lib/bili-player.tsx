@@ -22,7 +22,6 @@ export default class BiliPlayer extends RegisteredPlayer('bili', BiliInfo) {
 		if (!match) return void 0;
 
 		const bvid = match[1];
-		// // eslint-disable-next-line sonarjs/no-dead-store, sonarjs/no-unused-vars
 		const page = match[2] ? Number.parseInt(match[2], 10) : void 0;
 		const videoInfo = await getVideoInfo(bvid);
 		if (!videoInfo) return void 0;
