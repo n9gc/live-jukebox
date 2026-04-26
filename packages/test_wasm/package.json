@@ -22,9 +22,9 @@
 		"type": "git"
 	},
 	"scripts": {
-		"build": "wasm-pack build --release -d dist -t nodejs",
-		"prepublishOnly": "pnpm run build",
-		"postpublish": "pnpm run clear"
+		"build:wasm": "wasm-pack build --release -d dist -t bundler",
+
+		"prepublishOnly": "pnpm run build:wasm"
 	},
 	"files": [
 		"dist"

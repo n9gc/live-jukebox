@@ -22,12 +22,14 @@
 		"type": "git"
 	},
 	"scripts": {
-		"test": "tsx test.ts | colortape",
-		"prebuild": "tsc --outDir .",
-		"build": "node pack.ts",
-		"clear": "rimraf -g -- **/*.{d.ts,js} tsconfig.tsbuildinfo",
-		"prepublishOnly": "pnpm run build",
-		"postpublish": "pnpm run clear"
+		"test:tape": "tsx test.ts | colortape",
+
+		"build:pipeline": "tsc --outDir . && node pack.ts",
+
+		"clear:tsc": "rimraf -g -- **/*.{d.ts,js} tsconfig.tsbuildinfo",
+
+		"prepublishOnly": "pnpm run /^build:.*/",
+		"postpublish": "pnpm run /^clear:.*/"
 	},
 	"files": [
 		"*",

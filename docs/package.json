@@ -4,9 +4,10 @@
 	"name": "docs",
 	"type": "module",
 	"scripts": {
-		"test": "echo hh",
-		"build": "echo hh",
-		"clear": "echo hh"
+		"dev:docs": "echo hh",
+		"test:docs": "echo hh",
+		"build:docs": "echo hh",
+		"clear:docs": "echo hh"
 	},
 	"dependencies": {},
 	"devDependencies": {

@@ -14,18 +14,27 @@
 		"prepare": "husky",
 		"cz": "czg",
 
-		"fmt": "prettier -w . && eslint . --fix",
-		"postfmt": "cargo fmt && cargo clippy --fix --allow-dirty",
-		"lint": "prettier -c . && eslint .",
-		"postlint": "cargo fmt --check && cargo clippy",
+		"run-all": "pnpm -r --include-workspace-root run",
 
-		"dev": "pnpm -F view dev",
-		"start": "pnpm -F view start",
-		"pretest": "tsc -b",
-		"test": "pnpm run -r test",
-		"posttest": "cargo test",
-		"build": "pnpm run -r build",
-		"clear": "pnpm run -r clear",
+		"fmt": "pnpm run-all --parallel /^fmt:.*/",
+		"fmt:js": "prettier -w . && eslint . --fix",
+		"fmt:rust": "cargo fmt && cargo clippy --fix --allow-dirty",
+
+		"lint": "pnpm run-all --parallel /^lint:.*/",
+		"lint:prettier": "prettier -c .",
+		"lint:eslint": "eslint .",
+		"lint:cargo": "cargo fmt --check",
+		"lint:clippy": "cargo clippy",
+
+		"test": "pnpm run-all /^test:.*/",
+		"test:ts": "tsc -b",
+		"test:rust": "cargo test",
+
+		"dev": "pnpm run-all --parallel /^dev:.*/",
+		"start": "pnpm run-all --parallel /^start:.*/",
+		"build": "pnpm run-all /^build:.*/",
+		"clear": "pnpm run-all --parallel /^clear:.*/",
+
 		"ci": "pnpm build && pnpm test && pnpm clear && pnpm lint"
 	},
 	"engines": {

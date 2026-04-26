@@ -17,9 +17,9 @@
 	},
 	"scripts": {
 		"prepare": "next-ws patch",
-		"build": "next build",
-		"dev": "next dev --turbopack",
-		"start": "next start"
+		"build:view": "next build",
+		"dev:view": "next dev --turbopack",
+		"start:view": "next start"
 	},
 	"dependencies": {
 		"lib": "workspace:^",
