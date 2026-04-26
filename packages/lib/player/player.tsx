@@ -3,7 +3,7 @@
  * @license GPL-2.0-or-later
  * @author n9gc
  */
-declare module 'lib/player/player';
+declare module './player';
 
 import { Song } from 'lib/player';
 import { Danmaku } from 'lib/types';
