@@ -3,7 +3,7 @@
  * @license GPL-2.0-or-later
  * @author n9gc
  */
-declare module 'lib/jukebox/autoPicker';
+declare module 'lib/jukebox/auto-picker';
 
 import { Song } from 'lib/player';
 import { isNotOk, ResultPick } from 'lib/result';

@@ -5,14 +5,14 @@
  */
 declare module 'lib/jukebox';
 
-export * from './autoPicker';
+export * from './auto-picker';
 export * from './config';
 export * from './parser';
-export * from './songList';
+export * from './song-list';
 
 import { getJukeboxConfig, JukeboxConfig } from 'lib/jukebox/config';
 import { Command, Parser } from 'lib/jukebox/parser';
-import { SongList } from 'lib/jukebox/songList';
+import { SongList } from 'lib/jukebox/song-list';
 import { isNotOk, isOk } from 'lib/result';
 import { DialogEventer, Meaning } from 'lib/types';
 import { initLogger } from 'lib/util';
@@ -81,11 +81,11 @@ export class Jukebox {
 
 	/**
 	 * 在 fn 后触发一次歌曲列表的同步
-	 * @param fn 要干的事
+	 * @param run 要干的事
 	 */
-	protected songsAfter<T>(this: this, fn: (n: T) => Promise<void> | void) {
+	protected songsAfter<T>(this: this, run: (n: T) => Promise<void> | void) {
 		return async (n: T) => {
-			await fn(n);
+			await run(n);
 			await this.dispatchSongs();
 		};
 	}

@@ -9,5 +9,5 @@ import { Eventer } from 'lib/util';
 import { Danmaku } from 'lib/types';
 
 /**读取器 */
-export abstract class Reader extends Eventer<{ danmaku: Danmaku }> { }
+export abstract class Reader extends Eventer<{ danmaku: Danmaku }> {}
 

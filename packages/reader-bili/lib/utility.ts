@@ -3,7 +3,7 @@
  * @license GPL-2.0-or-later
  * @author n9gc
  */
-declare module './util';
+declare module './utility';
 
 import { getLogger } from '@logtape/logtape';
 import { getDirname } from 'esm-entry';
@@ -32,8 +32,8 @@ export const pyScriptPath = path.join(venvPath, '../py/listen.py');
  * @param where 可执行文件的路径
  * @param info 如果找不到，提示什么
  */
-export function testExe(where: string, info = 'not prepared {error}', runDef = run) {
-	runDef(
+export function testExe(where: string, info = 'not prepared {error}', runer = run) {
+	runer(
 		() => spawn(where, ['--version'], { stdio: 'inherit' }),
 		info,
 	);

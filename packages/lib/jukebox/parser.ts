@@ -95,9 +95,9 @@ export class Parser extends Eventer<ParserEvent> implements ParserMap {
 		const [type, danmakuDised = danmaku] = r;
 		this[type](danmakuDised).then(parsed => {
 			if (parsed === Command.Idk) {
-				const idkObj = { previous: type, danmaku } as const;
-				logger.warn('idk, "{danmaku.message}" is not a {previous}', idkObj);
-				this.dispatch(Command.Idk, idkObj);
+				const idkObject = { previous: type, danmaku } as const;
+				logger.warn('idk, "{danmaku.message}" is not a {previous}', idkObject);
+				this.dispatch(Command.Idk, idkObject);
 				return;
 			}
 			logger.info('"{danmaku.message}" is a {type}', { danmaku, type });

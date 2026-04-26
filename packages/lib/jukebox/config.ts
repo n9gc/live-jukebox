@@ -5,9 +5,9 @@
  */
 declare module 'lib/jukebox/config';
 
-import { AutoPicker, CommonPicker } from 'lib/jukebox/autoPicker';
+import { AutoPicker, CommonPicker } from 'lib/jukebox/auto-picker';
 import { distinguishChinese, Distinguisher } from 'lib/jukebox/parser';
-import { CancelMethod } from 'lib/jukebox/songList';
+import { CancelMethod } from 'lib/jukebox/song-list';
 import { Player } from 'lib/player';
 import { Reader } from 'lib/reader';
 import { Configable, getConfigGetter } from 'lib/util';

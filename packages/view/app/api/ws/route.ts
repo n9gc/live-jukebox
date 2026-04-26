@@ -6,7 +6,7 @@
 declare module '@/app/api/ws/route';
 
 import { dialogEventer, jukebox } from '@/app/lib/jukebox';
-import { Dialog, Meaning } from 'lib/types';
+import { Dialog, ServerMeanings } from 'lib/types';
 import type { WebSocket } from 'ws';
 import * as z from 'zod';
 
@@ -23,16 +23,12 @@ export function UPGRADE(
 		dialogEventer.dispatch(meaning, data);
 	});
 
-	([
-		Meaning.ServerSongs,
-		Meaning.ServerEndResult,
-		Meaning.ServerCancelResult,
-	] as const).forEach(meaning => {
+	for (const meaning of ServerMeanings) {
 		dialogEventer.addListener(
 			meaning,
 			data => client.send(Dialog.encode({ meaning, data } as any)),
 		);
-	});
+	}
 
 	jukebox.dispatchSongs();
 }

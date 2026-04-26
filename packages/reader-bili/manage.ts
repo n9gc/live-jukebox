@@ -2,7 +2,7 @@ import { getLogger } from '@logtape/logtape';
 import { initLogger } from 'lib/util';
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';
-import { loadLogConfig, pipPath, testExe, venvPath } from './lib/util';
+import { loadLogConfig, pipPath, testExe, venvPath } from './lib/utility';
 
 await loadLogConfig();
 
@@ -49,7 +49,6 @@ const scripts: Partial<Record<string, () => void>> = {
 	scripts[process.argv.at(-1) ?? '']
 	?? (() => {
 		thr('what do you want to do?');
-		process.exit(1);
 	})
 )();
 

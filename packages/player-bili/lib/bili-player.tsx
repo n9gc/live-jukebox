@@ -3,7 +3,7 @@
  * @license GPL-2.0-or-later
  * @author n9gc
  */
-declare module './BiliPlayer';
+declare module './bili-player';
 
 import { RegisteredPlayer, Song } from 'lib/player';
 import { Danmaku } from 'lib/types';
@@ -16,18 +16,17 @@ const bvRegexp = /^(BV[a-zA-Z0-9]{10})(?:_p(\d+))?$/;
 /**B 站播放器 */
 export default class BiliPlayer extends RegisteredPlayer('bili', BiliInfo) {
 	readonly desc = '发送“点歌<空格>BV号”可点播b站视频。可指定播放第几p，如 BV123_p3，未指定则播放所有p。';
-	// eslint-disable-next-line sonarjs/no-invariant-returns
-	async parse({ message }: Danmaku): Promise<Song<'bili'> | null> {
+	async parse({ message }: Danmaku): Promise<Song<'bili'> | undefined> {
 		// 符合格式吗
 		const match = bvRegexp.exec(message);
-		if (!match) return null;
+		if (!match) return void 0;
 
 		const bvid = match[1];
 		// eslint-disable-next-line sonarjs/no-dead-store, sonarjs/no-unused-vars
-		const page = match[2] ? parseInt(match[2], 10) : null;
+		const page = match[2] ? Number.parseInt(match[2], 10) : void 0;
 		const videoInfo = await getVideoInfo(bvid);
-		if (!videoInfo) return null;
-		return null;
+		if (!videoInfo) return void 0;
+		return void 0;
 	}
 	PlayEle(song: Song<'bili'>): JSX.Element {
 		return <h1>{song.title}</h1>;

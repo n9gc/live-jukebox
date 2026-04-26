@@ -14,16 +14,16 @@ import { Dialog } from 'lib/types';
 
 /**当前对话和发送对话的元组 */
 export type DialogHandle = readonly [
-	data: Dialog | null,
+	data: Dialog | undefined,
 	sendData: (dataSent: Dialog) => void,
 ];
 /**对话的上下文 */
-export const DialogContext = createContext<DialogHandle>([null, () => void 0]);
+export const DialogContext = createContext<DialogHandle>([void 0, () => void 0]);
 
 /**和服务器通信，获得对话状态 */
 export function useDialog(): DialogHandle {
 	const socket = useWebSocket(() => `ws://${location.host}/api/ws`);
-	const [data, setData] = useState<Dialog | null>(null);
+	const [data, setData] = useState<Dialog | undefined>(void 0);
 
 	useEffect(() => {
 		const controller = new AbortController();

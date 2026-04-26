@@ -6,8 +6,8 @@
 declare module 'lib/util';
 
 export * from './config';
-export * from './Eventer';
-export { default as Eventer } from './Eventer';
+export * from './eventer';
+export { default as Eventer } from './eventer';
 
 import { getLogger, Logger } from '@logtape/logtape';
 import * as z from 'zod';
@@ -19,13 +19,13 @@ import * as z from 'zod';
 export function getRun(logger: Logger) {
 	/**
 	 * 安全调用函数
-	 * @param fn 可能抛出错误的函数
+	 * @param run 可能抛出错误的函数
 	 * @param info 亡语
 	 * @param level 捕获到错误的等级
 	 */
-	return <T>(fn: () => T, info = '{error}', level: 'fatal' | 'error' = 'fatal'): typeof level extends 'error' ? T | false : T => {
+	return <T>(run: () => T, info = '{error}', level: 'fatal' | 'error' = 'fatal'): typeof level extends 'error' ? T | false : T => {
 		try {
-			return fn();
+			return run();
 		} catch (error) {
 			logger[level](info, { error });
 			if (level === 'error') return false as any;
@@ -42,11 +42,11 @@ export function getThr(logger: Logger) {
 	/**
 	 * 方便地抛出错误
 	 * @param why 为什么抛出错误
-	 * @param prop 错误详细信息
+	 * @param cause 错误详细信息
 	 */
-	return (why: string, prop: Record<string, unknown> = {}): never => {
-		const error = Error(why, { cause: prop });
-		logger.fatal(why, prop);
+	return (why: string, cause: Record<string, unknown> = {}): never => {
+		const error = new Error(why, { cause });
+		logger.fatal(why, cause);
 		throw error;
 	};
 }
@@ -59,10 +59,10 @@ export function getId(): `song:${bigint}` & z.core.$brand<'SongId'> {
 }
 
 /**库专用的日志器 */
-export const libLogger = getLogger('lib');
+export const packLogger = getLogger('lib');
 /**得到 logger 以及一些便捷函数 */
 export function initLogger(logger: string | readonly [string, ...string[]] | Logger) {
-	if (typeof logger === 'string' || 'length' in logger) logger = libLogger.getChild(logger);
+	if (typeof logger === 'string' || 'length' in logger) logger = packLogger.getChild(logger);
 	const thr = getThr(logger);
 	const run = getRun(logger);
 	return { logger, thr, run };

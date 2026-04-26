@@ -3,7 +3,7 @@
  * @license GPL-2.0-or-later
  * @author n9gc
  */
-declare module 'lib/player/Player';
+declare module 'lib/player/player';
 
 import { Song } from 'lib/player';
 import { Danmaku } from 'lib/types';
@@ -38,8 +38,8 @@ export default abstract class Player<
 	abstract readonly desc: string;
 	/**歌曲额外信息的 zod schema */
 	abstract readonly infoSchema: S;
-	/**解析去掉开头“点歌 ”的弹幕为播放信息，若无法解析就返回 null */
-	abstract parse(this: this, danmaku: Danmaku): Promise<Song<K, S> | null>;
+	/**解析去掉开头“点歌 ”的弹幕为播放信息，若无法解析就返回 undefined */
+	abstract parse(this: this, danmaku: Danmaku): Promise<Song<K, S> | undefined>;
 	/**用于播放的元素 */
 	abstract PlayEle(info: Song<K, S>): JSX.Element;
 	/**显示在列表的元素 */

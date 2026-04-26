@@ -20,9 +20,9 @@ export const VideoInfo = z.object({
 export type VideoInfo = z.infer<typeof VideoInfo>;
 
 /**获取视频信息 */
-export async function getVideoInfo(bvid: string): Promise<VideoInfo | null> {
-	const res = await fetch(`https://api.bilibili.com/x/player/pagelist?bvid=${bvid}`);
-	const json = await res.json();
+export async function getVideoInfo(bvid: string): Promise<VideoInfo | undefined> {
+	const responce = await fetch(`https://api.bilibili.com/x/player/pagelist?bvid=${bvid}`);
+	const json = await responce.json();
 	const parsed = VideoInfo.safeParse(json);
-	return parsed.success ? parsed.data : null;
+	return parsed.success ? parsed.data : void 0;
 }

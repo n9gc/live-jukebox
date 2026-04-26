@@ -3,9 +3,9 @@
  * @license GPL-2.0-or-later
  * @author n9gc
  */
-declare module 'lib/jukebox/songList';
+declare module 'lib/jukebox/song-list';
 
-import { AutoPicker } from 'lib/jukebox/autoPicker';
+import { AutoPicker } from 'lib/jukebox/auto-picker';
 import { Song } from 'lib/player';
 import {
 	isNotOk,
@@ -36,7 +36,7 @@ export class SongList {
 		public autoPicker: AutoPicker,
 		/**取消的方法 */
 		public cancelMethod: CancelMethod,
-	) { }
+	) {}
 
 	/**歌曲队列 */
 	protected readonly songs: Song[] = [];
@@ -45,7 +45,7 @@ export class SongList {
 	 * @returns 歌曲队列，如果为空则告诉你为啥为空
 	 */
 	async getSongs(this: this): Promise<readonly Song[] | ResultPick> {
-		if (this.songs.length) return this.songs;
+		if (this.songs.length > 0) return this.songs;
 		const song = await this.autoPicker.pick();
 		if (isNotOk(song)) return song;
 		this.add(song);
@@ -94,10 +94,10 @@ export class SongList {
 			&& this.songs.at(0)?.picker === picker
 		) return ResultListCancel.Playing;
 		const song = this.songs.find(
-			(song, i) => song.picker === picker
+			(song, index) => song.picker === picker
 				&& (
 					this.cancelMethod !== CancelMethod.ExceptPlaying
-					|| i !== 0
+					|| index !== 0
 				),
 		);
 		if (!song) return ResultListCancel.NoCancelable;

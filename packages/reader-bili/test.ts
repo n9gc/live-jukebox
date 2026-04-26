@@ -1,5 +1,5 @@
 import BiliReader from './lib';
-import { loadLogConfig } from './lib/util';
+import { loadLogConfig } from './lib/utility';
 
 await loadLogConfig();
 

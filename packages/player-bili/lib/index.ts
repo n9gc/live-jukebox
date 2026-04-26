@@ -5,7 +5,7 @@
  */
 declare module '.';
 
-export { default as BiliPlayer } from './BiliPlayer';
+export { default as BiliPlayer } from './bili-player';
 export * from './api';
 export * from './types';
 

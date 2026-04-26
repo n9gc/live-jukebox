@@ -13,12 +13,12 @@ import * as z from 'zod';
  */
 export function getJsonCodec<T extends z.ZodType>(schema: T) {
 	return z.codec(z.string(), schema, {
-		decode(input, ctx) {
+		decode(input, context) {
 			try {
 				return JSON.parse(input);
-			} catch (err) {
-				const message = err instanceof Error ? err.message : '';
-				ctx.issues.push({
+			} catch (error) {
+				const message = error instanceof Error ? error.message : '';
+				context.issues.push({
 					code: 'invalid_format',
 					format: 'json',
 					input,

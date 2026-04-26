@@ -35,6 +35,13 @@ export namespace Meaning {
 	mark({ Meaning });
 }
 
+/**服务端的意思 */
+export const ServerMeanings = [
+	Meaning.ServerSongs,
+	Meaning.ServerEndResult,
+	Meaning.ServerCancelResult,
+] as const;
+
 /**方便地获取序列化器 */
 function getCodec<T extends Meaning, D extends z.ZodType>(meaning: T, data: D) {
 	return getJsonCodec(z.object({
@@ -92,5 +99,5 @@ export type DialogEvent = {
 };
 
 /**对话事件 */
-export class DialogEventer extends Eventer<DialogEvent> { }
+export class DialogEventer extends Eventer<DialogEvent> {}
 

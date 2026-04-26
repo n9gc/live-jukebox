@@ -26,7 +26,7 @@ export type Enumified<T extends Enum> = Asserted<EnumifiedImpl<T>, symbol>;
 export interface Enum extends Readonly<Record<string, Enum | symbol>> { }
 
 /**全局所有标记名称定义的位置 */
-const defMap = new Map<symbol, Error>();
+const definedMap = new Map<symbol, Error>();
 /**全局所有被标记过的枚举对应的标记 */
 const markedMap = new WeakMap<symbol, symbol>();
 /**
@@ -34,24 +34,24 @@ const markedMap = new WeakMap<symbol, symbol>();
  * @param enums 导出枚举的模块
  */
 export function mark(enums: Record<string, Enum>): true {
-	for (const name of Object.keys(enums).reverse()) {
-		const enumObj = enums[name];
-		logger.trace('marking {name}', { enumObj, name });
-		for (const key of Object.keys(enumObj)) {
-			const oriSym = enumObj[key];
+	for (const name of Object.keys(enums).toReversed()) {
+		const enumObject = enums[name];
+		logger.trace('marking {name}', { enumObj: enumObject, name });
+		for (const key of Object.keys(enumObject)) {
+			const oriSym = enumObject[key];
 			if (typeof oriSym !== 'symbol') continue;
 			let sym = markedMap.get(oriSym);
 			if (!sym) {
 				sym = Symbol.for(`${name}.${key}`);
-				if (defMap.get(sym)) {
-					thr('double defined {sym} in {defPos}', { sym, defPos: defMap.get(sym) });
+				if (definedMap.get(sym)) {
+					thr('double defined {sym} in {defPos}', { sym, defPos: definedMap.get(sym) });
 				}
-				defMap.set(sym, Error());
+				definedMap.set(sym, new Error('defined here'));
 				markedMap.set(oriSym, sym);
 			}
 			logger.trace('{name}.{key} is {sym}', { sym, key, name });
 			// @ts-ignore
-			enumObj[key] = sym;
+			enumObject[key] = sym;
 		}
 	}
 	return true;
@@ -59,16 +59,16 @@ export function mark(enums: Record<string, Enum>): true {
 
 /**
  * 获取一个枚举所有的成员
- * @param enumObj 枚举对象
+ * @param enumObject 枚举对象
  * @returns 集合里装着各个成员
  */
-export function getVariants<T extends Enum>(enumObj: T, r = new Set<symbol>()): Set<Enumified<T>> {
-	for (const key of Object.keys(enumObj)) {
-		const obj = enumObj[key];
-		if (typeof obj === 'symbol') {
-			r.add(obj);
+export function getVariants<T extends Enum>(enumObject: T, r = new Set<symbol>()): Set<Enumified<T>> {
+	for (const key of Object.keys(enumObject)) {
+		const child = enumObject[key];
+		if (typeof child === 'symbol') {
+			r.add(child);
 		} else {
-			getVariants(obj, r);
+			getVariants(child, r);
 		}
 	}
 	return r as any;
@@ -86,14 +86,12 @@ export function getSymbolSchema<T extends symbol>(sym: T): z.ZodCustom<T, T> {
 type SchemaUnion<T> = z.ZodUnion<readonly (T extends T ? z.ZodCustom<T, T> : never)[]>;
 /**
  * 得到一个枚举对象的联合 Schema
- * @param enumObj 枚举对象
+ * @param enumObject 枚举对象
  * @returns Schema 的联合类型
  */
-export function getEnumSchema<T extends Enum>(enumObj: T): SchemaUnion<Enumified<T>> {
+export function getEnumSchema<T extends Enum>(enumObject: T): SchemaUnion<Enumified<T>> {
 	return z.union(
-		Array
-			.from(getVariants(enumObj))
-			.map(getSymbolSchema),
+		[...getVariants(enumObject)].map(n => getSymbolSchema(n)),
 	) as any;
 }
 
@@ -106,9 +104,9 @@ export function getSymbolCodec<T extends symbol>(sym: T): z.ZodCodec<z.ZodString
 		?? thr('The {sym} is not a symbol got by `Symbol.for`', { sym });
 	return z.codec(z.string(), getSymbolSchema(sym), {
 		encode: () => oriKey,
-		decode(key, ctx) {
+		decode(key, context) {
 			if (key === oriKey) return sym;
-			ctx.issues.push({
+			context.issues.push({
 				code: 'invalid_value',
 				input: key,
 				values: [oriKey],
@@ -122,14 +120,12 @@ export function getSymbolCodec<T extends symbol>(sym: T): z.ZodCodec<z.ZodString
 type CodecUnion<T> = z.ZodUnion<readonly (T extends T ? z.ZodCodec<z.ZodString, z.ZodCustom<T, T>> : never)[]>;
 /**
  * 得到一个枚举对象的联合 Codec
- * @param enumObj 枚举对象
+ * @param enumObject 枚举对象
  * @returns Codec 的联合类型的 Schema
  */
-export function getEnumCodec<T extends Enum>(enumObj: T): CodecUnion<Enumified<T>> {
+export function getEnumCodec<T extends Enum>(enumObject: T): CodecUnion<Enumified<T>> {
 	return z.union(
-		Array
-			.from(getVariants(enumObj))
-			.map(getSymbolCodec),
+		[...getVariants(enumObject)].map(n => getSymbolCodec(n)),
 	) as any;
 }
 

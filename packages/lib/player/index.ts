@@ -5,9 +5,9 @@
  */
 declare module 'lib/player';
 
-export { default as Player } from './Player';
+export { default as Player } from './player';
 
-import Player, { registered } from './Player';
+import Player, { registered } from './player';
 import { BaseSong, Danmaku, Picker } from 'lib/types';
 import * as z from 'zod';
 

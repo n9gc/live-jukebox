@@ -8,7 +8,7 @@
 declare module '@/app/layout';
 
 import { DialogContext, useDialog } from '@/app/lib/dialog';
-import List from '@/app/ui/List';
+import List from '@/app/ui/list';
 import { useMemo } from 'react';
 
 

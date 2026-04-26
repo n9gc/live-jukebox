@@ -3,7 +3,7 @@
  * @license GPL-2.0-or-later
  * @author n9gc
  */
-declare module 'lib/util/Eventer';
+declare module 'lib/util/eventer';
 
 /**监听器 */
 export type Listener<T> = (n: T) => void;
@@ -29,7 +29,9 @@ export default class Eventer<O> {
 	 * @param data 数据
 	 */
 	dispatch<T extends keyof O>(this: this, event: T, data: O[T]) {
-		this.listenerMap[event]?.forEach(listener => listener(data));
+		for (const listener of this.listenerMap[event] ?? []) {
+			listener(data);
+		}
 		return this;
 	}
 	/**

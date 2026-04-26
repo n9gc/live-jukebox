@@ -9,16 +9,16 @@ declare module '@/app/lib/websocket';
 import { useEffect, useRef, useState } from 'react';
 
 export function useWebSocket(url: () => string) {
-	const ref = useRef<WebSocket>(null);
+	const reference = useRef<WebSocket>(null);
 	const target = useRef(url);
 	const [, update] = useState(0);
 
 	useEffect(() => {
-		if (ref.current) return;
+		if (reference.current) return;
 		const socket = new WebSocket(target.current());
-		Reflect.set(ref, 'current', socket);
+		Reflect.set(reference, 'current', socket);
 		update(p => p + 1);
 	}, []);
 
-	return ref.current;
+	return reference.current;
 }
