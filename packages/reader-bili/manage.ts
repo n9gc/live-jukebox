@@ -1,12 +1,12 @@
 import { getLogger } from '@logtape/logtape';
 import { initLogger } from 'lib/util';
-import { spawn } from 'node:child_process';
+import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import { loadLogConfig, pipPath, testExe, venvPath } from './lib/utility';
 
 await loadLogConfig();
 
-const { run, thr } = initLogger(getLogger(['reader-bili', 'manage']));
+const { thr } = initLogger(getLogger(['reader-bili', 'manage']));
 
 /**创建 .venv 文件夹 */
 function createVenv() {
@@ -14,12 +14,10 @@ function createVenv() {
 
 	const pyExe = process.env.PY_EXE ?? 'python';
 
-	testExe(pyExe, `Cannot find '${pyExe}', use $PY_EXE instead. {error}`, run);
+	testExe(pyExe, `Cannot find '${pyExe}', use $PY_EXE instead.`);
 
-	run(
-		() => spawn(pyExe, ['-m', 'venv', venvPath], { stdio: 'inherit' }),
-		'init venv failed {error}',
-	);
+	const { error } = spawnSync(pyExe, ['-m', 'venv', venvPath], { stdio: 'inherit' });
+	if (error) thr('init venv failed');
 }
 
 /**prepare 脚本 */
@@ -29,16 +27,14 @@ function prepare() {
 	const mirror = process.env.PY_MIRROR ?? '';
 	const mirrorCmd = mirror ? ['-i', mirror] : [];
 
-	testExe(pipPath, 'venv pip not found {error}', run);
+	testExe(pipPath, 'venv pip not found');
 
-	run(
-		() => spawn(
-			pipPath,
-			['install', ...mirrorCmd, '-r', 'requirements.txt'],
-			{ stdio: 'inherit' },
-		),
-		'pip install failed {error}',
+	const { error } = spawnSync(
+		pipPath,
+		['install', ...mirrorCmd, '-r', 'requirements.txt'],
+		{ stdio: 'inherit' },
 	);
+	if (error) thr('pip install failed', { error });
 }
 
 const scripts: Partial<Record<string, () => void>> = {

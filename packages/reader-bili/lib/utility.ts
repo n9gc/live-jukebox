@@ -8,13 +8,13 @@ declare module './utility';
 import { getLogger } from '@logtape/logtape';
 import { getDirname } from 'esm-entry';
 import { initLogger, rawLog } from 'lib/util';
-import { ChildProcessWithoutNullStreams, spawn } from 'node:child_process';
+import { ChildProcessWithoutNullStreams, spawn, spawnSync } from 'node:child_process';
 import path from 'node:path';
 import { createInterface } from 'node:readline';
 import * as z from 'zod';
 import { PyBiliDanmaku } from './types';
 
-const { run, logger } = initLogger(getLogger('reader-bili'));
+const { run, logger, thr } = initLogger(getLogger('reader-bili'));
 
 /**是不是 Win 平台 */
 export const isWindows = process.platform === 'win32';
@@ -32,11 +32,9 @@ export const pyScriptPath = path.join(venvPath, '../py/listen.py');
  * @param where 可执行文件的路径
  * @param info 如果找不到，提示什么
  */
-export function testExe(where: string, info = 'not prepared {error}', runer = run) {
-	runer(
-		() => spawn(where, ['--version'], { stdio: 'inherit' }),
-		info,
-	);
+export function testExe(where: string, info = 'not prepared') {
+	const { error } = spawnSync(where, ['--version'], { stdio: 'inherit' });
+	if (error) thr(info, { error });
 }
 
 /**py 脚本需要的参数 */
@@ -61,7 +59,7 @@ export function listenDm(config: ListenDmConfig, callback: (danmaku: PyBiliDanma
 
 	const proce = run(
 		() => spawn(pyPath, ['-u', pyScriptPath, JSON.stringify(config)]),
-		'spawn python failed: {error}',
+		'spawn python failed',
 	);
 
 	const pyLogger = logger.getChild('blivedm');
