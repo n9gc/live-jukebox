@@ -10,6 +10,7 @@ export * from './eventer';
 export { default as Eventer } from './eventer';
 
 import { getLogger, Logger } from '@logtape/logtape';
+import type * as crypto from 'node:crypto';
 import * as z from 'zod';
 
 /**
@@ -74,5 +75,19 @@ export function initLogger(logger: string | readonly [string, ...string[]] | Log
  */
 export function rawLog(message: string) {
 	return message.replaceAll('{', '{{').replaceAll('}', '}}');
+}
+
+/**导入的 crypto 模块 */
+let cryptoImported: typeof crypto | undefined;
+/**获得一个随机数，用 crypto.randomInt */
+export async function randomInt(min: number, max: number): Promise<number> {
+	cryptoImported = await import('node:crypto');
+	return new Promise<number>((resolve, reject) => {
+		if (!cryptoImported) throw new Error('crypto not imported');
+		cryptoImported.randomInt(min, max, (error, n) => {
+			if (error) return reject(error);
+			resolve(n);
+		});
+	});
 }
 

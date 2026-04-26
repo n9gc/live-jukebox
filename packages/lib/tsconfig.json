@@ -3,6 +3,7 @@
 	"extends": "../../tsbase.json",
 	"compilerOptions": {
 		"outDir": "dist",
+		"types": ["node"],
 		"paths": {
 			"lib/*": ["./*"]
 		}

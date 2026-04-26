@@ -7,8 +7,7 @@ declare module 'lib/jukebox/auto-picker';
 
 import { Song } from 'lib/player';
 import { isNotOk, ResultPick } from 'lib/result';
-import { getId, initLogger } from 'lib/util';
-import { RandomGenerator } from '@diplomatiq/crypto-random';
+import { getId, initLogger, randomInt } from 'lib/util';
 
 const { logger } = initLogger(['jukebox', 'CommonPicker']);
 
@@ -52,10 +51,9 @@ const typeChangeMap: Record<PickType, PickType> = {
 export class CommonPicker extends AutoPicker implements PickerMap {
 	/**当前点到哪了 */
 	protected index = 0;
-	protected randomer = new RandomGenerator();
 	async [PickType.Random](this: this) {
-		const numbers = await this.randomer.integer(0, this.songs.length - 1, 1);
-		this.index = numbers.at(0) ?? 0;
+		if (this.songs.length === 0) return ResultPick.NoMusic;
+		this.index = await randomInt(0, this.songs.length);
 		return this.songs.at(this.index)
 			?? ResultPick.NoMusic;
 	};

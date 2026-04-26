@@ -36,7 +36,6 @@
 
 		"zod": "latest",
 		"@logtape/logtape": "latest",
-		"@diplomatiq/crypto-random": "latest",
 
 		"react": "latest",
 		"@types/react": "latest",
@@ -45,6 +44,7 @@
 	},
 	"devDependencies": {
 		"make-dir-cli": "latest",
+		"@types/node": "latest",
 		"ts-to-zod": "latest"
 	}
 }
