@@ -32,6 +32,7 @@ const config: ConfigArray = defineConfig(
 		name: 'Opt Rules',
 		rules: {
 			'no-unused-vars': 'off',
+			'no-console': 'error',
 		},
 	},
 	includeIgnoreFile(pathTo('../.gitignore')),

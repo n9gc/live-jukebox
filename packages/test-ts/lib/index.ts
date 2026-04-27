@@ -14,6 +14,5 @@ import { fibonacci } from '@accurtype/mono-test-wasm';
  */
 export default function hello(n: number): string {
 	const helloString = `hello, ${fibonacci(n)}!`;
-	console.log(helloString);
 	return helloString;
 }

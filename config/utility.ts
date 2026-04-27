@@ -115,6 +115,7 @@ export async function referTsProjects(packages: readonly Project[]) {
 		files: [],
 		references,
 	};
+	// eslint-disable-next-line no-console
 	console.log(JSON.stringify(tsconfig, void 0, '\t'));
 }
 

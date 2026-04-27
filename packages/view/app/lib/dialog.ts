@@ -11,6 +11,10 @@ import { createContext, useCallback, useEffect, useState } from 'react';
 import { useWebSocket } from './websocket';
 import * as z from 'zod';
 import { Dialog } from 'lib/types';
+import { initLogger } from 'lib/util';
+
+
+const { logger } = initLogger(['view', 'client', 'dialog']);
 
 /**当前对话和发送对话的元组 */
 export type DialogHandle = readonly [
@@ -36,7 +40,7 @@ export function useDialog(): DialogHandle {
 					: await event.data.text();
 				const r = Dialog.safeDecode(payload);
 				if (!r.success) {
-					console.error(z.prettifyError(r.error));
+					logger.error(z.prettifyError(r.error));
 					return;
 				}
 				setData(r.data);
@@ -47,7 +51,7 @@ export function useDialog(): DialogHandle {
 		socket?.addEventListener(
 			'error',
 			event => {
-				console.error(event);
+				logger.error('{event}', { event });
 			},
 			controller,
 		);
