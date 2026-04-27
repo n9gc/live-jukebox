@@ -10,6 +10,7 @@ export * from './config';
 export * from './parser';
 export * from './song-list';
 
+import { getLL } from 'lib/i18n';
 import { getJukeboxConfig, JukeboxConfig } from 'lib/jukebox/config';
 import { Command, Parser } from 'lib/jukebox/parser';
 import { SongList } from 'lib/jukebox/song-list';
@@ -21,6 +22,7 @@ const {
 	logger,
 	thr,
 } = initLogger('jukebox');
+const LL = getLL().jukebox.jukebox;
 
 /**点播机 */
 export class Jukebox {
@@ -52,8 +54,8 @@ export class Jukebox {
 				this.songsAfter(picker => {
 					const result = songList.cancel(picker);
 					isNotOk(result)
-						? logger.warn('{picker} canceled and failed with {result}', { picker, result })
-						: logger.info('{picker} canceled song {title} of {playerName}', result as {});
+						? logger.warn(LL.cancelFailed({ picker, result }))
+						: logger.info(LL.canceled(result));
 					this.dialogEventer.dispatch(Meaning.ServerCancelResult, result);
 				}),
 			)
@@ -61,8 +63,8 @@ export class Jukebox {
 				Command.Song,
 				this.songsAfter(song => {
 					const result = songList.add(song);
-					logger.info('A song of {playerName} named {title} picked by {picker}', song as {});
-					if (isNotOk(result)) thr('Adding a same song {*}', song as {});
+					logger.info(LL.picked(song));
+					if (isNotOk(result)) thr(LL.sameSongAdded(), song as {});
 				}),
 			);
 
@@ -70,10 +72,10 @@ export class Jukebox {
 			.addListener(
 				Meaning.ClientEnd,
 				this.songsAfter(song => {
-					logger.info('song named {title} of {playerName} picked by {picker} end', song as {});
+					logger.info(LL.songEnd(song));
 					const result = songList.end(song);
 					if (isOk(result)) return;
-					logger.warn('{song.title} end with {result}', { result, song });
+					logger.warn(LL.endWithWarn({ result, title: song.title }));
 					this.dialogEventer.dispatch(Meaning.ServerEndResult, result);
 				}),
 			);
@@ -93,7 +95,7 @@ export class Jukebox {
 	/**手动触发一次歌曲列表的同步 */
 	async dispatchSongs(this: this) {
 		const songs = await this.songList.getSongs();
-		logger.info(`dispath song list`, { songs });
+		logger.info(LL.dispathList());
 		this.dialogEventer.dispatch(Meaning.ServerSongs, songs);
 	}
 }

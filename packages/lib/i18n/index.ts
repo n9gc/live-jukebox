@@ -59,7 +59,10 @@ export function intlDetector(): string[] {
 }
 
 export const locale = detectLocale(environmentDetector, intlDetector);
-export const LL = i18nObject(locale);
+const LL = i18nObject(locale);
+export function getLL() {
+	return LL;
+}
 // eslint-disable-next-line no-console
 console.log(LL.i18n.langDetected({ locale }));
 

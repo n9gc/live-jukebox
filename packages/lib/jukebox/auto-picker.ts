@@ -5,11 +5,13 @@
  */
 declare module 'lib/jukebox/auto-picker';
 
+import { getLL } from 'lib/i18n';
 import { Song } from 'lib/player';
 import { isNotOk, ResultPick } from 'lib/result';
 import { getId, initLogger, randomInt } from 'lib/util';
 
 const { logger } = initLogger(['jukebox', 'CommonPicker']);
+const LL = getLL().jukebox.autoPicker;
 
 /**备选点歌器 */
 export abstract class AutoPicker {
@@ -73,10 +75,10 @@ export class CommonPicker extends AutoPicker implements PickerMap {
 	override async pick(this: this): Promise<Song | ResultPick> {
 		const song = await this[this.pickType]();
 		if (isNotOk(song)) {
-			logger.warn('auto pick failed cause {result}', { result: song });
+			logger.warn(LL.pickFailed({ result: song }));
 			return song;
 		}
-		logger.info('auto pick a song named {title} of {playerName}', song as {});
+		logger.info(LL.picked(song));
 		return {
 			...song,
 			id: getId(),
@@ -84,7 +86,7 @@ export class CommonPicker extends AutoPicker implements PickerMap {
 	}
 	override changeType(this: this): void {
 		this.pickType = typeChangeMap[this.pickType];
-		logger.info('Change type to {pickType}', { pickType: this.pickType });
+		logger.info(LL.typeChanged({ pickType: this.pickType }));
 	}
 	constructor(
 		override pickType: PickType = PickType.Circular,
