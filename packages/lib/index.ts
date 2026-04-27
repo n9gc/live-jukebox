@@ -1,6 +1,7 @@
 /**
  * ## 点歌机的公用库
  *
+ * - `lib/i18n` 是各种实用函数
  * - `lib/jukebox` 是点歌机核心部分
  * - `lib/player` 是播放器相关
  * - `lib/reader` 是评论读取器相关
@@ -13,6 +14,7 @@
  */
 declare module 'lib';
 
+export * as i18n from 'lib/i18n';
 export * as jukebox from 'lib/jukebox';
 export * as player from 'lib/player';
 export * as reader from 'lib/reader';

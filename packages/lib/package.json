@@ -12,6 +12,7 @@
 	"types": "./index.ts",
 	"exports": {
 		".": "./index.ts",
+		"./i18n": "./i18n/index.ts",
 		"./jukebox": "./jukebox/index.ts",
 		"./player": "./player/index.ts",
 		"./reader": "./reader/index.ts",
@@ -29,13 +30,19 @@
 		"type": "git"
 	},
 	"scripts": {
-		"prepare": "make-dir dist && ts-to-zod --all"
+		"prepare": "pnpm run /^prepare:.*/",
+		"prepare:ts-to-zod": "make-dir dist && ts-to-zod --all",
+		"prepare:i18n": "typesafe-i18n --no-watch",
+
+		"dev:i18n": "typesafe-i18n"
 	},
 	"dependencies": {
 		"lib": "workspace:^",
 
 		"zod": "latest",
 		"@logtape/logtape": "latest",
+		"typesafe-i18n": "latest",
+		"bcp-47-normalize": "^2.3.0",
 
 		"react": "latest",
 		"@types/react": "latest",

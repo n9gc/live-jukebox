@@ -14,3 +14,4 @@
 
 *.rs
 package.json
+.typesafe-i18n.json
