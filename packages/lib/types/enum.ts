@@ -5,23 +5,26 @@
  */
 declare module 'lib/types/enum';
 
+import { getLL } from 'lib/i18n';
+import type { Asserted, UnionForced, ValueOf } from 'lib/types/defines';
 import { initLogger } from 'lib/util';
 import * as z from 'zod';
 
 const { logger, thr } = initLogger(['types', 'enum']);
+const LL = getLL().types.enum;
 
-/**把 N 的内容物作为联合类型 */
-type ValueOf<N> = N[keyof N];
-/**强制让 T 变成联合对象的形式 */
-type UnionForced<T> = T extends T ? T : never;
 /**类型没有限制的实现 */
 type EnumifiedImpl<T extends Enum | symbol> = T extends Enum
 	? UnionForced<ValueOf<{ [I in keyof T]: EnumifiedImpl<T[I]> }>>
 	: T;
-/**约束类型 */
-type Asserted<A, B> = A extends B ? A : never;
 /**得到枚举对象或者嵌套了枚举对象的枚举对象的枚举类型 */
 export type Enumified<T extends Enum> = Asserted<EnumifiedImpl<T>, symbol>;
+/**过滤掉不是真成员的键 */
+type EnumOwnKeyOfImpl<T extends Enum, K extends keyof T> = K extends K
+	? T[K] extends symbol ? K : never
+	: never;
+/**得到一个枚举对象的真成员键 */
+export type EnumOwnKeyOf<T extends Enum> = Asserted<EnumOwnKeyOfImpl<T, keyof T>, string>;
 /**枚举对象 */
 export interface Enum extends Readonly<Record<string, Enum | symbol>> { }
 
@@ -36,20 +39,21 @@ const markedMap = new WeakMap<symbol, symbol>();
 export function mark(enums: Record<string, Enum>): true {
 	for (const name of Object.keys(enums).toReversed()) {
 		const enumObject = enums[name];
-		logger.trace('marking {name}', { enumObj: enumObject, name });
+		logger.trace(LL.markingObject({ name }));
 		for (const key of Object.keys(enumObject)) {
 			const oriSym = enumObject[key];
 			if (typeof oriSym !== 'symbol') continue;
 			let sym = markedMap.get(oriSym);
 			if (!sym) {
 				sym = Symbol.for(`${name}.${key}`);
-				if (definedMap.get(sym)) {
-					thr('double defined {sym} in {defPos}', { sym, defPos: definedMap.get(sym) });
+				const definedPosition = definedMap.get(sym);
+				if (definedPosition) {
+					thr(LL.doubleDefined({ sym }), { definedPosition });
 				}
-				definedMap.set(sym, new Error('defined here'));
+				definedMap.set(sym, new Error(LL.definedHere()));
 				markedMap.set(oriSym, sym);
 			}
-			logger.trace('{name}.{key} is {sym}', { sym, key, name });
+			logger.trace(LL.markingSymbol({ key, name, sym }));
 			// @ts-ignore
 			enumObject[key] = sym;
 		}
@@ -101,7 +105,7 @@ export function getEnumSchema<T extends Enum>(enumObject: T): SchemaUnion<Enumif
  */
 export function getSymbolCodec<T extends symbol>(sym: T): z.ZodCodec<z.ZodString, z.ZodCustom<T, T>> {
 	const oriKey = Symbol.keyFor(sym)
-		?? thr('The {sym} is not a symbol got by `Symbol.for`', { sym });
+		?? thr(LL.noNameSymbol({ sym }), { sym });
 	return z.codec(z.string(), getSymbolSchema(sym), {
 		encode: () => oriKey,
 		decode(key, context) {

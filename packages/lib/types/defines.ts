@@ -33,3 +33,10 @@ export function getJsonCodec<T extends z.ZodType>(schema: T) {
 	});
 }
 
+/**把 N 的内容物作为联合类型 */
+export type ValueOf<N> = N[keyof N];
+/**强制让 T 变成联合对象的形式 */
+export type UnionForced<T> = T extends T ? T : never;
+/**约束类型 */
+export type Asserted<A, B> = A extends B ? A : never;
+

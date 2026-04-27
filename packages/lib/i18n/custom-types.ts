@@ -5,16 +5,17 @@
  */
 declare module 'lib/i18n/custom-types';
 
+export type { Command, PickType } from 'lib/jukebox';
 export type {
-	ResultPick,
 	ResultListCancel,
 	ResultListEnd,
+	ResultPick,
 } from 'lib/result';
-export type {
-	PickType,
-	Command,
-} from 'lib/jukebox';
-export type {
-	Picker,
-} from 'lib/types';
+export type { Picker } from 'lib/types';
+
+type ErrorImpl = Error;
+export type { ErrorImpl as Error };
+
+type symbolImpl = symbol;
+export type { symbolImpl as symbol };
 
