@@ -5,8 +5,8 @@
  */
 declare module 'lib/jukebox/song-list';
 
-import { AutoPicker } from 'lib/jukebox/auto-picker';
-import { Song } from 'lib/player';
+import type { AutoPicker } from 'lib/jukebox/auto-picker';
+import type { Song } from 'lib/player';
 import {
 	isNotOk,
 	ResultListAdd,
@@ -15,7 +15,8 @@ import {
 	ResultOk,
 	ResultPick,
 } from 'lib/result';
-import { Enumified, mark, Picker } from 'lib/types';
+import type { Enumified, Picker } from 'lib/types';
+import { mark } from 'lib/types';
 
 /**取消播放的方法 */
 export type CancelMethod = Enumified<typeof CancelMethod>;

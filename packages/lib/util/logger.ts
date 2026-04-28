@@ -5,28 +5,27 @@
  */
 declare module 'lib/util/logger';
 
-import { getLogger, type LogLevel, type Logger } from '@logtape/logtape';
-import type { Asserted, Pathable, PathsOf, Visited } from 'lib/types';
+import type { LogLevel, Logger } from '@logtape/logtape';
+import { getLogger } from '@logtape/logtape';
+import { globalLL } from 'lib/i18n';
+import type { Asserted, PathsOf, Visited } from 'lib/types';
+import { FlatTranslationFunctions, ModuleTranslationFunctions } from 'lib/types';
 import { visit } from 'lib/util';
 import * as z from 'zod';
-
-/**自己模块的 LL */
-export const TranslationObject = z.record(z.string(), z.function());
-export type TranslationObject = z.infer<typeof TranslationObject>;
 
 /**
  * @param cause 错误详细信息
  * @param parameters 多语言的参数
  */
 export type Thrower<
-	T extends TranslationObject,
+	T extends FlatTranslationFunctions,
 	K extends keyof T,
 > = (
 	...parameters: Parameters<Asserted<T[K], (...parameters: any[]) => string>>
 		& [Record<string, any>]
 ) => never;
 /**错误函数的对象 */
-type ThrowerObject<T extends TranslationObject> = {
+type ThrowerObject<T extends FlatTranslationFunctions> = {
 	/**方便地抛出错误 */
 	[K in keyof T]: Thrower<T, K>;
 };
@@ -40,9 +39,9 @@ interface Log<V> {
 
 /**把 logtape 和 i18n 一起包装起来 */
 export abstract class LoggerWrap<
-	T extends Pathable<TranslationObject> = Pathable<TranslationObject>,
+	T extends ModuleTranslationFunctions = ModuleTranslationFunctions,
 	P extends string = string,
-	V extends TranslationObject = TranslationObject,
+	V extends FlatTranslationFunctions = FlatTranslationFunctions,
 > implements Log<V> {
 	/**logtape 的日志器 */
 	readonly logger: Logger;
@@ -56,7 +55,7 @@ export abstract class LoggerWrap<
 	) {
 		this.logger = getLogger(scope.split('/'));
 		const visited = visit(globalLL, scope, '/');
-		const result = TranslationObject.safeParse({ ...visited });
+		const result = FlatTranslationFunctions.safeParse({ ...visited });
 		if (!result.success) {
 			const error = z.prettifyError(result.error);
 			throw new Error('not a correct scope\n' + error, { cause: { globalLL, scope, visited } });
@@ -82,7 +81,7 @@ export abstract class LoggerWrap<
 	}
 
 	/**把 parameters 代入到名为 key 的多语言函数中 */
-	protected localize(this: this, key: keyof V, parameters: never[]): string {
+	protected localize(this: this, key: keyof V, parameters: any[]): string {
 		const template = this.LL[key];
 		try {
 			const localString = template(...parameters);
@@ -99,7 +98,7 @@ export abstract class LoggerWrap<
 	readonly log;
 	/**初始化一个输出等级 */
 	protected initLogger(this: this, level: LogLevel): V {
-		const logObject: TranslationObject = {};
+		const logObject: FlatTranslationFunctions = {};
 		for (const key of Object.keys(this.LL)) {
 			logObject[key] = (...parameters) => {
 				const info: any = parameters.length === 1 ? parameters[0] : parameters;
@@ -112,10 +111,10 @@ export abstract class LoggerWrap<
 	/**抛出错误 */
 	readonly thr;
 	/**初始化抛出错误对象 */
-	protected initThr(this: this): ThrowerObject<Asserted<Visited<T, P, '/'>, TranslationObject>> {
-		const logObject: ThrowerObject<TranslationObject> = {};
+	protected initThr(this: this): ThrowerObject<Asserted<Visited<T, P, '/'>, FlatTranslationFunctions>> {
+		const logObject: ThrowerObject<FlatTranslationFunctions> = {};
 		for (const key of Object.keys(this.LL)) {
-			logObject[key] = (...parameters: never[]) => {
+			logObject[key] = (...parameters) => {
 				const message = this.localize(key, parameters);
 				const cause: any = parameters.length === 1 ? parameters[0] : parameters;
 				this.logger.fatal(message, cause);
@@ -132,13 +131,14 @@ const memoried = new WeakMap<{}, Map<string, LoggerWrap>>();
 
 /**
  * 获得把 logtape 和 i18n 一起包装起来的方便输出的对象
+ * 如果你要手动指定全局多语言对象的话用这个函数，否则用 `initLogger`
  * @param globalLL 全局的多语言对象
  * @param scope 当前模块的路径
  */
-export function initLogger<
-	T extends Pathable<TranslationObject>,
-	P extends PathsOf<T, TranslationObject, '/'>,
->(globalLL: T, scope: P): LoggerWrap<T, P, Asserted<Visited<T, P, '/'>, TranslationObject>> {
+export function initLoggerWithGlobal<
+	T extends ModuleTranslationFunctions,
+	P extends PathsOf<T, FlatTranslationFunctions, '/'>,
+>(globalLL: T, scope: P): LoggerWrap<T, P, Asserted<Visited<T, P, '/'>, FlatTranslationFunctions>> {
 	let wrapMap = memoried.get(globalLL);
 	if (!wrapMap) {
 		wrapMap = new Map();
@@ -149,6 +149,19 @@ export function initLogger<
 	const wrap = new class extends LoggerWrap {}(globalLL, scope);
 	wrapMap.set(scope, wrap);
 	return wrap as any;
+}
+
+/**以 type 而不是 interface 定义的类型上更收敛的全局多语言对象 */
+const typedGlobalLL: { [I in keyof globalLL]: globalLL[I] } = globalLL;
+/**
+ * 获得把 logtape 和 i18n 一起包装起来的方便输出的对象
+ * 不需要手动指定全局多语言对象
+ * @param scope 当前模块的路径
+ */
+export function initLogger<
+	P extends PathsOf<typeof typedGlobalLL, FlatTranslationFunctions, '/'>,
+>(scope: P) {
+	return initLoggerWithGlobal(typedGlobalLL, scope);
 }
 
 /**

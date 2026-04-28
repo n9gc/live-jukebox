@@ -5,6 +5,7 @@
  */
 declare module 'lib/types/defines';
 
+import { FlatTranslationFunctions } from 'lib/types/pure';
 import * as z from 'zod';
 
 /**
@@ -126,3 +127,5 @@ export type Visited<
 	S extends string = '.',
 > = VisitedImpl<S, P, M>;
 
+/**一个模块应有的多语言函数结构 */
+export type ModuleTranslationFunctions = Pathable<FlatTranslationFunctions>;

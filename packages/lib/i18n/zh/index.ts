@@ -5,7 +5,7 @@
  */
 declare module 'lib/i18n/zh';
 
-import { Translation } from '../i18n-types';
+import type { Translation } from '../i18n-types';
 
 const zh: Translation = {
 	enums: {

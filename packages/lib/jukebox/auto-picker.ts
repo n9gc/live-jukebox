@@ -5,12 +5,11 @@
  */
 declare module 'lib/jukebox/auto-picker';
 
-import { globalLL } from 'lib/i18n';
-import { Song } from 'lib/player';
+import type { Song } from 'lib/player';
 import { isNotOk, ResultPick } from 'lib/result';
 import { getId, initLogger, randomInt } from 'lib/util';
 
-const { log } = initLogger(globalLL, 'lib/jukebox/autoPicker');
+const { log } = initLogger('lib/jukebox/autoPicker');
 
 /**备选点歌器 */
 export abstract class AutoPicker {

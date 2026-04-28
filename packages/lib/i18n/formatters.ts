@@ -5,10 +5,10 @@
  */
 declare module 'lib/i18n/formatters';
 
-import { globalLL } from 'lib/i18n';
 import { mixLogable } from 'lib/util';
 import type { FormattersInitializer } from 'typesafe-i18n';
-import { AllEnum, translateEnum } from './enum';
+import type { AllEnum } from './enum';
+import { translateEnum } from './enum';
 import type { Formatters, Locales } from './i18n-types';
 
 export const initFormatters: FormattersInitializer<Locales, Formatters> = () => {
@@ -18,7 +18,7 @@ export const initFormatters: FormattersInitializer<Locales, Formatters> = () => 
 			return value ? 'yes' : 'no';
 		},
 		enums(sym: AllEnum) {
-			return translateEnum(globalLL, sym);
+			return translateEnum(sym);
 		},
 	} as Formatters;
 	return mixLogable(formatters);

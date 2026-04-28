@@ -5,12 +5,15 @@
  */
 declare module 'lib/jukebox/config';
 
-import { AutoPicker, CommonPicker } from 'lib/jukebox/auto-picker';
-import { distinguishChinese, Distinguisher } from 'lib/jukebox/parser';
+import type { AutoPicker } from 'lib/jukebox/auto-picker';
+import { CommonPicker } from 'lib/jukebox/auto-picker';
+import type { Distinguisher } from 'lib/jukebox/parser';
+import { distinguishChinese } from 'lib/jukebox/parser';
 import { CancelMethod } from 'lib/jukebox/song-list';
-import { Player } from 'lib/player';
-import { Reader } from 'lib/reader';
-import { Configable, getConfigGetter } from 'lib/util';
+import type { Player } from 'lib/player';
+import type { Reader } from 'lib/reader';
+import type { Configable } from 'lib/util';
+import { getConfigGetter } from 'lib/util';
 
 /**默认配置初始化器 */
 namespace JukeboxConfigIniter {

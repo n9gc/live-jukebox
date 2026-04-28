@@ -10,15 +10,16 @@ export * from './config';
 export * from './parser';
 export * from './song-list';
 
-import { globalLL } from 'lib/i18n';
-import { getJukeboxConfig, JukeboxConfig } from 'lib/jukebox/config';
+import type { JukeboxConfig } from 'lib/jukebox/config';
+import { getJukeboxConfig } from 'lib/jukebox/config';
 import { Command, Parser } from 'lib/jukebox/parser';
 import { SongList } from 'lib/jukebox/song-list';
 import { isNotOk, isOk } from 'lib/result';
-import { DialogEventer, Meaning } from 'lib/types';
+import type { DialogEventer } from 'lib/types';
+import { Meaning } from 'lib/types';
 import { initLogger } from 'lib/util';
 
-const { log, thr } = initLogger(globalLL, 'lib/jukebox/jukebox');
+const { log, thr } = initLogger('lib/jukebox/jukebox');
 
 /**点播机 */
 export class Jukebox {

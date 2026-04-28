@@ -5,14 +5,15 @@
  */
 declare module 'lib/jukebox/parser';
 
-import { globalLL } from 'lib/i18n';
-import { getPicker, Player, Song } from 'lib/player';
-import { Reader } from 'lib/reader';
-import { Danmaku, Enumified, mark, Picker } from 'lib/types';
+import type { Player, Song } from 'lib/player';
+import { getPicker } from 'lib/player';
+import type { Reader } from 'lib/reader';
+import type { Danmaku, Enumified, Picker } from 'lib/types';
+import { mark } from 'lib/types';
 import { Eventer, initLogger } from 'lib/util';
 
 /**弹幕解析器的日志器 */
-const { log } = initLogger(globalLL, 'lib/jukebox/parser');
+const { log } = initLogger('lib/jukebox/parser');
 
 /**命令类型 */
 export type Command = Enumified<typeof Command>;

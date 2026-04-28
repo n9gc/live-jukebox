@@ -5,8 +5,8 @@
  */
 declare module 'lib/types/pure';
 
-import type { getId } from 'lib/util';
 import * as Schema from 'lib/dist/types-schema';
+import type { getId } from 'lib/util';
 
 /**弹幕 */
 export const Danmaku = Schema.Danmaku;
@@ -54,3 +54,6 @@ export interface BaseSong {
 	readonly picker: Picker;
 }
 
+/**单一模块文件的多语言函数 */
+export type FlatTranslationFunctions = Record<string, (...parameters: any[]) => any>;
+export const FlatTranslationFunctions = Schema.TranslationObject;

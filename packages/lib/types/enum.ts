@@ -5,12 +5,11 @@
  */
 declare module 'lib/types/enum';
 
-import { globalLL } from 'lib/i18n';
 import type { Asserted, UnionForced, ValueOf } from 'lib/types/defines';
 import { initLogger } from 'lib/util';
 import * as z from 'zod';
 
-const { log, thr, LL } = initLogger(globalLL, 'lib/types/enum');
+const { log, thr, LL } = initLogger('lib/types/enum');
 
 /**类型没有限制的实现 */
 type EnumifiedImpl<T extends Enum | symbol> = T extends Enum
