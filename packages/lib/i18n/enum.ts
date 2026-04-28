@@ -6,11 +6,9 @@
 declare module 'lib/i18n/enum';
 
 import type * as lib from 'lib';
+import type { globalLL } from 'lib/i18n';
 import type { Asserted, Enum, Enumified, EnumOwnKeyOf } from 'lib/types';
-import type { TranslationFunctions } from './i18n-types';
 import { initLogger } from 'lib/util';
-
-const { thr } = initLogger(['i18n', 'enum']);
 
 /**得到一个模块所有枚举各自的键名称 */
 type ModuleEnumKeyOf<M, N extends keyof M> = N extends N
@@ -39,26 +37,28 @@ export type AllEnum = PackageEnumValueOf<keyof typeof lib>;
 
 /**判断一个键是否是有对应枚举翻译的键 */
 export function assertsEnumKey(
-	LL: TranslationFunctions,
+	globalLL: globalLL,
 	nameKey: string,
 ): asserts nameKey is keyof AllEnumTranslation['enums'] {
-	if (!(nameKey in LL.enums)) {
-		const keys = Object.keys(LL.enums);
-		thr(LL.i18n.notEnumKey({ nameKey, keys }), { nameKey, keys });
+	const { thr } = initLogger(globalLL, 'lib/i18n/enum');
+	if (!(nameKey in globalLL.lib.enums)) {
+		const keys = Object.keys(globalLL.lib.enums);
+		thr.notEnumKey({ nameKey, keys });
 	}
 }
 
 /**翻译枚举对象 */
 export function translateEnum(
-	LL: TranslationFunctions,
+	globalLL: globalLL,
 	sym: AllEnum,
 ): string {
+	const { thr } = initLogger(globalLL, 'lib/i18n/enum');
 	const [name, key] = (Symbol.keyFor(sym)
-		?? thr(LL.types.enum.noNameSymbol({ sym }), { sym }))
+		?? thr.noNameSymbol({ sym }))
 		.split('.');
 	const nameKey = `${name}_${key}`;
-	assertsEnumKey(LL, nameKey);
-	const localString = LL.enums[nameKey]();
+	assertsEnumKey(globalLL, nameKey);
+	const localString = globalLL.lib.enums[nameKey]();
 	return `${name}:[${localString}]`;
 }
 

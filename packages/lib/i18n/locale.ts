@@ -5,11 +5,11 @@
  */
 declare module 'lib/i18n/locale';
 
+import { getLogger } from '@logtape/logtape';
 import { bcp47Normalize } from 'bcp-47-normalize';
-import { initLogger } from 'lib/util';
 import { detectLocale } from './i18n-util';
 
-const { logger } = initLogger(['i18n', 'locale']);
+const logger = getLogger(['lib', 'i18n', 'locale']);
 
 /**规范化语言地区标签 */
 function normalize(tag: string): string {

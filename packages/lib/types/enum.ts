@@ -5,13 +5,12 @@
  */
 declare module 'lib/types/enum';
 
-import { getLL } from 'lib/i18n';
+import { globalLL } from 'lib/i18n';
 import type { Asserted, UnionForced, ValueOf } from 'lib/types/defines';
 import { initLogger } from 'lib/util';
 import * as z from 'zod';
 
-const { logger, thr } = initLogger(['types', 'enum']);
-const LL = getLL().types.enum;
+const { log, thr, LL } = initLogger(globalLL, 'lib/types/enum');
 
 /**类型没有限制的实现 */
 type EnumifiedImpl<T extends Enum | symbol> = T extends Enum
@@ -39,7 +38,7 @@ const markedMap = new WeakMap<symbol, symbol>();
 export function mark(enums: Record<string, Enum>): true {
 	for (const name of Object.keys(enums).toReversed()) {
 		const enumObject = enums[name];
-		logger.trace(LL.markingObject({ name }));
+		log.trace.markingObject({ name });
 		for (const key of Object.keys(enumObject)) {
 			const oriSym = enumObject[key];
 			if (typeof oriSym !== 'symbol') continue;
@@ -48,12 +47,12 @@ export function mark(enums: Record<string, Enum>): true {
 				sym = Symbol.for(`${name}.${key}`);
 				const definedPosition = definedMap.get(sym);
 				if (definedPosition) {
-					thr(LL.doubleDefined({ sym }), { definedPosition });
+					thr.doubleDefined({ sym, definedPosition });
 				}
 				definedMap.set(sym, new Error(LL.definedHere()));
 				markedMap.set(oriSym, sym);
 			}
-			logger.trace(LL.markingSymbol({ key, name, sym }));
+			log.trace.markingSymbol({ key, name, sym });
 			// @ts-ignore
 			enumObject[key] = sym;
 		}
@@ -105,7 +104,7 @@ export function getEnumSchema<T extends Enum>(enumObject: T): SchemaUnion<Enumif
  */
 export function getSymbolCodec<T extends symbol>(sym: T): z.ZodCodec<z.ZodString, z.ZodCustom<T, T>> {
 	const oriKey = Symbol.keyFor(sym)
-		?? thr(LL.noNameSymbol({ sym }), { sym });
+		?? thr.noNameSymbol({ sym });
 	return z.codec(z.string(), getSymbolSchema(sym), {
 		encode: () => oriKey,
 		decode(key, context) {

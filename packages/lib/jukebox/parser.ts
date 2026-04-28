@@ -5,15 +5,14 @@
  */
 declare module 'lib/jukebox/parser';
 
-import { getLL } from 'lib/i18n';
+import { globalLL } from 'lib/i18n';
 import { getPicker, Player, Song } from 'lib/player';
 import { Reader } from 'lib/reader';
 import { Danmaku, Enumified, mark, Picker } from 'lib/types';
 import { Eventer, initLogger } from 'lib/util';
 
 /**弹幕解析器的日志器 */
-const { logger } = initLogger(['jukebox', 'parser']);
-const LL = getLL().jukebox.parser;
+const { log } = initLogger(globalLL, 'lib/jukebox/parser');
 
 /**命令类型 */
 export type Command = Enumified<typeof Command>;
@@ -76,7 +75,7 @@ export class Parser extends Eventer<ParserEvent> implements ParserMap {
 		super();
 		for (const reader of readers) {
 			reader.addListener('danmaku', n => {
-				logger.info(LL.someoneSaid(n));
+				log.info.someoneSaid(n);
 				this.parse(n);
 			});
 		}
@@ -96,11 +95,11 @@ export class Parser extends Eventer<ParserEvent> implements ParserMap {
 		this[type](danmakuDised).then(parsed => {
 			if (parsed === Command.Idk) {
 				const idkObject = { previous: type, danmaku } as const;
-				logger.warn(LL.parseFailed({ message: danmaku.message, previous: type }));
+				log.warn.parseFailed({ message: danmaku.message, previous: type });
 				this.dispatch(Command.Idk, idkObject);
 				return;
 			}
-			logger.info(LL.parsed({ message: danmaku.message, type }));
+			log.info.parsed({ message: danmaku.message, type });
 			this.dispatch(type, parsed);
 		});
 	}

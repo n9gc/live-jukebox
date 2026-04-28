@@ -5,7 +5,7 @@
  */
 declare module './bili-player';
 
-import { Player, registerPlayer, Song } from 'lib/player';
+import { Player, Song } from 'lib/player';
 import { Danmaku } from 'lib/types';
 import { JSX } from 'react';
 import { getVideoInfo } from './api';

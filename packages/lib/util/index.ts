@@ -8,65 +8,17 @@ declare module 'lib/util';
 export * from './config';
 export * from './eventer';
 export { default as Eventer } from './eventer';
+export * from './logger';
 
-import { getLogger, Logger } from '@logtape/logtape';
+import type { Visited } from 'lib/types';
 import type * as crypto from 'node:crypto';
 import * as z from 'zod';
-
-/**
- * 得到一个可以安全调用函数的
- * @param logger 日志器
- */
-export function getRun(logger: Logger) {
-	/**
-	 * 安全调用函数
-	 * @param run 可能抛出错误的函数
-	 * @param info 亡语
-	 * @param level 捕获到错误的等级
-	 */
-	return <T>(run: () => T, info = '{error}', level: 'fatal' | 'error' = 'fatal'): typeof level extends 'error' ? T | false : T => {
-		try {
-			return run();
-		} catch (error) {
-			logger[level](info, { error });
-			if (level === 'error') return false as any;
-			throw error;
-		}
-	};
-}
-
-/**
- * 得到方便地抛出错误的函数
- * @param logger 输出错误的日志器
- */
-export function getThr(logger: Logger) {
-	/**
-	 * 方便地抛出错误
-	 * @param why 为什么抛出错误
-	 * @param cause 错误详细信息
-	 */
-	return (why: string, cause: Record<string, unknown> = {}): never => {
-		const error = new Error(why, { cause });
-		logger.fatal(why, cause);
-		throw error;
-	};
-}
 
 /**全局 id */
 let id = 0n;
 /**获得一个全局 id */
 export function getId(): `song:${bigint}` & z.core.$brand<'SongId'> {
 	return `song:${id++}` as any;
-}
-
-/**库专用的日志器 */
-export const packLogger = getLogger('lib');
-/**得到 logger 以及一些便捷函数 */
-export function initLogger(logger: string | readonly [string, ...string[]] | Logger) {
-	if (typeof logger === 'string' || 'length' in logger) logger = packLogger.getChild(logger);
-	const thr = getThr(logger);
-	const run = getRun(logger);
-	return { logger, thr, run };
 }
 
 /**
@@ -89,5 +41,28 @@ export async function randomInt(min: number, max: number): Promise<number> {
 			resolve(n);
 		});
 	});
+}
+
+/**
+ * 通过 spliter 作为路径分隔符，以 path 访问 object
+ * @param object 要被访问的对象
+ * @param path 路径
+ * @param spliter 分隔符
+ * @returns 对象访问的结果
+ */
+export function visit<
+	M,
+	P extends string,
+	S extends string = '.',
+>(object: M, path: P, spliter?: S): Visited<M, P, S>;
+export function visit(object: any, path: string, spliter = '.'): {} {
+	let key;
+	while (true) {
+		const index = path.indexOf(spliter);
+		if (index === -1) return object?.[path];
+		key = path.slice(0, index);
+		path = path.slice(index + spliter.length);
+		object = object?.[key];
+	}
 }
 

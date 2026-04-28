@@ -10,7 +10,7 @@ export * from './config';
 export * from './parser';
 export * from './song-list';
 
-import { getLL } from 'lib/i18n';
+import { globalLL } from 'lib/i18n';
 import { getJukeboxConfig, JukeboxConfig } from 'lib/jukebox/config';
 import { Command, Parser } from 'lib/jukebox/parser';
 import { SongList } from 'lib/jukebox/song-list';
@@ -18,11 +18,7 @@ import { isNotOk, isOk } from 'lib/result';
 import { DialogEventer, Meaning } from 'lib/types';
 import { initLogger } from 'lib/util';
 
-const {
-	logger,
-	thr,
-} = initLogger('jukebox');
-const LL = getLL().jukebox.jukebox;
+const { log, thr } = initLogger(globalLL, 'lib/jukebox/jukebox');
 
 /**点播机 */
 export class Jukebox {
@@ -54,8 +50,8 @@ export class Jukebox {
 				this.songsAfter(picker => {
 					const result = songList.cancel(picker);
 					isNotOk(result)
-						? logger.warn(LL.cancelFailed({ picker, result }))
-						: logger.info(LL.canceled(result));
+						? log.warn.cancelFailed({ picker, result })
+						: log.info.canceled(result);
 					this.dialogEventer.dispatch(Meaning.ServerCancelResult, result);
 				}),
 			)
@@ -63,8 +59,8 @@ export class Jukebox {
 				Command.Song,
 				this.songsAfter(song => {
 					const result = songList.add(song);
-					logger.info(LL.picked(song));
-					if (isNotOk(result)) thr(LL.sameSongAdded(), song as {});
+					log.info.picked(song);
+					if (isNotOk(result)) thr.sameSongAdded(song);
 				}),
 			);
 
@@ -72,10 +68,10 @@ export class Jukebox {
 			.addListener(
 				Meaning.ClientEnd,
 				this.songsAfter(song => {
-					logger.info(LL.songEnd(song));
+					log.info.songEnd(song);
 					const result = songList.end(song);
 					if (isOk(result)) return;
-					logger.warn(LL.endWithWarn({ result, title: song.title }));
+					log.warn.endWithWarn({ result, title: song.title });
 					this.dialogEventer.dispatch(Meaning.ServerEndResult, result);
 				}),
 			);
@@ -95,7 +91,7 @@ export class Jukebox {
 	/**手动触发一次歌曲列表的同步 */
 	async dispatchSongs(this: this) {
 		const songs = await this.songList.getSongs();
-		logger.info(LL.dispathList());
+		log.info.dispathList();
 		this.dialogEventer.dispatch(Meaning.ServerSongs, songs);
 	}
 }

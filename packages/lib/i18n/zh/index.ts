@@ -29,9 +29,13 @@ const zh: Translation = {
 		ResultListEnd_EndTooEarly: '太早放完歌',
 	},
 	i18n: {
-		langDetected: '成功检测语言：{locale}',
-		notEnumKey: '{nameKey} 不是任何枚举的名字，所有名字：{keys|json}',
-		cannotStringify: '这个没法被 JSON 展示: {0|star}',
+		index: {
+			langDetected: '成功检测语言：{locale}',
+		},
+		enum: {
+			notEnumKey: '{nameKey} 不是任何枚举的名字，所有名字：{keys|log_keys}',
+			noNameSymbol: '{sym|log_sym} 不是一个由 `Symbol.for` 得到的 symbol',
+		},
 	},
 	jukebox: {
 		autoPicker: {
@@ -48,21 +52,25 @@ const zh: Translation = {
 			cancelFailed: '由于 {result|enums} 导致 {picker} 的取消失败了',
 			canceled: '成功为 {picker} 取消了 {playerName} 平台的 {title}',
 			picked: '{picker} 点歌了 {playerName} 平台的 {title}',
-			sameSongAdded: '重复添加了同一首歌：{?|star}',
+			sameSongAdded: '重复添加了同一首歌：{0|log_*}',
 			songEnd: '{picker} 点播的 {playerName} 平台的 {title} 播完了',
 			endWithWarn: '{title} 结束的问题是 {result|enums}',
 			dispathList: '向客户端发送歌曲列表',
 		},
 	},
+	player: {},
+	reader: {},
+	result: {},
 	types: {
 		enum: {
 			markingObject: '正在标记 {name} 组',
-			doubleDefined: '{sym} 已经被定义了，请看：',
+			doubleDefined: '{sym|log_sym} 已经被定义了，请看：',
 			definedHere: 'Defined here',
-			markingSymbol: '正在定义 {sym} 为 {name}.{key}',
-			noNameSymbol: '{sym} 不是一个由 `Symbol.for` 得到的 symbol',
+			markingSymbol: '正在定义 {sym|log_sym} 为 {name}.{key}',
+			noNameSymbol: '{sym|log_sym} 不是一个由 `Symbol.for` 得到的 symbol',
 		},
 	},
+	util: {},
 };
 
 export default zh;

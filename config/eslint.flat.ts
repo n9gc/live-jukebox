@@ -33,6 +33,7 @@ const config: ConfigArray = defineConfig(
 		rules: {
 			'no-unused-vars': 'off',
 			'no-console': 'error',
+			'security/detect-object-injection': 'off',
 		},
 	},
 	includeIgnoreFile(pathTo('../.gitignore')),

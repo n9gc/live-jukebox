@@ -14,14 +14,19 @@ export * from './i18n-types';
 export * from './i18n-util';
 export * from './locale';
 
+import type * as lib from 'lib';
+import type { AllEnumTranslation } from './enum';
 import { L } from './i18n-node';
 import { locale } from './locale';
 
-export const LL = L[locale];
+/**多语言对象 */
+export const globalLL = { lib: L[locale] };
+export type globalLL = typeof globalLL;
 
-export function getLL() {
-	return LL;
-}
+/**库的多语言翻译对象 */
+export type Base = AllEnumTranslation & Record<keyof typeof lib, Record<string, Record<string, string>>>;
+
 // eslint-disable-next-line no-console
-console.log(LL.i18n.langDetected({ locale }));
+console.log(globalLL.lib.i18n.index.langDetected({ locale }));
+
 

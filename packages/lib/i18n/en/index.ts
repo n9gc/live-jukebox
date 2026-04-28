@@ -5,10 +5,9 @@
  */
 declare module 'lib/i18n/en';
 
-import type { AllEnumTranslation } from '../enum';
-import type { BaseTranslation } from '../i18n-types';
+import type { Base } from 'lib/i18n';
 
-const en: BaseTranslation & AllEnumTranslation = {
+const en: Base = {
 	enums: {
 		CancelMethod_Blocking: 'Blocked by the playing',
 		CancelMethod_Anyway: 'Cancel anyway',
@@ -30,9 +29,13 @@ const en: BaseTranslation & AllEnumTranslation = {
 		ResultListEnd_EndTooEarly: 'End too early',
 	},
 	i18n: {
-		langDetected: 'Dectected language: {locale: string}.',
-		notEnumKey: '{nameKey: string} is not key of any Enum. All Enum keys: {keys: string[]|json}',
-		cannotStringify: 'This cannot be JSON.stringify: {:string|star}',
+		index: {
+			langDetected: 'Dectected language: {locale: string}.',
+		},
+		enum: {
+			notEnumKey: '{nameKey: string} is not key of any Enum. All Enum keys: {keys: string[]|log_keys}',
+			noNameSymbol: 'The {sym: symbol|log_sym} is not a symbol got by `Symbol.for`',
+		},
 	},
 	jukebox: {
 		autoPicker: {
@@ -49,21 +52,25 @@ const en: BaseTranslation & AllEnumTranslation = {
 			cancelFailed: '{picker: Picker} canceled and failed with {result: ResultListCancel|enums}',
 			canceled: '{picker: Picker} canceled song {title: string} of {playerName: string}',
 			picked: 'A song of {playerName: string} named {title: string} picked by {picker: Picker}',
-			sameSongAdded: 'Adding a same song {?|star}',
+			sameSongAdded: 'Adding a same song {0|log_*}',
 			songEnd: 'Song named {title: string} of {playerName: string} picked by {picker: Picker} end',
 			endWithWarn: '{title: string} end with {result: ResultListEnd|enums}',
 			dispathList: 'Dispath song list',
 		},
 	},
+	player: {},
+	reader: {},
+	result: {},
 	types: {
 		enum: {
 			markingObject: 'Marking group: {name: string}',
-			doubleDefined: 'Double defined {sym: symbol} in here:',
+			doubleDefined: 'Double defined {sym: symbol|log_sym} in here:',
 			definedHere: 'Defined here',
-			markingSymbol: '{name: string}.{key: string} is {sym: symbol}',
-			noNameSymbol: 'The {sym: symbol} is not a symbol got by `Symbol.for`',
+			markingSymbol: '{name: string}.{key: string} is {sym: symbol|log_sym}',
+			noNameSymbol: 'The {sym: symbol|log_sym} is not a symbol got by `Symbol.for`',
 		},
 	},
+	util: {},
 };
 
 export default en;
