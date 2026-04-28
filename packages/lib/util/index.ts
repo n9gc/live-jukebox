@@ -66,22 +66,3 @@ export function visit(object: any, path: string, spliter = '.'): {} {
 	}
 }
 
-/**
- * 给 typesafe-i18n 的格式化器添加可以用于 logtape 的函数
- * 只要 `{key: symbol|log_key}` 或者 `{obj: Info|log_obj}` 这样使用
- * `LoggerWrap` 就能通过 logtape 输出这些值，而不是简单用 i18n 拼接字符串
- * @param formatters 你的 Formatters 对象
- */
-export function mixLogable<T extends {}>(formatters: T):
-	T & Record<`log_${string}`, () => string> {
-	return new Proxy(formatters, {
-		get(target, p) {
-			if (typeof p !== 'string' || !p.startsWith('log_')) {
-				return Reflect.get(target, p);
-			}
-			const key = p.slice('log_'.length);
-			return () => `{${key}}`;
-		},
-	});
-}
-
