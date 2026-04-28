@@ -52,7 +52,7 @@ const en: Base = {
 			cancelFailed: '{picker: Picker} canceled and failed with {result: ResultListCancel|enums}',
 			canceled: '{picker: Picker} canceled song {title: string} of {playerName: string}',
 			picked: 'A song of {playerName: string} named {title: string} picked by {picker: Picker}',
-			sameSongAdded: 'Adding a same song {0|log_*}',
+			sameSongAdded: 'Adding a same song {0: Song|log_*}',
 			songEnd: 'Song named {title: string} of {playerName: string} picked by {picker: Picker} end',
 			endWithWarn: '{title: string} end with {result: ResultListEnd|enums}',
 			dispathList: 'Dispath song list',

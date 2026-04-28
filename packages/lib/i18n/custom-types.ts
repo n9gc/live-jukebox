@@ -12,6 +12,7 @@ export type {
 	ResultPick,
 } from 'lib/result';
 export type { Picker } from 'lib/types';
+export type { Song } from 'lib/player';
 
 type ErrorImpl = Error;
 export type { ErrorImpl as Error };

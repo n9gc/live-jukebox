@@ -18,7 +18,7 @@ import * as z from 'zod';
 type ThrowerObject<T extends FlatTranslationFunctions> = {
 	[K in keyof T]: (
 		...parameters: Parameters<Asserted<T[K], (...parameters: any[]) => string>>
-			& [Record<string, any>]
+			& [Record<string, any>?]
 	) => never;
 };
 /**安全调用函数对象 */
