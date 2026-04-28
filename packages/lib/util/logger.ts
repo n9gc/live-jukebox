@@ -11,23 +11,23 @@ import { globalLL } from 'lib/i18n';
 import type { Asserted, PathsOf, Visited } from 'lib/types';
 import { FlatTranslationFunctions, ModuleTranslationFunctions } from 'lib/types';
 import { visit } from 'lib/util';
+import type { LocalizedString } from 'typesafe-i18n';
 import * as z from 'zod';
 
-/**
- * @param cause 错误详细信息
- * @param parameters 多语言的参数
- */
-export type Thrower<
-	T extends FlatTranslationFunctions,
-	K extends keyof T,
-> = (
-	...parameters: Parameters<Asserted<T[K], (...parameters: any[]) => string>>
-		& [Record<string, any>]
-) => never;
-/**错误函数的对象 */
+/**抛出错误对象 */
 type ThrowerObject<T extends FlatTranslationFunctions> = {
-	/**方便地抛出错误 */
-	[K in keyof T]: Thrower<T, K>;
+	[K in keyof T]: (
+		...parameters: Parameters<Asserted<T[K], (...parameters: any[]) => string>>
+			& [Record<string, any>]
+	) => never;
+};
+/**安全调用函数对象 */
+type RunnerObject<T extends FlatTranslationFunctions> = {
+	[K in keyof T as `if${Capitalize<Asserted<K, string>>}`]: <R, L extends 'fatal' | 'error'>(
+		runFunction: () => R,
+		level: L,
+		...parameters: Parameters<Asserted<T[K], (...parameters: any[]) => string>>
+	) => L extends 'error' ? R | undefined : R;
 };
 
 const string = z.string();
@@ -37,22 +37,107 @@ interface Log<V> {
 	readonly log: Readonly<Record<LogLevel | 'warn', Readonly<V>>>;
 }
 
+/**用于初始化的工具函数 */
+abstract class LoggerWrapUtility<V extends FlatTranslationFunctions> {
+	/**logtape 的日志器 */
+	abstract readonly logger: Logger;
+	/**自己模块的 LL */
+	abstract readonly LL: V;
+
+	/**把 parameters 代入到名为 key 的多语言函数中 */
+	protected localize(this: this, key: keyof V, parameters: any[]) {
+		const template = this.LL[key];
+		const info: any = parameters.length === 1 ? parameters[0] : parameters;
+		try {
+			const message: LocalizedString = template(...parameters);
+			const result = string.safeParse(message);
+			if (!result.success) throw z.prettifyError(result.error);
+			return {
+				message,
+				info,
+			};
+		} catch (error) {
+			this.logger.fatal('logging fatal');
+			throw error;
+		}
+	}
+
+	/**
+	 * 把多语言对象映射为各种各样的函数对象
+	 * @param operation 对象里具体的函数
+	 * @returns T 要映射到的对象
+	 */
+	protected init<T extends Record<string, Function>>(
+		this: this,
+		operation: (n: { message: LocalizedString; info: any }, ...parameters: any[]) => unknown,
+	): T {
+		const logObject = {} as T;
+		for (const key of Object.keys(this.LL)) {
+			logObject[key as keyof T] = ((...parameters: any[]) => {
+				const n = this.localize(key, parameters);
+				operation(n, ...parameters);
+			}) as any;
+		}
+		return logObject;
+	}
+
+
+	/**初始化一个输出等级 */
+	protected initLogger(this: this, level: LogLevel): V {
+		return this.init(({ message, info }) => {
+			this.logger[level](message, info);
+			return message;
+		});
+	}
+
+	/**初始化抛出错误对象 */
+	protected initThr(this: this): ThrowerObject<V> {
+		return this.init(({ message, info: cause }) => {
+			this.logger.fatal(message, cause);
+			const error = new Error(message, { cause });
+			throw error;
+		});
+	};
+
+	/**初始化安全调用函数 */
+	protected initRun(this: this): RunnerObject<V> {
+		return this.init((
+			{ message, info },
+			runFunction: () => unknown,
+			level: 'fatal' | 'error',
+		) => {
+			try {
+				return runFunction();
+			} catch (error) {
+				this.logger[level](message, info);
+				if (level === 'fatal') throw error;
+				return;
+			}
+		});
+	};
+}
+
 /**把 logtape 和 i18n 一起包装起来 */
 export abstract class LoggerWrap<
 	T extends ModuleTranslationFunctions = ModuleTranslationFunctions,
 	P extends string = string,
 	V extends FlatTranslationFunctions = FlatTranslationFunctions,
-> implements Log<V> {
-	/**logtape 的日志器 */
+> extends LoggerWrapUtility<V> implements Log<V> {
 	readonly logger: Logger;
-	/**自己模块的 LL */
 	readonly LL: V;
+	/**日志器 */
+	readonly log;
+	/**抛出错误 */
+	readonly thr;
+	/**安全调用函数 */
+	readonly run;
 	constructor(
 		/**全局的 LL */
 		readonly globalLL: T,
 		/**模块的名称 */
 		readonly scope: P,
 	) {
+		super();
 		this.logger = getLogger(scope.split('/'));
 		const visited = visit(globalLL, scope, '/');
 		const result = FlatTranslationFunctions.safeParse({ ...visited });
@@ -78,52 +163,8 @@ export abstract class LoggerWrap<
 			fatal: this.initLogger('fatal'),
 		};
 		this.thr = this.initThr();
+		this.run = this.initRun();
 	}
-
-	/**把 parameters 代入到名为 key 的多语言函数中 */
-	protected localize(this: this, key: keyof V, parameters: any[]): string {
-		const template = this.LL[key];
-		try {
-			const localString = template(...parameters);
-			const result = string.safeParse(localString);
-			if (!result.success) throw z.prettifyError(result.error);
-			return result.data;
-		} catch (error) {
-			this.logger.fatal('logging fatal');
-			throw error;
-		}
-	}
-
-	/**日志器 */
-	readonly log;
-	/**初始化一个输出等级 */
-	protected initLogger(this: this, level: LogLevel): V {
-		const logObject: FlatTranslationFunctions = {};
-		for (const key of Object.keys(this.LL)) {
-			logObject[key] = (...parameters) => {
-				const info: any = parameters.length === 1 ? parameters[0] : parameters;
-				this.logger[level](this.localize(key, parameters), info);
-			};
-		}
-		return logObject as any;
-	}
-
-	/**抛出错误 */
-	readonly thr;
-	/**初始化抛出错误对象 */
-	protected initThr(this: this): ThrowerObject<Asserted<Visited<T, P, '/'>, FlatTranslationFunctions>> {
-		const logObject: ThrowerObject<FlatTranslationFunctions> = {};
-		for (const key of Object.keys(this.LL)) {
-			logObject[key] = (...parameters) => {
-				const message = this.localize(key, parameters);
-				const cause: any = parameters.length === 1 ? parameters[0] : parameters;
-				this.logger.fatal(message, cause);
-				const error = new Error(message, { cause });
-				throw error;
-			};
-		}
-		return logObject as any;
-	};
 }
 
 /**重用相同模块的 LoggerWrap */
@@ -164,43 +205,3 @@ export function initLogger<
 	return initLoggerWithGlobal(typedGlobalLL, scope);
 }
 
-/**
- * 给 typesafe-i18n 的格式化器添加可以用于 logtape 的函数
- * 只要 `{key: symbol|log_key}` 或者 `{obj: Info|log_obj}` 这样使用
- * `LoggerWrap` 就能通过 logtape 输出这些值，而不是简单用 i18n 拼接字符串
- * @param formatters 你的 Formatters 对象
- */
-export function mixLogable<T extends {}>(formatters: T):
-	T & Record<`log_${string}`, () => string> {
-	return new Proxy(formatters, {
-		get(target, p) {
-			if (typeof p !== 'string' || !p.startsWith('log_')) {
-				return Reflect.get(target, p);
-			}
-			const key = p.slice('log_'.length);
-			return () => `{${key}}`;
-		},
-	});
-}
-
-/**
- * 安全调用函数
- * @param logger 日志器
- * @param run 可能抛出错误的函数
- * @param info 亡语
- * @param level 捕获到错误的等级
- */
-export function run<T>(
-	logger: Logger,
-	run: () => T,
-	info = '{error}',
-	level: 'fatal' | 'error' = 'fatal',
-): typeof level extends 'error' ? T | false : T {
-	try {
-		return run();
-	} catch (error) {
-		logger[level](info, { error });
-		if (level === 'error') return false as any;
-		throw error;
-	}
-};

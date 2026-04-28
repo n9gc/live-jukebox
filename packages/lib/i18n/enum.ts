@@ -34,7 +34,10 @@ type PackageEnumValueOf<K extends keyof typeof lib> = K extends K
 /**项目里所有的枚举 */
 export type AllEnum = PackageEnumValueOf<keyof typeof lib>;
 
-/**判断一个键是否是有对应枚举翻译的键 */
+/**
+ * 判断一个键是否是有对应枚举翻译的键
+ * @throws {Error} 没有对应翻译时
+ */
 export function assertsEnumKey(nameKey: string):
 	asserts nameKey is keyof AllEnumTranslation['enums'] {
 	const { thr } = initLogger('lib/i18n/enum');
@@ -44,7 +47,10 @@ export function assertsEnumKey(nameKey: string):
 	}
 }
 
-/**翻译枚举对象 */
+/**
+ * 翻译枚举对象
+ * @throws {Error} sym 没有名字，或者枚举没有注册翻译时
+ */
 export function translateEnum(sym: AllEnum): string {
 	const { thr } = initLogger('lib/i18n/enum');
 	const [name, key] = (Symbol.keyFor(sym)

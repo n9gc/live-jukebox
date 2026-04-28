@@ -33,6 +33,7 @@ const markedMap = new WeakMap<symbol, symbol>();
 /**
  * 给所有 symbol 打上标记
  * @param enums 导出枚举的模块
+ * @throws {Error} 有重复名称的枚举时
  */
 export function mark(enums: Record<string, Enum>): true {
 	for (const name of Object.keys(enums).toReversed()) {
@@ -100,6 +101,7 @@ export function getEnumSchema<T extends Enum>(enumObject: T): SchemaUnion<Enumif
 /**
  * 给一个 symbol 实现 Codec ，通过 Symbol.for 实现
  * @param sym 通过 Symbol.for 产生的 symbol ，比如被 mark 过的枚举
+ * @throws {Error} sym 没有名字时
  */
 export function getSymbolCodec<T extends symbol>(sym: T): z.ZodCodec<z.ZodString, z.ZodCustom<T, T>> {
 	const oriKey = Symbol.keyFor(sym)

@@ -5,7 +5,7 @@
  */
 declare module 'lib/types/defines';
 
-import { FlatTranslationFunctions } from 'lib/types/pure';
+import { FlatTranslation, FlatTranslationFunctions } from 'lib/types/pure';
 import * as z from 'zod';
 
 /**
@@ -129,3 +129,9 @@ export type Visited<
 
 /**一个模块应有的多语言函数结构 */
 export type ModuleTranslationFunctions = Pathable<FlatTranslationFunctions>;
+
+/**
+ * 一个模块应有的多语言定义结构
+ * 为了避免 initLogger 函数无法识别模块名称，最好用这个类型限制模块多语言的定义
+ */
+export type ModuleTranslation = Pathable<FlatTranslation>;
