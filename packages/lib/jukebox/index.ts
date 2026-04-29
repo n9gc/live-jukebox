@@ -14,10 +14,10 @@ import type { JukeboxConfig } from 'lib/jukebox/config';
 import { getJukeboxConfig } from 'lib/jukebox/config';
 import { Command, Parser } from 'lib/jukebox/parser';
 import { SongList } from 'lib/jukebox/song-list';
-import { isNotOk, isOk } from 'lib/result';
+import { isNotOk, ResultListEnd, ResultOk, typeOf } from 'lib/result';
 import type { DialogEventer } from 'lib/types';
 import { Meaning } from 'lib/types';
-import { initLogger } from 'lib/util';
+import { exhaust, initLogger } from 'lib/util';
 
 const { log, thr } = initLogger('lib/jukebox/jukebox');
 
@@ -52,8 +52,8 @@ export class Jukebox {
 					const result = songList.cancel(picker);
 					isNotOk(result)
 						? log.warn.cancelFailed({ picker, result })
-						: log.info.canceled(result);
-					this.dialogEventer.dispatch(Meaning.ServerCancelResult, result);
+						: log.info.canceled(result[1]);
+					// this.dialogEventer.dispatch(Meaning.ServerCancelResult, result);
 				}),
 			)
 			.addListener(
@@ -71,9 +71,21 @@ export class Jukebox {
 				this.songsAfter(song => {
 					log.info.songEnd(song);
 					const result = songList.end(song);
-					if (isOk(result)) return;
-					log.warn.endWithWarn({ result, title: song.title });
-					this.dialogEventer.dispatch(Meaning.ServerEndResult, result);
+					const type = typeOf(result);
+					switch (type) {
+						case ResultListEnd.EndTooEarly: {
+							break;
+						}
+						case ResultListEnd.EndTooLate: {
+							log.warn.endWithWarn({ result: type, title: song.title });
+							break;
+						}
+						case ResultOk.Ok: {
+							break;
+						}
+						default: { exhaust(type); }
+					}
+					// this.dialogEventer.dispatch(Meaning.ServerEndResult, result);
 				}),
 			);
 	}
@@ -91,9 +103,9 @@ export class Jukebox {
 
 	/**手动触发一次歌曲列表的同步 */
 	async dispatchSongs(this: this) {
-		const songs = await this.songList.getSongs();
+		const result = await this.songList.getSongs();
 		log.info.dispathList();
-		this.dialogEventer.dispatch(Meaning.ServerSongs, songs);
+		// this.dialogEventer.dispatch(Meaning.ServerSongs, result);
 	}
 }
 

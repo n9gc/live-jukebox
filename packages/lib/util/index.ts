@@ -10,6 +10,7 @@ export * from './eventer';
 export { default as Eventer } from './eventer';
 export * from './logger';
 
+import { getLogger } from '@logtape/logtape';
 import type { Visited } from 'lib/types';
 import type * as crypto from 'node:crypto';
 import * as z from 'zod';
@@ -64,5 +65,15 @@ export function visit(object: any, path: string, spliter = '.'): {} {
 		path = path.slice(index + spliter.length);
 		object = object?.[key];
 	}
+}
+
+/**
+ * 类型和运行时判断一个值的类型是 never
+ * 用于检查分支是否穷尽
+ */
+export function exhaust(cause: never): never {
+	const logger = getLogger(['lib', 'util']);
+	logger.fatal`Should be never ${cause}`;
+	throw new Error(`Should be never`, { cause });
 }
 

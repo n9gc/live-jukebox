@@ -6,7 +6,7 @@
 declare module 'lib/jukebox/auto-picker';
 
 import type { Song } from 'lib/player';
-import { isNotOk, ResultPick } from 'lib/result';
+import { AFResult, isNotOk, ResultOk, ResultPick, withData } from 'lib/result';
 import { getId, initLogger, randomInt } from 'lib/util';
 
 const { log } = initLogger('lib/jukebox/autoPicker');
@@ -16,7 +16,7 @@ export abstract class AutoPicker {
 	/**歌曲列表 */
 	songs: Song[] = [];
 	/**获得一首备选歌 */
-	abstract pick(this: this): Promise<Song | ResultPick>;
+	abstract pick(this: this): AFResult<ResultPick, [ResultOk, Song]>;
 
 	/**当前播放模式 */
 	protected abstract pickType: string;
@@ -54,33 +54,35 @@ export class CommonPicker extends AutoPicker implements PickerMap {
 	async [PickType.Random](this: this) {
 		if (this.songs.length === 0) return ResultPick.NoMusic;
 		this.index = await randomInt(0, this.songs.length);
-		return this.songs.at(this.index)
-			?? ResultPick.NoMusic;
+		const song = this.songs[this.index];
+		return withData(song);
 	};
 	async [PickType.Sequential](this: this) {
-		return this.songs.at(this.index++)
-			?? this.songs.length
+		const song = this.songs.at(this.index++);
+		if (song) return withData(song);
+		return this.songs.length > 0
 			? ResultPick.End
 			: ResultPick.NoMusic;
 	};
 	async [PickType.Circular](this: this) {
-		this.index = 0;
-		return this.songs.at(this.index++)
-			?? this.songs.at(this.index)
-			?? ResultPick.NoMusic;
+		const song = this.songs.at(this.index++)
+			?? this.songs.at(this.index = 0);
+		if (song) return withData(song);
+		return ResultPick.NoMusic;
 	};
 
-	override async pick(this: this): Promise<Song | ResultPick> {
-		const song = await this[this.pickType]();
-		if (isNotOk(song)) {
-			log.warn.pickFailed({ result: song });
-			return song;
+	override async pick(this: this): AFResult<ResultPick, [ResultOk, Song]> {
+		const result = await this[this.pickType]();
+		if (isNotOk(result)) {
+			log.warn.pickFailed({ result });
+			return result;
 		}
+		const [_, song] = result;
 		log.info.picked(song);
-		return {
+		return withData({
 			...song,
 			id: getId(),
-		};
+		});
 	}
 	override changeType(this: this): void {
 		this.pickType = typeChangeMap[this.pickType];

@@ -21,6 +21,7 @@ export namespace ResultPick {
 	export const NoMusic = Symbol();
 	/**歌单放完了 */
 	export const End = Symbol();
+	export import Ok = ResultOk;
 }
 
 /**歌曲列表切换下一首歌的结果 */
@@ -30,6 +31,7 @@ export namespace ResultListEnd {
 	export const EndTooLate = Symbol();
 	/**要结束的歌前面还有歌没结束呢 */
 	export const EndTooEarly = Symbol();
+	export type EndTooEarly = typeof EndTooEarly;
 	export import Ok = ResultOk;
 }
 
@@ -48,6 +50,7 @@ export namespace ResultListCancel {
 	export const NoCancelable = Symbol();
 	/**要被取消的歌还在放 */
 	export const Playing = Symbol();
+	export import Ok = ResultOk;
 }
 
 /**所有操作的结果 */
