@@ -7,17 +7,18 @@ declare module 'lib/util/logger';
 
 import type { LogLevel, Logger } from '@logtape/logtape';
 import { getLogger } from '@logtape/logtape';
+import { FlatTranslationFunctions as FlatTranslationFunctionsSchema } from 'lib/dist/types-schema';
 import { innerGlobalLL } from 'lib/i18n';
 import type {
-	FlatTranslationFunctions,
 	Asserted,
+	FlatTranslationFunctions,
+	ModuleTranslationFunctions,
 	PathsOf,
 	Visited,
-	ModuleTranslationFunctions,
 } from 'lib/types';
-import { FlatTranslationFunctions as FlatTranslationFunctionsSchema } from 'lib/dist/types-schema';
 import { visit } from 'lib/util';
 import type { LocalizedString } from 'typesafe-i18n';
+import { experimentalParseMessage, experimentalSerializeMessage } from 'typesafe-i18n/parser';
 import * as z from 'zod';
 
 /**抛出错误对象 */
@@ -43,31 +44,42 @@ interface Log<V> {
 	readonly log: Readonly<Record<LogLevel | 'warn', Readonly<V>>>;
 }
 
-/**用于初始化的工具函数 */
-abstract class LoggerWrapUtility<V extends FlatTranslationFunctions> {
+/**多语言解析函数类 */
+abstract class Localizable<V extends FlatTranslationFunctions> {
 	/**logtape 的日志器 */
 	abstract readonly logger: Logger;
 	/**自己模块的 LL */
 	abstract readonly LL: V;
 
-	/**把 parameters 代入到名为 key 的多语言函数中 */
-	protected localize(this: this, key: keyof V, parameters: any[]) {
-		const template = this.LL[key];
-		const info: any = parameters.length === 1 ? parameters[0] : parameters;
+	/**内部安全运行函数 */
+	protected safeRun<T>(run: () => T): T {
 		try {
-			const message: LocalizedString = template(...parameters);
-			const result = string.safeParse(message);
-			if (!result.success) throw z.prettifyError(result.error);
-			return {
-				message,
-				info,
-			};
+			return run();
 		} catch (error) {
 			this.logger.fatal('logging fatal');
 			throw error;
 		}
 	}
 
+	/**把 parameters 代入到名为 key 的多语言函数中 */
+	protected localize(this: this, key: keyof V, parameters: any[]) {
+		const info: any = parameters.length === 1
+			&& typeof parameters[0] === 'object'
+			&& !Array.isArray(parameters[0])
+			&& parameters[0] !== null
+			? parameters[0]
+			: parameters;
+		return this.safeRun(() => {
+			const message: LocalizedString = this.LL[key](...parameters);
+			string.parse(message);
+			return { message, info };
+		});
+	}
+}
+
+/**用于初始化的工具函数 */
+abstract class LoggerWrapUtility<V extends FlatTranslationFunctions>
+	extends Localizable<V> {
 	/**
 	 * 把多语言对象映射为各种各样的函数对象
 	 * @param operation 对象里具体的函数
@@ -145,6 +157,33 @@ export abstract class LoggerWrap<
 	readonly thr;
 	/**安全调用函数 */
 	readonly run;
+	/**把带 log 格式化器的参数都加上字段名 */
+	private handleRaw() {
+		for (const key of Object.keys(this.LL)) this.safeRun(() => {
+			const defination = string.parse(
+				Object.getOwnPropertyDescriptor(this.LL, key)?.value,
+			);
+			const parsed = experimentalParseMessage(defination);
+			const added = parsed.map(part => (part.kind === 'parameter'
+				? {
+					...part,
+					transforms: part
+						.transforms
+						.map(pipe => (pipe.kind === 'formatter'
+							&& pipe.name === 'log'
+							? {
+								...pipe,
+								name: `log_${part.key}`,
+							}
+							: pipe
+						)),
+				}
+				: part
+			));
+			const target = experimentalSerializeMessage(added);
+			(this.LL as any)[key] = target;
+		});
+	}
 	constructor(
 		/**全局的 LL */
 		readonly globalLL: T,
@@ -160,6 +199,7 @@ export abstract class LoggerWrap<
 			throw new Error('not a correct scope\n' + error, { cause: { globalLL, scope, visited } });
 		}
 		this.LL = visited as any;
+		this.handleRaw();
 		this.log = {
 			/**追踪等级的日志 */
 			trace: this.initLogger('trace'),

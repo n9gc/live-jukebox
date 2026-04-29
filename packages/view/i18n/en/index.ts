@@ -11,13 +11,13 @@ import type { BaseTranslation } from '../i18n-types';
 const en: BaseTranslation & ModuleTranslation = {
 	server: {
 		ws: {
-			dialogTypeError: 'not a correct dialog type\n{parseError: string}\n{message: string}',
+			dialogTypeError: 'not a correct dialog type\n{parseError: string}\n{message: string|log}',
 		},
 	},
 	client: {
 		dialog: {
-			dialogTypeError: 'not a correct dialog type\n{parseError: string}\n{message: string}',
-			socketError: 'socket error: {event: Event|log_event}',
+			dialogTypeError: 'not a correct dialog type\n{parseError: string}\n{message: string|log}',
+			socketError: 'socket error: {event: Event|log}',
 		},
 	},
 };

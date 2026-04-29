@@ -61,7 +61,7 @@ export class Jukebox {
 				this.songsAfter(song => {
 					const result = songList.add(song);
 					log.info.picked(song);
-					if (isNotOk(result)) thr.sameSongAdded(song);
+					if (isNotOk(result)) thr.sameSongAdded({ song });
 				}),
 			);
 

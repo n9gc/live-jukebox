@@ -40,6 +40,9 @@ export type ValueOf<N> = N[keyof N];
 /**强制让 T 变成联合对象的形式 */
 export type UnionForced<T> = T extends T ? T : never;
 
+/**把联合类型 T 变成交叉类型 */
+export type Intersected<T> = (T extends T ? (n: T) => never : never) extends ((n: infer I) => never) ? I : never;
+
 /**约束类型 */
 export type Asserted<A, B> = A extends B ? A : never;
 

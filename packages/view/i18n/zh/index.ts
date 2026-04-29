@@ -10,13 +10,13 @@ import type { Translation } from '../i18n-types';
 const zh: Translation = {
 	server: {
 		ws: {
-			dialogTypeError: '对话类型错误\n{parseError}\n{message}',
+			dialogTypeError: '对话类型错误\n{parseError}\n{message|log}',
 		},
 	},
 	client: {
 		dialog: {
-			dialogTypeError: '对话类型错误\n{parseError}\n{message}',
-			socketError: 'Web Socket 错误：{event|log_event}',
+			dialogTypeError: '对话类型错误\n{parseError}\n{message|log}',
+			socketError: 'Web Socket 错误：{event|log}',
 		},
 	},
 };
