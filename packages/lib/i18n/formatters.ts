@@ -6,7 +6,6 @@
 declare module 'lib/i18n/formatters';
 
 import type { FormattersInitializer } from 'typesafe-i18n';
-import type { AllEnum } from './enum';
 import { translateEnum } from './enum';
 import type { Formatters, Locales } from './i18n-types';
 
@@ -38,33 +37,37 @@ export function mixDynamic<S extends string, E extends string, T, P, R>(
 }
 
 /**初始化格式化器对象 */
-export const initFormatters: FormattersInitializer<Locales, Formatters> = () => {
-	let formatters = {
+function formatterIniter() {
+	const formatters0 = {
 		/**把布尔值变成 yes 和 no */
-		bool(value: boolean) {
-			return value ? 'yes' : 'no';
-		},
+		bool: (value: boolean) => (value ? 'yes' : 'no'),
 		/**翻译枚举 */
-		enums(sym: AllEnum) {
-			return translateEnum(sym);
-		},
-	} as Formatters;
+		enums: translateEnum,
+	} as const;
 	// 添加可以用于 logtape 的函数
 	// 只要 `{key: symbol|log_key}` 或者 `{obj: Info|log_obj}` 这样使用
 	// `LoggerWrap` 就能通过 logtape 输出这些值，而不是简单用 i18n 拼接字符串
-	formatters = mixDynamic(
+	const formatters1 = mixDynamic(
 		'log_',
 		'',
 		key => `{${key}}`,
-		formatters,
+		formatters0,
 	);
 	// 添加类似 `Array['join']` 的函数
 	// `{list: string[]|join(,)}` 就等于 `list.join(',')`
-	formatters = mixDynamic(
+	const formatters2 = mixDynamic(
 		'join(',
 		')',
 		(key, list: string[]) => list.join(key),
-		formatters,
+		formatters1,
 	);
-	return formatters;
-};
+
+	return formatters2;
+}
+export function getForattersIniter<
+	F extends Record<string, (value: any) => unknown>,
+>(): FormattersInitializer<Locales, F> {
+	return formatterIniter as any;
+}
+
+export const initFormatters = getForattersIniter<Formatters>();
