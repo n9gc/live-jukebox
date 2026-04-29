@@ -7,5 +7,5 @@
 	},
 	"references": [{ "path": "../lib" }],
 	"files": ["./manage.ts", "./test.ts"],
-	"include": ["lib/*.ts"]
+	"include": ["lib/*.ts", "./i18n/*.ts", "./i18n/*/*.ts"]
 }

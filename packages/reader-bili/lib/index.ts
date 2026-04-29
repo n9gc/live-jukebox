@@ -6,10 +6,10 @@
 declare module '.';
 
 import { Reader } from 'lib/reader';
-import * as z from 'zod';
-import { listenDm, ListenDmConfig } from './utility';
-import { BiliDanmaku, PyBiliDanmaku } from './types';
 import { ChildProcessWithoutNullStreams } from 'node:child_process';
+import * as z from 'zod';
+import { listenDm, ListenDmConfig } from './listen';
+import { BiliDanmaku, PyBiliDanmaku } from './types';
 
 /**b 站弹幕读取器的配置 */
 export const BiliReaderConfig = ListenDmConfig.safeExtend({
@@ -36,5 +36,4 @@ export default class BiliReader extends Reader {
 		});
 	}
 }
-
 

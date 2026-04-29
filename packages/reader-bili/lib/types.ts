@@ -5,8 +5,8 @@
  */
 declare module './types';
 
-import * as z from 'zod';
 import { Danmaku, getJsonCodec } from 'lib/types';
+import * as z from 'zod';
 
 /**文本 */
 export const DmTypeTexts = z.literal(0);

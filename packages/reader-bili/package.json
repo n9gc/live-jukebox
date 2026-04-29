@@ -19,12 +19,17 @@
 		"type": "git"
 	},
 	"scripts": {
-		"prepare": "tsx ./manage.ts prepare"
+		"prepare": "pnpm run /^prepare:.*/",
+		"prepare:i18n": "typesafe-i18n --no-watch",
+		"prepare:pyenv": "tsx ./manage.ts prepare",
+
+		"dev:i18n": "typesafe-i18n"
 	},
 	"dependencies": {
 		"lib": "workspace:^",
 		"@types/node": "latest",
 		"zod": "latest",
+		"typesafe-i18n": "latest",
 		"@logtape/logtape": "latest",
 		"esm-entry": "latest"
 	}
