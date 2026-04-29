@@ -4,7 +4,8 @@
    "baseLocale": "en",
    "outputPath": "./i18n/",
    "adapters": [
-      "node"
+      "node",
+	  "react"
    ],
    "esmImports": false
 }

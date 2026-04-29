@@ -6,20 +6,24 @@
 declare module '@/app/api/ws/route';
 
 import { dialogEventer, jukebox } from '@/app/lib/jukebox';
+import { initLogger } from '@/i18n';
 import { Dialog, ServerMeanings } from 'lib/types';
-import { initLogger } from 'lib/util';
 import type { WebSocket } from 'ws';
 import * as z from 'zod';
 
-const { logger } = initLogger(['view', 'server', 'ws']);
+const { log } = initLogger('view/server/ws');
 
 export function UPGRADE(
 	client: WebSocket,
 ) {
-	client.on('message', message => {
-		const r = Dialog.safeDecode(message.toString());
+	client.on('message', rawMessage => {
+		const message = rawMessage.toString();
+		const r = Dialog.safeDecode(message);
 		if (!r.success) {
-			logger.error(z.prettifyError(r.error));
+			log.error.dialogTypeError({
+				message,
+				parseError: z.prettifyError(r.error),
+			});
 			return;
 		}
 		const { meaning, data } = r.data;

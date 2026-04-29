@@ -16,9 +16,15 @@
 		"type": "git"
 	},
 	"scripts": {
-		"prepare": "next-ws patch",
+		"prepare": "pnpm run /^prepare:.*/",
+		"prepare:ws": "next-ws patch",
+		"prepare:i18n": "typesafe-i18n --no-watch",
+
 		"build:view": "next build",
+
+		"dev:i18n": "typesafe-i18n",
 		"dev:view": "next dev --turbopack",
+
 		"start:view": "next start"
 	},
 	"dependencies": {
@@ -29,6 +35,7 @@
 		"zod": "latest",
 		"@types/ws": "latest",
 		"next-ws": "latest",
+		"typesafe-i18n": "latest",
 		"@logtape/logtape": "latest",
 
 		"react": "latest",

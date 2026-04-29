@@ -7,14 +7,13 @@
  */
 declare module '@/app/lib/dialog';
 
-import { createContext, useCallback, useEffect, useState } from 'react';
-import { useWebSocket } from './websocket';
-import * as z from 'zod';
+import { initLogger } from '@/i18n';
 import { Dialog } from 'lib/types';
-import { initLogger } from 'lib/util';
+import { createContext, useCallback, useEffect, useState } from 'react';
+import * as z from 'zod';
+import { useWebSocket } from './websocket';
 
-
-const { logger } = initLogger(['view', 'client', 'dialog']);
+const { log } = initLogger('view/client/dialog');
 
 /**当前对话和发送对话的元组 */
 export type DialogHandle = readonly [
@@ -35,12 +34,15 @@ export function useDialog(): DialogHandle {
 		socket?.addEventListener(
 			'message',
 			async event => {
-				const payload: string = typeof event.data === 'string'
+				const message: string = typeof event.data === 'string'
 					? event.data
 					: await event.data.text();
-				const r = Dialog.safeDecode(payload);
+				const r = Dialog.safeDecode(message);
 				if (!r.success) {
-					logger.error(z.prettifyError(r.error));
+					log.error.dialogTypeError({
+						message,
+						parseError: z.prettifyError(r.error),
+					});
 					return;
 				}
 				setData(r.data);
@@ -51,7 +53,7 @@ export function useDialog(): DialogHandle {
 		socket?.addEventListener(
 			'error',
 			event => {
-				logger.error('{event}', { event });
+				log.error.socketError({ event });
 			},
 			controller,
 		);
