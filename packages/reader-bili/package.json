@@ -19,7 +19,7 @@
 		"type": "git"
 	},
 	"scripts": {
-		"prepare": "pnpm run /^prepare:.*/",
+		"prepare": "pnpm prepare:i18n && pnpm prepare:pyenv",
 		"prepare:i18n": "typesafe-i18n --no-watch",
 		"prepare:pyenv": "tsx ./manage.ts prepare",
 
