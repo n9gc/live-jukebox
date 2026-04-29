@@ -7,9 +7,15 @@ declare module 'lib/util/logger';
 
 import type { LogLevel, Logger } from '@logtape/logtape';
 import { getLogger } from '@logtape/logtape';
-import { globalLL } from 'lib/i18n';
-import type { Asserted, PathsOf, Visited } from 'lib/types';
-import { FlatTranslationFunctions, ModuleTranslationFunctions } from 'lib/types';
+import { innerGlobalLL } from 'lib/i18n';
+import type {
+	FlatTranslationFunctions,
+	Asserted,
+	PathsOf,
+	Visited,
+	ModuleTranslationFunctions,
+} from 'lib/types';
+import { FlatTranslationFunctions as FlatTranslationFunctionsSchema } from 'lib/dist/types-schema';
 import { visit } from 'lib/util';
 import type { LocalizedString } from 'typesafe-i18n';
 import * as z from 'zod';
@@ -140,7 +146,7 @@ export abstract class LoggerWrap<
 		super();
 		this.logger = getLogger(scope.split('/'));
 		const visited = visit(globalLL, scope, '/');
-		const result = FlatTranslationFunctions.safeParse({ ...visited });
+		const result = FlatTranslationFunctionsSchema.safeParse({ ...visited });
 		if (!result.success) {
 			const error = z.prettifyError(result.error);
 			throw new Error('not a correct scope\n' + error, { cause: { globalLL, scope, visited } });
@@ -192,16 +198,14 @@ export function initLoggerWithGlobal<
 	return wrap as any;
 }
 
-/**以 type 而不是 interface 定义的类型上更收敛的全局多语言对象 */
-const typedGlobalLL: { [I in keyof globalLL]: globalLL[I] } = globalLL;
 /**
  * 获得把 logtape 和 i18n 一起包装起来的方便输出的对象
  * 不需要手动指定全局多语言对象
  * @param scope 当前模块的路径
  */
 export function initLogger<
-	P extends PathsOf<typeof typedGlobalLL, FlatTranslationFunctions, '/'>,
+	P extends PathsOf<innerGlobalLL, FlatTranslationFunctions, '/'>,
 >(scope: P) {
-	return initLoggerWithGlobal(typedGlobalLL, scope);
+	return initLoggerWithGlobal(innerGlobalLL, scope);
 }
 

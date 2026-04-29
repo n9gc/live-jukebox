@@ -44,9 +44,13 @@ declare global {
 
 /**库的多语言对象 */
 export const packageLL = L[locale];
-/**如果没法访问全局，可以从这里拿到 */
-export const globalLL: globalThis.globalLL = { lib: packageLL };
-Reflect.set(globalThis, 'globalLL', globalLL);
+/**
+ * 如果没法访问全局，可以从这里拿到
+ * 而且以 type 而不是 interface 定义，类型上更收敛
+ */
+export type innerGlobalLL = { [I in keyof globalLL]: globalLL[I] };
+export const innerGlobalLL: innerGlobalLL = { lib: packageLL };
+Reflect.set(globalThis, 'globalLL', innerGlobalLL);
 
 /**库的多语言翻译对象 */
 export type Base = AllEnumTranslation
