@@ -98,12 +98,14 @@ export function getEnumSchema<T extends Enum>(enumObject: T): SchemaUnion<Enumif
 	) as any;
 }
 
+/**能在 T 和 string 之间转换的序列化器 */
+export type CustomCodec<T> = z.ZodCodec<z.ZodString, z.ZodCustom<T, T>>;
 /**
  * 给一个 symbol 实现 Codec ，通过 Symbol.for 实现
  * @param sym 通过 Symbol.for 产生的 symbol ，比如被 mark 过的枚举
  * @throws {Error} sym 没有名字时
  */
-export function getSymbolCodec<T extends symbol>(sym: T): z.ZodCodec<z.ZodString, z.ZodCustom<T, T>> {
+export function getSymbolCodec<T extends symbol>(sym: T): CustomCodec<T> {
 	const oriKey = Symbol.keyFor(sym)
 		?? thr.noNameSymbol({ sym });
 	return z.codec(z.string(), getSymbolSchema(sym), {
@@ -121,7 +123,7 @@ export function getSymbolCodec<T extends symbol>(sym: T): z.ZodCodec<z.ZodString
 }
 
 /**给联合类型的每个类型套一个 codec 之后放到一个 ZodUnion 里 */
-type CodecUnion<T> = z.ZodUnion<readonly (T extends T ? z.ZodCodec<z.ZodString, z.ZodCustom<T, T>> : never)[]>;
+type CodecUnion<T> = z.ZodUnion<readonly (T extends T ? CustomCodec<T> : never)[]>;
 /**
  * 得到一个枚举对象的联合 Codec
  * @param enumObject 枚举对象

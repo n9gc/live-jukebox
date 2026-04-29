@@ -6,6 +6,7 @@
 declare module 'lib/result';
 
 export * from './results';
+export * from './defines';
 
 import { Enumified, mark } from 'lib/types/enum';
 import * as results from './results';
