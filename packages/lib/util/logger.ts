@@ -185,35 +185,30 @@ export abstract class LoggerWrap<
 const memoried = new WeakMap<{}, Map<string, LoggerWrap>>();
 
 /**
- * 获得把 logtape 和 i18n 一起包装起来的方便输出的对象
- * 如果你要手动指定全局多语言对象的话用这个函数，否则用 `initLogger`
+ * 如果你是增量构建，那么每个包都要调用一次这个，得到每个包唯一的 initLogger
  * @param globalLL 全局的多语言对象
- * @param scope 当前模块的路径
  */
-export function initLoggerWithGlobal<
-	T extends ModuleTranslationFunctions,
-	P extends PathsOf<T, FlatTranslationFunctions, '/'>,
->(globalLL: T, scope: P): LoggerWrap<T, P, Asserted<Visited<T, P, '/'>, FlatTranslationFunctions>> {
+export function getLoggerIniter<T extends ModuleTranslationFunctions>(globalLL: T) {
 	let wrapMap = memoried.get(globalLL);
 	if (!wrapMap) {
 		wrapMap = new Map();
 		memoried.set(globalLL, wrapMap);
 	}
-	const memoriedWrap = wrapMap.get(scope);
-	if (memoriedWrap) return memoriedWrap as any;
-	const wrap = new class extends LoggerWrap {}(globalLL, scope);
-	wrapMap.set(scope, wrap);
-	return wrap as any;
+	/**
+	 * 获得把 logtape 和 i18n 一起包装起来的方便输出的对象
+	 * @param scope 当前模块的路径
+	 */
+	return <
+		P extends PathsOf<T, FlatTranslationFunctions, '/'>,
+	>(scope: P): LoggerWrap<T, P, Asserted<Visited<T, P, '/'>, FlatTranslationFunctions>> => {
+		const memoriedWrap = wrapMap.get(scope);
+		if (memoriedWrap) return memoriedWrap as any;
+		const wrap = new class extends LoggerWrap {}(globalLL, scope);
+		wrapMap.set(scope, wrap);
+		return wrap as any;
+	};
 }
 
-/**
- * 获得把 logtape 和 i18n 一起包装起来的方便输出的对象
- * 不需要手动指定全局多语言对象
- * @param scope 当前模块的路径
- */
-export function initLogger<
-	P extends PathsOf<innerGlobalLL, FlatTranslationFunctions, '/'>,
->(scope: P) {
-	return initLoggerWithGlobal(innerGlobalLL, scope);
-}
+/**如果你不是增量构建，每个包都可以用这个函数 */
+export const initLogger = getLoggerIniter(innerGlobalLL);
 
