@@ -71,17 +71,18 @@ abstract class LoggerWrapUtility<V extends FlatTranslationFunctions> {
 	/**
 	 * 把多语言对象映射为各种各样的函数对象
 	 * @param operation 对象里具体的函数
+	 * @param keyTurner 如果要变换键名的话，修改这个函数
 	 * @returns T 要映射到的对象
 	 */
 	protected init<T extends Record<string, Function>>(
 		this: this,
-		operation: (n: { message: LocalizedString; info: any }, ...parameters: any[]) => unknown,
+		operation: (key: string, ...parameters: any[]) => unknown,
+		keyTurner = (key: string) => key,
 	): T {
 		const logObject = {} as T;
 		for (const key of Object.keys(this.LL)) {
-			logObject[key as keyof T] = ((...parameters: any[]) => {
-				const n = this.localize(key, parameters);
-				operation(n, ...parameters);
+			logObject[keyTurner(key) as keyof T] = ((...parameters: any[]) => {
+				operation(key, ...parameters);
 			}) as any;
 		}
 		return logObject;
@@ -90,7 +91,8 @@ abstract class LoggerWrapUtility<V extends FlatTranslationFunctions> {
 
 	/**初始化一个输出等级 */
 	protected initLogger(this: this, level: LogLevel): V {
-		return this.init(({ message, info }) => {
+		return this.init((key, ...parameters: any[]) => {
+			const { message, info } = this.localize(key, parameters);
 			this.logger[level](message, info);
 			return message;
 		});
@@ -98,7 +100,8 @@ abstract class LoggerWrapUtility<V extends FlatTranslationFunctions> {
 
 	/**初始化抛出错误对象 */
 	protected initThr(this: this): ThrowerObject<V> {
-		return this.init(({ message, info: cause }) => {
+		return this.init((key, ...parameters: any[]) => {
+			const { message, info: cause } = this.localize(key, parameters);
 			this.logger.fatal(message, cause);
 			const error = new Error(message, { cause });
 			throw error;
@@ -107,19 +110,24 @@ abstract class LoggerWrapUtility<V extends FlatTranslationFunctions> {
 
 	/**初始化安全调用函数 */
 	protected initRun(this: this): RunnerObject<V> {
-		return this.init((
-			{ message, info },
-			runFunction: () => unknown,
-			level: 'fatal' | 'error',
-		) => {
-			try {
-				return runFunction();
-			} catch (error) {
-				this.logger[level](message, info);
-				if (level === 'fatal') throw error;
-				return;
-			}
-		});
+		return this.init(
+			(
+				key,
+				runFunction: () => unknown,
+				level: 'fatal' | 'error',
+				...parameters: any[]
+			) => {
+				const { message, info } = this.localize(key, parameters);
+				try {
+					return runFunction();
+				} catch (error) {
+					this.logger[level](message, info);
+					if (level === 'fatal') throw error;
+					return;
+				}
+			},
+			key => `if${key.at(0)?.toUpperCase() ?? ''}${key.slice(1)}`,
+		);
 	};
 }
 
@@ -151,7 +159,7 @@ export abstract class LoggerWrap<
 			const error = z.prettifyError(result.error);
 			throw new Error('not a correct scope\n' + error, { cause: { globalLL, scope, visited } });
 		}
-		this.LL = result.data as V;
+		this.LL = visited as any;
 		this.log = {
 			/**追踪等级的日志 */
 			trace: this.initLogger('trace'),
