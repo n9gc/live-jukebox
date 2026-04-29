@@ -82,7 +82,7 @@ abstract class LoggerWrapUtility<V extends FlatTranslationFunctions> {
 		const logObject = {} as T;
 		for (const key of Object.keys(this.LL)) {
 			logObject[keyTurner(key) as keyof T] = ((...parameters: any[]) => {
-				operation(key, ...parameters);
+				return operation(key, ...parameters);
 			}) as any;
 		}
 		return logObject;
