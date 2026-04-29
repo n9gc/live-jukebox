@@ -5,9 +5,10 @@
  */
 declare module 'lib/i18n/enum';
 
+import { getLogger } from '@logtape/logtape';
 import type * as lib from 'lib';
+import { packageLL } from 'lib/i18n';
 import type { Asserted, Enum, Enumified, EnumOwnKeyOf } from 'lib/types';
-import { initLogger } from 'lib/util';
 
 /**得到一个模块所有枚举各自的键名称 */
 type ModuleEnumKeyOf<M, N extends keyof M> = N extends N
@@ -34,16 +35,25 @@ type PackageEnumValueOf<K extends keyof typeof lib> = K extends K
 /**项目里所有的枚举 */
 export type AllEnum = PackageEnumValueOf<keyof typeof lib>;
 
+/**避免循环依赖的 thr 的一个小实现 */
+function thr<
+	T extends Record<string, unknown>,
+>(localize: (info: T) => string, cause: T): never {
+	const message = localize(cause);
+	getLogger(['lib', 'i18n', 'enum']).fatal(message, cause);
+	const error = new Error(message, { cause });
+	throw error;
+}
+
 /**
  * 判断一个键是否是有对应枚举翻译的键
  * @throws {Error} 没有对应翻译时
  */
 export function assertsEnumKey(nameKey: string):
 	asserts nameKey is keyof AllEnumTranslation['enums'] {
-	const { thr } = initLogger('lib/i18n/enum');
 	if (!(nameKey in globalLL.lib.enums)) {
 		const keys = Object.keys(globalLL.lib.enums);
-		thr.notEnumKey({ nameKey, keys });
+		thr(packageLL.i18n.enum.notEnumKey, { nameKey, keys });
 	}
 }
 
@@ -52,9 +62,8 @@ export function assertsEnumKey(nameKey: string):
  * @throws {Error} sym 没有名字，或者枚举没有注册翻译时
  */
 export function translateEnum(sym: AllEnum): string {
-	const { thr } = initLogger('lib/i18n/enum');
 	const [name, key] = (Symbol.keyFor(sym)
-		?? thr.noNameSymbol({ sym }))
+		?? thr(packageLL.i18n.enum.noNameSymbol, { sym }))
 		.split('.');
 	const nameKey = `${name}_${key}`;
 	assertsEnumKey(nameKey);
