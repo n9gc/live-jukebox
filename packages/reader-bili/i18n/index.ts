@@ -3,7 +3,7 @@
  * @license GPL-2.0-or-later
  * @author n9gc
  */
-declare module 'lib/i18n';
+declare module '.';
 
 export * from './i18n-node';
 export * from './i18n-types';

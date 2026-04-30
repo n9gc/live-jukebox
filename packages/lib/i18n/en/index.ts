@@ -3,7 +3,7 @@
  * @license GPL-2.0-or-later
  * @author n9gc
  */
-declare module 'lib/i18n/en';
+declare module '.';
 
 import type { Base } from 'lib/i18n';
 
