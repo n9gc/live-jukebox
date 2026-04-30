@@ -3,7 +3,7 @@
  * @license GPL-2.0-or-later
  * @author n9gc
  */
-declare module 'lib/i18n/zh';
+declare module '.';
 
 import type { Translation } from '../i18n-types';
 

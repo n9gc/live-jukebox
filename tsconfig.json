@@ -1,0 +1,24 @@
+{
+	"$schema": "https://json.schemastore.org/tsconfig.json",
+	"files": [],
+	"references": [
+		{
+			"path": "./config"
+		},
+		{
+			"path": "./packages/lib"
+		},
+		{
+			"path": "./packages/player-bili"
+		},
+		{
+			"path": "./packages/reader-bili"
+		},
+		{
+			"path": "./packages/test-ts"
+		},
+		{
+			"path": "./packages/view"
+		}
+	]
+}

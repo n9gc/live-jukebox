@@ -3,7 +3,7 @@
  * @license GPL-2.0-or-later
  * @author n9gc
  */
-declare module 'lib/i18n/custom-types';
+declare module './custom-types';
 
 type ErrorImpl = Error;
 export type { ErrorImpl as Error };
