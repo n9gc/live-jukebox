@@ -1,0 +1,55 @@
+{
+	"$schema": "https://json.schemastore.org/package",
+	"name": "tape-i18n",
+	"version": "0.1.0",
+	"license": "MIT",
+	"author": "n9gc",
+	"description": "logtape with typesafe i18n",
+	"keywords": [
+		"logging",
+		"log",
+		"logger",
+		"i18n",
+		"typescript",
+		"internationalization",
+		"typesafe",
+		"l10n",
+		"localization",
+		"internationalization library",
+		"localization library",
+		"nodejs"
+	],
+	"type": "module",
+	"main": "./lib",
+	"module": "./lib",
+	"types": "./lib",
+	"bugs": {
+		"url": "https://github.com/n9gc/tape-i18n/issues"
+	},
+	"homepage": "https://github.com/n9gc/tape-i18n#readme",
+	"repository": {
+		"url": "git+https://github.com/n9gc/tape-i18n",
+		"type": "git"
+	},
+	"scripts": {
+		"build:pipeline": "tsc --outDir . && node pack.ts",
+
+		"clear:tsc": "rimraf -g -- **/*.{d.ts,js} tsconfig.tsbuildinfo",
+
+		"prepublishOnly": "pnpm run /^build:.*/",
+		"postpublish": "pnpm run /^clear:.*/"
+	},
+	"files": [
+		"*",
+		"!tsconfig.json",
+		"!**/*.ts",
+		"**/*.d.ts",
+		"!*.swp",
+		"!pnpm-lock.yaml"
+	],
+	"dependencies": {
+		"bcp-47-normalize": "^2.3.0",
+		"@logtape/logtape": "latest",
+		"typesafe-i18n": "latest"
+	}
+}
