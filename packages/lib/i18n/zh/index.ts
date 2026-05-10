@@ -14,7 +14,7 @@ const zh: Translation = {
 		CancelMethod_ExceptPlaying: '绕开播放中的，取消后面那首',
 		Command_Cancel: '取消歌曲',
 		Command_Idk: '未知',
-		Command_Song: '点一首歌',
+		Command_Songs: '点一些歌',
 		Meaning_ClientEnd: '客户端的一首歌放完了',
 		Meaning_ServerCancelResult: '取消的结果',
 		Meaning_ServerEndResult: '放完的结果',

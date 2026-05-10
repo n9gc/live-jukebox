@@ -57,11 +57,13 @@ export class Jukebox {
 				}),
 			)
 			.addListener(
-				Command.Song,
-				this.songsAfter(song => {
-					const result = songList.add(song);
-					log.info.picked(song);
-					if (isNotOk(result)) thr.sameSongAdded({ song });
+				Command.Songs,
+				this.songsAfter(songs => {
+					for (const song of songs) {
+						const result = songList.add(song);
+						log.info.picked(song);
+						if (isNotOk(result)) thr.sameSongAdded({ song });
+					}
 				}),
 			);
 

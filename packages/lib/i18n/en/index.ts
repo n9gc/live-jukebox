@@ -14,7 +14,7 @@ const en: Base = {
 		CancelMethod_ExceptPlaying: 'cancel the next rather than the playing',
 		Command_Cancel: 'Cancel the song',
 		Command_Idk: 'Unknown command',
-		Command_Song: 'Pick a song',
+		Command_Songs: 'Pick songs',
 		Meaning_ClientEnd: 'Client\'s song finished',
 		Meaning_ServerCancelResult: 'Result of cancel',
 		Meaning_ServerEndResult: 'Result of song end',

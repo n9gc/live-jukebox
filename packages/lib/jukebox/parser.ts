@@ -21,7 +21,7 @@ export namespace Command {
 	/**可能不是命令吧 */
 	export const Idk = Symbol();
 	/**点一首歌 */
-	export const Song = Symbol();
+	export const Songs = Symbol();
 	/**取消 */
 	export const Cancel = Symbol();
 	mark({ Command });
@@ -37,7 +37,7 @@ export interface ParserEvent {
 		readonly danmaku: Danmaku;
 	};
 	/**来歌曲了 */
-	[Command.Song]: Song;
+	[Command.Songs]: readonly Song[];
 	/**有人取消歌曲了 */
 	[Command.Cancel]: Picker;
 }
@@ -49,7 +49,7 @@ export function distinguishChinese(danmaku: Danmaku): [Command, Danmaku?] {
 	if (message === '取消') return [Command.Cancel];
 	if (message.startsWith('点歌 ')) {
 		return [
-			Command.Song,
+			Command.Songs,
 			{
 				...danmaku,
 				message: message.slice(3),
@@ -109,10 +109,11 @@ export class Parser extends Eventer<ParserEvent> implements ParserMap {
 		return { previous: Command.Idk, danmaku } as const;
 	}
 	/**尝试解析这个弹幕是点的哪种歌，尝试失败就说不知道弹幕意思 */
-	async [Command.Song](danmaku: Danmaku) {
+	async [Command.Songs](danmaku: Danmaku) {
 		for (const player of this.players) {
 			const parsed = await player.parse(danmaku);
-			if (parsed) return parsed;
+			if (!parsed) continue;
+			return Array.isArray(parsed) ? parsed : [parsed];
 		}
 		return Command.Idk;
 	}
