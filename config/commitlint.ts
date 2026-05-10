@@ -12,7 +12,6 @@ export const defaultScope = await scanChangedScopes(packages, rootName, enableMu
 
 const prompt = {
 	types: [
-		{ value: 'init', name: 'init		初始化' },
 		{ value: 'fix', name: 'fix		修复' },
 		{ value: 'refactor', name: 'refactor	重构' },
 		{ value: 'add', name: 'add		添加' },
@@ -20,9 +19,10 @@ const prompt = {
 		{ value: 'doc', name: 'doc		添加文档' },
 		{ value: 'style', name: 'style		风格修改' },
 		{ value: 'revert', name: 'revert	撤销提交' },
+		{ value: 'merge', name: 'merge		合并分支' },
 		{ value: 'env', name: 'env		非代码部分' },
 	],
-	allowBreakingChanges: ['add', 'refactor', 'fix', 'revert'],
+	allowBreakingChanges: ['add', 'refactor', 'fix', 'revert', 'merge'],
 
 	scopes: packages.map(({ manifest: { name = '' } }) => name),
 	enableMultipleScopes,
