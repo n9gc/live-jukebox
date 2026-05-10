@@ -11,5 +11,6 @@ packages:
     - '!**/test/**'
 allowBuilds:
     sharp: true
+    esbuild: true
     unrs-resolver: true
     wasm-pack: true
