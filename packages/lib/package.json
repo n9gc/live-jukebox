@@ -39,6 +39,7 @@
 	"dependencies": {
 		"lib": "workspace:^",
 
+		"@types/node": "latest",
 		"zod": "latest",
 		"@logtape/logtape": "latest",
 		"typesafe-i18n": "latest",
@@ -51,7 +52,6 @@
 	},
 	"devDependencies": {
 		"make-dir-cli": "latest",
-		"@types/node": "latest",
 		"ts-to-zod": "latest"
 	}
 }

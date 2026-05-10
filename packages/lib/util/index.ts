@@ -12,7 +12,7 @@ export * from './logger';
 
 import { getLogger } from '@logtape/logtape';
 import type { ValueOf, Visited } from 'lib/types';
-import type * as crypto from 'node:crypto';
+import type { AsyncLocalStorage, AsyncLocalStorageOptions } from 'node:async_hooks';
 import * as z from 'zod';
 
 /**全局 id */
@@ -30,11 +30,9 @@ export function rawLog(message: string) {
 	return message.replaceAll('{', '{{').replaceAll('}', '}}');
 }
 
-/**导入的 crypto 模块 */
-let cryptoImported: typeof crypto | undefined;
 /**获得一个随机数，用 crypto.randomInt */
 export async function randomInt(min: number, max: number): Promise<number> {
-	cryptoImported = await import('node:crypto');
+	const cryptoImported = await import('node:crypto');
 	return new Promise<number>((resolve, reject) => {
 		if (!cryptoImported) throw new Error('crypto not imported');
 		cryptoImported.randomInt(min, max, (error, n) => {
@@ -42,6 +40,42 @@ export async function randomInt(min: number, max: number): Promise<number> {
 			resolve(n);
 		});
 	});
+}
+
+/**浏览器没有 AsyncLocalStorage 的情况下提供的 */
+class FakeAsyncLocalStorage<T> {
+	disable() { /* empty */ }
+	enterWith() { /* empty */ }
+	exit<R, P extends any[]>(
+		callback: (...parameters: P) => R,
+		...parameters: P
+	): R {
+		return callback(...parameters);
+	}
+	run<R>(_: T, callback: () => R): R {
+		return callback();
+	}
+
+	defaultValue: T | undefined;
+	getStore() {
+		return this.defaultValue;
+	}
+
+	name: string;
+	constructor(options?: AsyncLocalStorageOptions) {
+		this.name = options?.name ?? '';
+		this.defaultValue = options?.defaultValue;
+	}
+}
+/**获得一个 AsyncLocalStorage */
+export async function getAsyncLocalStorage<T>(options?: AsyncLocalStorageOptions):
+Promise<AsyncLocalStorage<T>> {
+	try {
+		const asyncHooksImported = await import('node:async_hooks');
+		return new asyncHooksImported.AsyncLocalStorage<T>(options);
+	} catch {
+		return new FakeAsyncLocalStorage(options);
+	}
 }
 
 /**
