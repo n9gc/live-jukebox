@@ -1,6 +1,7 @@
 # ライブ ジュークボックス
 
 <!-- auto-readme-i18n-switcher start -->
+[English](docs/markdown/readme.en.md) | 日本語 | [中文](docs/markdown/readme.zh.md)
 <!-- auto-readme-i18n-switcher end  -->
 
 [![All test](https://github.com/n9gc/live-jukebox/actions/workflows/test-all.yml/badge.svg)](https://github.com/n9gc/live-jukebox/actions/workflows/test-all.yml)

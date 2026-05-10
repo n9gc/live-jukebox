@@ -1,6 +1,7 @@
 # 直播点歌机
 
 <!-- auto-readme-i18n-switcher start -->
+[English](docs/markdown/readme.en.md) | [日本語](docs/markdown/readme.ja.md) | 中文
 <!-- auto-readme-i18n-switcher end  -->
 
 [![All test](https://github.com/n9gc/live-jukebox/actions/workflows/test-all.yml/badge.svg)](https://github.com/n9gc/live-jukebox/actions/workflows/test-all.yml)
