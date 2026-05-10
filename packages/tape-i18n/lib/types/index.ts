@@ -3,7 +3,7 @@
  * @license MIT
  * @author n9gc
  */
-declare module '.';
+declare module 'tape-i18n/types';
 
 export * from './i18n';
 export * from './utility';

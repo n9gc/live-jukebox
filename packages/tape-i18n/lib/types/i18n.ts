@@ -3,7 +3,7 @@
  * @license MIT
  * @author n9gc
  */
-declare module './i18n';
+declare module 'tape-i18n/types/i18n';
 
 import * as z from 'zod';
 import { Pathable } from './utility';

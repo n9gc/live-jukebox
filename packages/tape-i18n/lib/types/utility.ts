@@ -3,7 +3,7 @@
  * @license MIT
  * @author n9gc
  */
-declare module './utility';
+declare module 'tape-i18n/types/utility';
 
 /**把联合类型 T 变成交叉类型 */
 export type Intersected<T> = (T extends T ? (n: T) => never : never) extends ((n: infer I) => never) ? I : never;

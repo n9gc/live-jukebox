@@ -22,7 +22,8 @@
 	"type": "module",
 	"exports": {
 		".": "./lib/index.ts",
-		"./types": "./lib/types/index.ts"
+		"./types": "./lib/types/index.ts",
+		"./*": "./lib/*.ts"
 	},
 	"bugs": {
 		"url": "https://github.com/n9gc/tape-i18n/issues"
@@ -48,6 +49,9 @@
 		"!*.swp",
 		"!pnpm-lock.yaml"
 	],
+	"devDependencies": {
+		"tape-i18n": "workspace:^"
+	},
 	"dependencies": {
 		"bcp-47-normalize": "^2.3.0",
 		"@logtape/logtape": "^2.0.0",
