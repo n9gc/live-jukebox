@@ -5,20 +5,14 @@
  */
 declare module 'lib/types/dialog';
 
-import {
-	ResultListCancel,
-	ResultListEnd,
-	ResultPick,
-} from 'lib/result';
-import { getJsonCodec } from 'lib/types/defines';
+import { getJsonCodec, LocalizedString } from 'lib/types/defines';
 import {
 	Enumified,
-	getEnumCodec,
 	getSymbolCodec,
 	mark,
 } from 'lib/types/enum';
 import { BaseSong } from 'lib/types/pure';
-import { Eventer } from 'lib/util';
+import { Eventer, keyStartWith } from 'lib/util';
 import * as z from 'zod';
 
 /**对话的意思 */
@@ -28,19 +22,15 @@ export namespace Meaning {
 	export const ClientEnd = Symbol();
 	/**当前歌单是什么 */
 	export const ServerSongs = Symbol();
-	/**歌曲结束的结果 */
-	export const ServerEndResult = Symbol();
-	/**取消的结果 */
-	export const ServerCancelResult = Symbol();
+	/**服务器要显示的提示 */
+	export const ServerPrompt = Symbol();
 	mark({ Meaning });
 }
 
 /**服务端的意思 */
-export const ServerMeanings = [
-	Meaning.ServerSongs,
-	Meaning.ServerEndResult,
-	Meaning.ServerCancelResult,
-] as const;
+export const ServerMeanings = keyStartWith('Server', Meaning);
+/**客户端的意思 */
+export const ClientMeanings = keyStartWith('Client', Meaning);
 
 /**方便地获取序列化器 */
 function getCodec<T extends Meaning, D extends z.ZodType>(meaning: T, data: D) {
@@ -60,27 +50,14 @@ export const ClientEnd = getCodec(
 export type ServerSongs = z.infer<typeof ServerSongs>;
 export const ServerSongs = getCodec(
 	Meaning.ServerSongs,
-	z.union([
-		z.array(BaseSong.readonly()).readonly(),
-		getEnumCodec(ResultPick),
-	]),
+	z.array(BaseSong.readonly()).readonly(),
 );
 
-/**结束结果信息 */
-export type ServerEndResult = z.infer<typeof ServerEndResult>;
-export const ServerEndResult = getCodec(
-	Meaning.ServerEndResult,
-	getEnumCodec(ResultListEnd),
-);
-
-/**取消结果信息 */
-export type ServerCancelResult = z.infer<typeof ServerCancelResult>;
-export const ServerCancelResult = getCodec(
-	Meaning.ServerCancelResult,
-	z.union([
-		BaseSong.readonly(),
-		getEnumCodec(ResultListCancel),
-	]),
+/**服务器的提示 */
+export type ServerPrompt = z.infer<typeof ServerPrompt>;
+export const ServerPrompt = getCodec(
+	Meaning.ServerPrompt,
+	LocalizedString,
 );
 
 
@@ -89,8 +66,7 @@ export type Dialog = z.infer<typeof Dialog>;
 export const Dialog = z.union([
 	ClientEnd,
 	ServerSongs,
-	ServerEndResult,
-	ServerCancelResult,
+	ServerPrompt,
 ]);
 
 /**对话事件表 */

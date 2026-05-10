@@ -6,6 +6,7 @@
 declare module 'lib/types/defines';
 
 import { FlatTranslation, FlatTranslationFunctions } from 'lib/types/pure';
+import type { LocalizedString as LocalizedStringImported } from 'typesafe-i18n';
 import * as z from 'zod';
 
 /**
@@ -138,3 +139,9 @@ export type ModuleTranslationFunctions = Pathable<FlatTranslationFunctions>;
  * 为了避免 initLogger 函数无法识别模块名称，最好用这个类型限制模块多语言的定义
  */
 export type ModuleTranslation = Pathable<FlatTranslation>;
+
+/**多语言化后的字符串 */
+export const LocalizedString = z.string()
+	.refine((_): _ is LocalizedStringImported => true);
+export type LocalizedString = LocalizedStringImported;
+

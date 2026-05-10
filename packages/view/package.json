@@ -34,7 +34,7 @@
 		"ws": "latest",
 		"zod": "latest",
 		"@types/ws": "latest",
-		"next-ws": "latest",
+		"next-ws": "^2.2.7",
 		"typesafe-i18n": "latest",
 		"@logtape/logtape": "latest",
 
@@ -42,6 +42,6 @@
 		"@types/react": "latest",
 		"react-dom": "latest",
 		"@types/react-dom": "latest",
-		"next": "latest"
+		"next": "16.2.6"
 	}
 }
