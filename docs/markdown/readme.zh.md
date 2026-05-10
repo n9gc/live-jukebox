@@ -24,5 +24,5 @@
 
 ## 架构
 
-![架构图](https://n9gc.github.io/live-jukebox/markdown/arch.zh.svg)
+![架构图](https://raw.githubusercontent.com/n9gc/live-jukebox/gh-pages/docs/markdown/arch.zh.svg)
 

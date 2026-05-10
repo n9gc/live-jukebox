@@ -24,5 +24,5 @@ Send a song request comment during a live stream, and the streamer will play a d
 
 ## Architecture
 
-![Architecture diagram](https://n9gc.github.io/live-jukebox/markdown/arch.en.svg)
+![Architecture diagram](https://raw.githubusercontent.com/n9gc/live-jukebox/gh-pages/docs/markdown/arch.en.svg)
 

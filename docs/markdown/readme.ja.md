@@ -24,5 +24,5 @@
 
 ## アーキテクチャ
 
-![アーキテクチャ図](https://n9gc.github.io/live-jukebox/markdown/arch.ja.svg)
+![アーキテクチャ図](https://raw.githubusercontent.com/n9gc/live-jukebox/gh-pages/docs/markdown/arch.ja.svg)
 
