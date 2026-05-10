@@ -11,7 +11,7 @@ export { default as Eventer } from './eventer';
 export * from './logger';
 
 import { getLogger } from '@logtape/logtape';
-import type { Visited } from 'lib/types';
+import type { ValueOf, Visited } from 'lib/types';
 import type * as crypto from 'node:crypto';
 import * as z from 'zod';
 
@@ -75,5 +75,13 @@ export function exhaust(cause: never): never {
 	const logger = getLogger(['lib', 'util']);
 	logger.fatal`Should be never ${cause}`;
 	throw new Error(`Should be never`, { cause });
+}
+
+/**获得 object 里以 prefix 开头的键的所有值 */
+export function keyStartWith<P extends string, T extends {}>(prefix: P, object: T):
+readonly ValueOf<{ [K in keyof T as K extends `${P}${string}` ? K : never]: T[K] }>[] {
+	return Object.keys(object)
+		.filter(key => key.startsWith(prefix))
+		.map(key => (object as any)[key] as any);
 }
 
