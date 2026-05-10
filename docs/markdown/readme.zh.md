@@ -1,5 +1,8 @@
 # 直播点歌机
 
+<!-- auto-readme-i18n-switcher start -->
+<!-- auto-readme-i18n-switcher end  -->
+
 [![All test](https://github.com/n9gc/live-jukebox/actions/workflows/test-all.yml/badge.svg)](https://github.com/n9gc/live-jukebox/actions/workflows/test-all.yml)
 
 在直播发一条点歌评论，就可以让主播放不同的歌，这就是点歌机。
@@ -8,7 +11,7 @@
 
 - 可以读取多个平台的评论（目前只有 B 站）
 - 可以播放多个平台的音乐（目前没有任何平台）
-- 界面有多种语言（目前只有中文）
+- 界面和命令行有多种语言（英文、中文）
 - 各种直播工具通用，因为是 web 界面
 - 没有歌时自动点播备选歌单里的歌
 - 可以暂停（没实现）
@@ -20,5 +23,5 @@
 
 ## 架构
 
-![架构图](https://github.com/n9gc/live-jukebox/blob/gh-pages/docs/markdown/arch.svg)
+![架构图](https://n9gc.github.io/live-jukebox/markdown/arch.zh.svg)
 

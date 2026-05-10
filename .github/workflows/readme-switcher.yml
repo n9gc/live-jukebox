@@ -1,0 +1,36 @@
+name: I18n Switcher of Readme
+
+on:
+    push:
+        branches: ['master']
+    pull_request:
+        branches: ['master']
+
+permissions:
+    contents: write
+
+jobs:
+    switcher:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@master
+              with:
+                  persist-credentials: false
+                  fetch-depth: 0
+
+            - id: switcher
+              uses: n9gc/auto-readme-i18n-switcher@master
+              with:
+                  folders: |
+                      docs/markdown
+                  repoReadme: 'docs/markdown/readme.zh.md'
+                  switcherBody: '{{lines}}'
+                  fileName: 'readme.{lang}.md'
+
+            - name: Push Branch
+              if: steps.switcher.outputs.switcher_changed == 'true'
+              uses: actions-js/push@master
+              with:
+                  github_token: ${{ secrets.GITHUB_TOKEN }}
+                  branch: master
+                  message: 'doc: 更新说明文件的多语言切换器'

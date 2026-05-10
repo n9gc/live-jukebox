@@ -1,0 +1,65 @@
+@startuml
+
+cloud "Platform A Live Room" as liveA
+cloud "Platform B Live Room" as liveB
+cloud "Platform C Live Room" as liveC
+
+package "Backend" as backend {
+  package "Live Reader" as Reader {
+    package "Platform A Reader" as ReaderA
+    package "Platform B Reader" as ReaderB
+    package "Platform C Reader" as ReaderC
+  }
+
+  package "lib" as lib {
+    component "Command Parser" as Parser
+    component "Jukebox" as Jukebox
+    component "Song List Manager" as SongList
+    component "Auto Song Picker" as AutoPicker
+    component "Dialog Eventer" as DialogEventer
+  }
+}
+
+liveA <.. ReaderA
+liveB <.. ReaderB
+liveC <.. ReaderC
+ReaderA ..> Parser : Dispatch Danmaku
+ReaderB ..> Parser : Dispatch Danmaku
+ReaderC ..> Parser : Dispatch Danmaku
+Parser --> Jukebox : Dispatch Command
+Jukebox *-left- SongList
+SongList *-up- AutoPicker
+DialogEventer <-left- Jukebox : Dispatch server message
+DialogEventer -left-> Jukebox : Dispatch client message
+
+package "Frontend" as frontend {
+  package "View" as view {
+    component "Dialog State" as DialogState
+    component "Music List Display" as ListDisplay
+    component "Text Prompt" as Prompt
+    component "Play Controller" as PlayController
+  }
+  package "Music Player" as Player {
+    package "Platform A Player" as PlayerA
+    package "Platform B Player" as PlayerB
+    package "Platform C Player" as PlayerC
+  }
+}
+
+DialogState <-up-> DialogEventer : "Web Socket"
+Prompt -up-> DialogState
+PlayController -up-> DialogState
+ListDisplay -right-> DialogState
+PlayController <.. PlayerA : mounted
+PlayController <.. PlayerB : mounted
+PlayController <.. PlayerC : mounted
+
+cloud "Music Platform A" as musicA
+cloud "Music Platform B" as musicB
+cloud "Music Platform C" as musicC
+
+musicA <.up. PlayerA
+musicB <.up. PlayerB
+musicC <.up. PlayerC
+
+@enduml

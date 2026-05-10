@@ -1,0 +1,65 @@
+@startuml
+
+cloud "プラットフォームA ライブ配信ルーム" as liveA
+cloud "プラットフォームB ライブ配信ルーム" as liveB
+cloud "プラットフォームC ライブ配信ルーム" as liveC
+
+package バックエンド as backend {
+  package ライブリーダー as Reader {
+    package "プラットフォームA リーダー" as ReaderA
+    package "プラットフォームB リーダー" as ReaderB
+    package "プラットフォームC リーダー" as ReaderC
+  }
+
+  package ライブラリ as lib {
+    component コマンドパーサー as Parser
+    component ジュークボックス as Jukebox
+    component プレイリストマネージャー as SongList
+    component オートピッカー as AutoPicker
+    component ダイアログイベント as DialogEventer
+  }
+}
+
+liveA <.. ReaderA
+liveB <.. ReaderB
+liveC <.. ReaderC
+ReaderA ..> Parser : 弾幕を配信
+ReaderB ..> Parser : 弾幕を配信
+ReaderC ..> Parser : 弾幕を配信
+Parser --> Jukebox : コマンドを配信
+Jukebox *-left- SongList
+SongList *-up- AutoPicker
+DialogEventer <-left- Jukebox : サーバー情報を配信
+DialogEventer -left-> Jukebox : クライアント情報を配信
+
+package フロントエンド as frontend {
+  package ビュー as view {
+    component ダイアログ状態 as DialogState
+    component 音楽リスト表示 as ListDisplay
+    component テキストプロンプト as Prompt
+    component 再生スケジューラー as PlayController
+  }
+  package 音楽プレーヤー as Player {
+    package "プラットフォームA プレーヤー" as PlayerA
+    package "プラットフォームB プレーヤー" as PlayerB
+    package "プラットフォームC プレーヤー" as PlayerC
+  }
+}
+
+DialogState <-up-> DialogEventer : "Web Socket"
+Prompt -up-> DialogState
+PlayController -up-> DialogState
+ListDisplay -right-> DialogState
+PlayController <.. PlayerA : マウントされる
+PlayController <.. PlayerB : マウントされる
+PlayController <.. PlayerC : マウントされる
+
+cloud "音楽プラットフォームA" as musicA
+cloud "音楽プラットフォームB" as musicB
+cloud "音楽プラットフォームC" as musicC
+
+musicA <.up. PlayerA
+musicB <.up. PlayerB
+musicC <.up. PlayerC
+
+@enduml
