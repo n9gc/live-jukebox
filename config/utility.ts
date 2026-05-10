@@ -1,5 +1,5 @@
-import { findWorkspacePackages, type Project } from '@pnpm/find-workspace-packages';
-import { openRepository } from 'es-git';
+import type { Project } from '@pnpm/find-workspace-packages';
+import { findWorkspacePackages } from '@pnpm/find-workspace-packages';
 import { constants } from 'node:fs';
 import fsp from 'node:fs/promises';
 import path from 'node:path';
@@ -50,16 +50,16 @@ export function permuteScope(
 	};
 }
 
-const repo = await openRepository(rootPath);
-
 export async function scanChangedScopes(
 	packages: readonly Project[],
 	rootName: string,
 	enableMultipleScopes: boolean,
 ): Promise<string[] | string> {
+	const { openRepository } = await import('es-git');
+	const repo = await openRepository(rootPath);
 	const statusNow = repo.statuses();
-	const scopes = new Set(new Set(statusNow
-		.iter()
+	const scopes = new Set([...new Set([...statusNow
+		.iter()]
 		.filter(entry => {
 			const status = entry.status();
 			return status.indexNew
@@ -80,7 +80,7 @@ export async function scanChangedScopes(
 				.path(),
 		])
 		.filter(n => typeof n === 'string'))
-		.values()
+		.values()]
 		.map(relative => rootPath + relative)
 		.map(filePath => packages
 			.filter(({ dir }) => filePath.startsWith(dir))
