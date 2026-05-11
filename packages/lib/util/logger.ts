@@ -63,12 +63,9 @@ abstract class Localizable<V extends FlatTranslationFunctions> {
 
 	/**把 parameters 代入到名为 key 的多语言函数中 */
 	protected localize(this: this, key: keyof V, parameters: any[]) {
-		const info: any = parameters.length === 1
-			&& typeof parameters[0] === 'object'
-			&& !Array.isArray(parameters[0])
-			&& parameters[0] !== null
-			? parameters[0]
-			: parameters;
+		const first = parameters.at(0);
+		const isObject = first && typeof first === 'object' && first.constructor === Object;
+		const info = parameters.length === 1 && isObject ? first : parameters;
 		return this.safeRun(() => {
 			const message: LocalizedString = this.LL[key](...parameters);
 			string.parse(message);
