@@ -145,3 +145,10 @@ export const LocalizedString = z.string()
 	.refine((_): _ is LocalizedStringImported => true);
 export type LocalizedString = LocalizedStringImported;
 
+/**把抽象类变成普通类 */
+export type Deabstracted<
+	T extends abstract new (...parameters: any[]) => unknown,
+> = T extends abstract new (...parameters: infer P) => infer I
+	? new (...parameters: P) => I
+	: never;
+
