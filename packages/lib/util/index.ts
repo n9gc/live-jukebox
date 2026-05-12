@@ -119,3 +119,8 @@ readonly ValueOf<{ [K in keyof T as K extends `${P}${string}` ? K : never]: T[K]
 		.map(key => (object as any)[key] as any);
 }
 
+/**类型安全的大写第一个字母函数 */
+export function capitalize<T extends string>(n: T): Capitalize<T> {
+	return `${n.at(0)?.toUpperCase() ?? ''}${n.slice(1)}` as Capitalize<T>;
+}
+

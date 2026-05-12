@@ -78,7 +78,7 @@ const zh: Translation = {
 	types: {
 		enum: {
 			markingObject: '正在标记 {name|log} 组',
-			doubleDefined: '{sym|log} 已经被定义了，请看：',
+			doubleDefined: '{sym|log} 已经被定义了，请看：{definedPosition|inError}',
 			definedHere: '在这里定义',
 			markingSymbol: '正在定义 {sym|log} 为 {name}.{key}',
 			noNameSymbol: '{sym|log} 不是一个由 `Symbol.for` 得到的 symbol',

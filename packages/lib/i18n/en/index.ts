@@ -80,7 +80,7 @@ const en: Base = {
 	types: {
 		enum: {
 			markingObject: 'Marking group: {name: string|log}',
-			doubleDefined: 'Double defined {sym: symbol|log} in here:',
+			doubleDefined: 'Double defined {sym: symbol|log} in here:{definedPosition: Error|inError}',
 			definedHere: 'Defined here',
 			markingSymbol: '{name: string}.{key: string} is {sym: symbol|log}',
 			noNameSymbol: 'The {sym: symbol|log} is not a symbol got by `Symbol.for`',
