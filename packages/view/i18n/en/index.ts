@@ -5,7 +5,7 @@
  */
 declare module '.';
 
-import type { ModuleTranslation } from 'lib/types';
+import type { ModuleTranslation } from 'tape-i18n/types';
 import type { BaseTranslation } from '../i18n-types';
 
 const en: BaseTranslation & ModuleTranslation = {
