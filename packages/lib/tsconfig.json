@@ -9,5 +9,6 @@
 		}
 	},
 	"files": ["index.ts", "ts-to-zod.config.mjs", "dist/types-schema.ts"],
+	"references": [{ "path": "../tape-i18n" }],
 	"include": ["./*/*.ts", "./*/*.tsx", "./i18n/**/*.ts"]
 }

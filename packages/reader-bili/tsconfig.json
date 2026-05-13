@@ -5,7 +5,7 @@
 		"outDir": "dist",
 		"types": ["node"]
 	},
-	"references": [{ "path": "../lib" }],
+	"references": [{ "path": "../lib" }, { "path": "../tape-i18n" }],
 	"files": ["./manage.ts", "./test.ts"],
 	"include": ["lib/*.ts", "./i18n/*.ts", "./i18n/*/*.ts"]
 }
