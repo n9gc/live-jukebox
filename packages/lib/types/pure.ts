@@ -54,10 +54,3 @@ export interface BaseSong {
 	readonly picker: Picker;
 }
 
-/**单一模块文件的多语言函数 */
-export type FlatTranslationFunctions = Record<string, (...parameters: any[]) => any>;
-export const FlatTranslationFunctions = Schema.FlatTranslationFunctions;
-
-/**单一模块文件的多语言函数 */
-export type FlatTranslation = Record<string, string>;
-export const FlatTranslation = Schema.FlatTranslation;
