@@ -95,3 +95,10 @@ export type Visited<
 	S extends string = '.',
 > = VisitedImpl<S, P, M>;
 
+/**集成了抽象类的普通类 */
+export type Deabstracted<
+	T extends abstract new (...parameters: any[]) => unknown,
+> = T extends abstract new (...parameters: infer P) => infer I
+	? new (...parameters: P) => I
+	: never;
+
