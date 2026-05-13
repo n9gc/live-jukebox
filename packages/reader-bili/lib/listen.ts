@@ -5,7 +5,6 @@
  */
 declare module './listen';
 
-import { rawLog } from 'lib/util';
 import { ChildProcessWithoutNullStreams, spawn } from 'node:child_process';
 import { createInterface } from 'node:readline';
 import * as z from 'zod';
@@ -47,7 +46,7 @@ export function listenDm(config: ListenDmConfig, callback: (danmaku: PyBiliDanma
 	);
 
 	const { log: pyLog } = initLogger('reader-bili/blivedm');
-	proce.stderr.on('data', n => pyLog.error.stderr(rawLog(n.toString())));
+	proce.stderr.on('data', n => pyLog.error.stderr(n.toString()));
 	proce.on('error', error => pyLog.error.processError({ error }));
 	proce.on('close', code => pyLog.info.exited({ code: code ?? 0 }));
 

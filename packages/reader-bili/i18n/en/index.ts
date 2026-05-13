@@ -5,7 +5,7 @@
  */
 declare module '.';
 
-import type { ModuleTranslation } from 'lib/types';
+import type { ModuleTranslation } from 'tape-i18n/types';
 import type { BaseTranslation } from '../i18n-types';
 
 const en: BaseTranslation & ModuleTranslation = {
@@ -24,7 +24,7 @@ const en: BaseTranslation & ModuleTranslation = {
 	},
 	blivedm: {
 		processError: 'process error {error: Error|log}',
-		stderr: 'stderr: {:string}',
+		stderr: 'stderr: {:string|rawLog}',
 		exited: 'blivedm exit: {code: number|log}',
 	},
 };
