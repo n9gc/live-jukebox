@@ -8,6 +8,9 @@ declare module 'tape-i18n/types/i18n';
 import * as z from 'zod';
 import { Pathable } from './utility';
 
+/**格式化器 */
+export type Formatters = Record<string, (value: any) => unknown>;
+
 /**单一模块文件的多语言函数 */
 export type FlatTranslationFunctions = Record<string, (...parameters: any[]) => any>;
 export const FlatTranslationFunctions = z.record(z.string(), z.function({

@@ -34,6 +34,11 @@
 		"type": "git"
 	},
 	"scripts": {
+		"prepare": "pnpm run /^prepare:.*/",
+		"prepare:i18n": "typesafe-i18n --no-watch",
+
+		"dev:i18n": "typesafe-i18n",
+
 		"build:pipeline": "tsc --outDir . && node pack.ts",
 
 		"clear:tsc": "rimraf -g -- **/*.{d.ts,js} tsconfig.tsbuildinfo",
