@@ -13,7 +13,7 @@
 			"@/*": ["./*"]
 		}
 	},
-	"references": [{ "path": "../lib" }],
+	"references": [{ "path": "../lib" }, { "path": "../tape-i18n" }],
 	"include": [
 		"*.ts",
 		"app/**/*.ts",

@@ -27,6 +27,7 @@
 	},
 	"dependencies": {
 		"lib": "workspace:^",
+		"tape-i18n": "workspace:^",
 		"@types/node": "latest",
 		"zod": "latest",
 		"typesafe-i18n": "latest",

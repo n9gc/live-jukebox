@@ -29,6 +29,7 @@
 	},
 	"dependencies": {
 		"lib": "workspace:^",
+		"tape-i18n": "workspace:^",
 		"config": "workspace:^",
 		"clsx": "latest",
 		"ws": "latest",

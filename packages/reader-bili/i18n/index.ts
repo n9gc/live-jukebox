@@ -9,8 +9,9 @@ export * from './i18n-node';
 export * from './i18n-types';
 export * from './i18n-util';
 
-import { innerGlobalLL, locale } from 'lib/i18n';
-import { getLoggerIniter } from 'lib/util';
+import { locale } from 'lib/i18n';
+import { LLMappers } from 'lib/util';
+import { getLoggerIniterWithLL, innerGlobalLL } from 'tape-i18n';
 import { L } from './i18n-node';
 
 declare global {
@@ -24,5 +25,5 @@ declare global {
 const packageLL = L[locale];
 globalLL['reader-bili'] = packageLL;
 
-export const initLogger = getLoggerIniter(innerGlobalLL);
+export const initLogger = getLoggerIniterWithLL(innerGlobalLL, LLMappers);
 

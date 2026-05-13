@@ -7,6 +7,7 @@ declare module 'lib/i18n/locale';
 
 import { getLogger } from '@logtape/logtape';
 import { bcp47Normalize } from 'bcp-47-normalize';
+import { tapeI18nLocalesNow } from 'tape-i18n';
 import { detectLocale } from './i18n-util';
 
 const logger = getLogger(['lib', 'i18n', 'locale']);
@@ -51,4 +52,5 @@ export function intlDetector(): string[] {
 
 /**最终检测出的语言 */
 export const locale = detectLocale(environmentDetector, intlDetector);
+tapeI18nLocalesNow.unshift(locale);
 

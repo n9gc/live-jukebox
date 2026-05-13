@@ -18,37 +18,14 @@ import { L } from './i18n-node';
 import { locale } from './locale';
 
 declare global {
-	/**
-	 * 全局多语言对象
-	 * 追加请用这种方式
-	 * ```typescript
-	 * declare global {
-	 *   interface globalLL {
-	 *     'some-pack': typeof packageLL;
-	 *   }
-	 * }
-	 *
-	 * const packageLL = L[locale];
-	 * globalLL['some-pack'] = packageLL;
-	 * ```
-	 */
 	interface globalLL {
-		/**基础库 */
 		lib: typeof packageLL;
 	}
-	const globalLL: globalLL;
 }
-
 
 /**库的多语言对象 */
 export const packageLL = L[locale];
-/**
- * 如果没法访问全局，可以从这里拿到
- * 而且以 type 而不是 interface 定义，类型上更收敛
- */
-export type innerGlobalLL = { [I in keyof globalLL]: globalLL[I] };
-export const innerGlobalLL: innerGlobalLL = { lib: packageLL } as any;
-Reflect.set(globalThis, 'globalLL', innerGlobalLL);
+globalLL.lib = packageLL;
 
 /**库的多语言翻译对象 */
 export type Base = AllEnumTranslation

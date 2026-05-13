@@ -23,7 +23,7 @@ const zh: Translation = {
 	},
 	blivedm: {
 		processError: '进程错误 {error|log}',
-		stderr: '错误流输出：{0}',
+		stderr: '错误流输出：{0|rawLog}',
 		exited: 'blivedm 已退出，返回：{code|log}',
 	},
 };
