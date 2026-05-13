@@ -30,6 +30,11 @@ jobs:
               with:
                   node-version: 24.x
 
+            - name: Install wasm-pack
+              uses: jetli/wasm-pack-action@v0.4.0
+              with:
+                  version: 'latest'
+
             - name: Init enviroument
               run: |
                   pnpm i
