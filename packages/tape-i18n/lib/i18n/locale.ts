@@ -5,7 +5,7 @@
  */
 declare module 'tape-i18n/i18n/locale';
 
-import { TranslationFunctions } from './i18n-types';
+import type { TranslationFunctions } from './i18n-types';
 import { L } from './i18n-node';
 import { baseLocale, detectLocale, locales } from './i18n-util';
 

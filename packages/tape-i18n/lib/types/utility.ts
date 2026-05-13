@@ -95,10 +95,38 @@ export type Visited<
 	S extends string = '.',
 > = VisitedImpl<S, P, M>;
 
+/**
+ * 通过 spliter 作为路径分隔符，以 path 访问 object
+ * @param object 要被访问的对象
+ * @param path 路径
+ * @param spliter 分隔符
+ * @returns 对象访问的结果
+ */
+export function visit<
+	M,
+	P extends string,
+	S extends string = '.',
+>(object: M, path: P, spliter?: S): Visited<M, P, S>;
+export function visit(object: any, path: string, spliter = '.'): {} {
+	let key;
+	while (true) {
+		const index = path.indexOf(spliter);
+		if (index === -1) return object?.[path];
+		key = path.slice(0, index);
+		path = path.slice(index + spliter.length);
+		object = object?.[key];
+	}
+}
+
 /**集成了抽象类的普通类 */
 export type Deabstracted<
 	T extends abstract new (...parameters: any[]) => unknown,
 > = T extends abstract new (...parameters: infer P) => infer I
 	? new (...parameters: P) => I
 	: never;
+
+/**类型安全的大写第一个字母函数 */
+export function capitalize<T extends string>(n: T): Capitalize<T> {
+	return `${n.at(0)?.toUpperCase() ?? ''}${n.slice(1)}` as Capitalize<T>;
+}
 

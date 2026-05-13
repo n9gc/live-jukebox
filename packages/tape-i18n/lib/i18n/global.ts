@@ -34,6 +34,6 @@ declare global {
  * 而且以 type 而不是 interface 定义，类型上更收敛
  */
 export type innerGlobalLL = { [I in keyof globalLL]: globalLL[I] };
-export const innerGlobalLL: innerGlobalLL = { lib: packageLL } as any;
+export const innerGlobalLL: innerGlobalLL = { 'tape-i18n': packageLL } as any;
 Reflect.set(globalThis, 'globalLL', innerGlobalLL);
 
