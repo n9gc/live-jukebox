@@ -59,6 +59,7 @@ jobs:
                   rm -rf .husky
 
             - name: Push Branch
+              if: github.event_name == 'push'
               uses: actions-js/push@master
               with:
                   github_token: ${{ secrets.GITHUB_TOKEN }}

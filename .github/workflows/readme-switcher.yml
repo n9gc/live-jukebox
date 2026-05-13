@@ -28,7 +28,7 @@ jobs:
                   fileName: 'readme.{lang}.md'
 
             - name: Push Branch
-              if: steps.switcher.outputs.switcher_changed == 'true'
+              if: steps.switcher.outputs.switcher_changed == 'true' && github.event_name == 'push'
               uses: actions-js/push@master
               with:
                   github_token: ${{ secrets.GITHUB_TOKEN }}
