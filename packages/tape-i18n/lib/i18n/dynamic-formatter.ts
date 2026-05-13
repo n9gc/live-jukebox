@@ -6,7 +6,6 @@
 declare module 'tape-i18n/i18n/dynamic-formatter';
 
 import type { Intersected } from 'tape-i18n/types';
-import { thr } from 'tape-i18n/utility';
 
 /**注册可变名称的格式化函数的信息 */
 export interface DynamicInfo<
@@ -51,8 +50,7 @@ export function createFormatters<
 	return new Proxy<any>(formatters, {
 		get(target, p, receiver) {
 			return checkDynamics(p)
-				?? Reflect.get(target, p, receiver)
-				?? thr(new Error(`No i18n formatter named "${p.toString()}"`, target));
+				?? Reflect.get(target, p, receiver);
 		},
 	});
 }
