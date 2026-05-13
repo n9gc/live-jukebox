@@ -6,4 +6,5 @@
 declare module 'tape-i18n';
 
 export * from './i18n';
+export * from './logger';
 
