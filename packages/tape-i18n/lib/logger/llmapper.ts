@@ -12,7 +12,12 @@ import * as z from 'zod';
 
 const string = z.string();
 
-/**描述怎么把多语言对象映射为各种各样的函数对象的类 */
+/**
+ * 描述怎么把多语言对象映射为各种各样的函数对象的类
+ *
+ * `operation` 字段就是对象里具体的函数
+ * 如果 `operation` 带泛型，不要指定 this 参数，否则泛型标签无法保留
+ */
 export abstract class LLMapper {
 	/**原多语言对象的键的类型。不要把它用作值 */
 	readonly keyType: string = '';
@@ -24,7 +29,6 @@ export abstract class LLMapper {
 
 	/**新的键名 */
 	abstract newKey(this: this): string;
-	/**对象里具体的函数。如果函数带泛型，不要指定 this 参数，否则泛型标签无法保留 */
 	abstract operation(...parameters: [...any[], ...this['parametersType']]): unknown;
 
 	constructor(
