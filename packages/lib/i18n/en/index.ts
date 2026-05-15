@@ -85,6 +85,9 @@ const en: Base = {
 			markingSymbol: '{name: string}.{key: string} is {sym: symbol|log}',
 			noNameSymbol: 'The {sym: symbol|log} is not a symbol got by `Symbol.for`',
 		},
+		dialog: {
+			promptFailed: 'Cannot get context to send {prompt: LocalizedString|log}',
+		},
 	},
 	util: {},
 };

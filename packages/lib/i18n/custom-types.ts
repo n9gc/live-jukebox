@@ -20,3 +20,5 @@ export type { ErrorImpl as Error };
 type symbolImpl = symbol;
 export type { symbolImpl as symbol };
 
+export type { LocalizedString } from 'typesafe-i18n';
+

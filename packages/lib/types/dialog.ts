@@ -6,14 +6,12 @@
 declare module 'lib/types/dialog';
 
 import { getJsonCodec, LocalizedString } from 'lib/types/defines';
-import {
-	Enumified,
-	getSymbolCodec,
-	mark,
-} from 'lib/types/enum';
+import { Enumified, getSymbolCodec, mark } from 'lib/types/enum';
 import { BaseSong } from 'lib/types/pure';
-import { Eventer, keyStartWith } from 'lib/util';
+import { Eventer, getAsyncLocalStorage, initLogger, keyStartWith } from 'lib/util';
 import * as z from 'zod';
+
+const { log } = initLogger('lib/types/dialog');
 
 /**对话的意思 */
 export type Meaning = Enumified<typeof Meaning>;
@@ -74,6 +72,36 @@ export type DialogEvent = {
 	[M in Meaning]: (Dialog & { meaning: M })['data'];
 };
 
+/**对话事件的异步上下文 */
+const eventerStorage = await getAsyncLocalStorage<DialogEventer>();
+
 /**对话事件 */
-export class DialogEventer extends Eventer<DialogEvent> {}
+export class DialogEventer extends Eventer<DialogEvent> {
+	/**
+	 * 向客户端发送提示
+	 * @param prompt 提示
+	 * @returns 是否发送成功
+	 */
+	static prompt(prompt: LocalizedString) {
+		const dialog = eventerStorage.getStore();
+		if (!dialog) {
+			log.error.promptFailed({ prompt });
+			return;
+		}
+		dialog.dispatch(Meaning.ServerPrompt, prompt);
+	}
+
+	/**
+	 * 带着当前对话上下文执行函数
+	 * @param operation 函数
+	 * @param parameters 函数的参数
+	 */
+	run<R, P extends any[]>(this: this, operation: (...parameters: P) => R, ...parameters: P) {
+		return eventerStorage.run(
+			this,
+			operation,
+			...parameters,
+		);
+	}
+}
 

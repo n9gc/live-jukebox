@@ -83,6 +83,9 @@ const zh: Translation = {
 			markingSymbol: '正在定义 {sym|log} 为 {name}.{key}',
 			noNameSymbol: '{sym|log} 不是一个由 `Symbol.for` 得到的 symbol',
 		},
+		dialog: {
+			promptFailed: '无法获取上下文的对话对象，无法向客户端提示 {prompt|log}',
+		},
 	},
 	util: {},
 };

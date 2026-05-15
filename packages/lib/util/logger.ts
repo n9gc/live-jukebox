@@ -51,6 +51,14 @@ export namespace LLMappers {
 			}
 		}
 	}
+	export class sendPrompt extends LLMapper {
+		newKey = () => this.key;
+		async operation(...parameters: this['ParametersType']) {
+			const message = this.LLValue(...parameters);
+			const { DialogEventer } = await import('lib/types/dialog');
+			DialogEventer.prompt(message);
+		}
+	}
 };
 
 /**初始化日志器 */
