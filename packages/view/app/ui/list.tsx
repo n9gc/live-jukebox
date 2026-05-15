@@ -8,19 +8,16 @@
 declare module '@/app/ui/list';
 
 import { DialogContext } from '@/app/lib/dialog';
-import { Meaning, Dialog } from 'lib/types';
+import { Dialog, Meaning } from 'lib/types';
 import { getId } from 'lib/util';
-import { use, useEffect, useState } from 'react';
+import { use } from 'react';
 
 export default function List() {
-	const [data, sendData] = use(DialogContext);
-	const [dataList, setDataList] = useState<Dialog[]>([]);
-
-	useEffect(() => setDataList(n => (data ? [...n, data] : n)), [data]);
+	const [datas, sendData] = use(DialogContext);
 
 	return <div>
 		<pre>{
-			dataList.map(data => Dialog.encode(data)).join('\n')
+			datas.map(data => Dialog.encode(data)).join('\n')
 		}</pre>
 		<button onClick={() => sendData({
 			meaning: Meaning.ClientEnd,

@@ -13,8 +13,8 @@ import { useMemo } from 'react';
 
 
 export default function Page() {
-	const dialog = useDialog();
-	const dialogValue = useMemo(() => dialog, dialog);
+	const dialog = useDialog(50);
+	const dialogValue = useMemo(() => dialog, dialog[0]);
 
 	return (
 		<DialogContext value={dialogValue}>

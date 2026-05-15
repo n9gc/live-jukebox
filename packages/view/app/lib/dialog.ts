@@ -17,16 +17,16 @@ const { log } = initLogger('view/client/dialog');
 
 /**当前对话和发送对话的元组 */
 export type DialogHandle = readonly [
-	data: Dialog | undefined,
+	datas: readonly Dialog[],
 	sendData: (dataSent: Dialog) => void,
 ];
 /**对话的上下文 */
-export const DialogContext = createContext<DialogHandle>([void 0, () => void 0]);
+export const DialogContext = createContext<DialogHandle>([[], () => void 0]);
 
 /**和服务器通信，获得对话状态 */
-export function useDialog(): DialogHandle {
+export function useDialog(historyNumber: number): DialogHandle {
 	const socket = useWebSocket(() => `ws://${location.host}/api/ws`);
-	const [data, setData] = useState<Dialog | undefined>(void 0);
+	const [datas, setData] = useState<readonly Dialog[]>([]);
 
 	useEffect(() => {
 		const controller = new AbortController();
@@ -45,7 +45,7 @@ export function useDialog(): DialogHandle {
 					});
 					return;
 				}
-				setData(r.data);
+				setData(n => [r.data, ...n.slice(0, historyNumber)]);
 			},
 			controller,
 		);
@@ -77,5 +77,5 @@ export function useDialog(): DialogHandle {
 		[socket],
 	);
 
-	return [data, sendData] as const;
+	return [datas, sendData] as const;
 };
