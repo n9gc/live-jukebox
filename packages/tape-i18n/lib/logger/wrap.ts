@@ -28,7 +28,7 @@ namespace log {
 		 * 把对应多语言字符串通过 logtape 输出
 		 * @param parameters 对应的多语言函数的参数
 		 */
-		operation(...parameters: this['parametersType']) {
+		operation(...parameters: this['ParametersType']) {
 			const { message, info } = this.localize(parameters);
 			this.logger[this.level](message, info);
 		}

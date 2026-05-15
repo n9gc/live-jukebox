@@ -18,7 +18,7 @@ export namespace LLMappers {
 		 * @param parameters 对应的多语言函数的参数
 		 * @throws 使用对应的多语言字符串抛出错误
 		 */
-		operation(...parameters: this['parametersType']): never {
+		operation(...parameters: this['ParametersType']): never {
 			const { message, info: cause } = this.localize(parameters);
 			this.logger.fatal(message, cause);
 			const error = new Error(message, { cause });
@@ -39,7 +39,7 @@ export namespace LLMappers {
 		operation<R, L extends 'fatal' | 'error'>(
 			runFunction: () => R,
 			level: L,
-			...parameters: this['parametersType']
+			...parameters: this['ParametersType']
 		): L extends 'error' ? R | undefined : R {
 			const { message, info } = this.localize(parameters);
 			try {

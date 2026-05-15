@@ -11,6 +11,9 @@ export type Intersected<T> = (T extends T ? (n: T) => never : never) extends ((n
 /**约束类型 */
 export type Asserted<A, B> = A extends B ? A : never;
 
+/**约束类型 */
+export type Ensured<A, B> = A extends B ? A : B;
+
 /**可以得到路径的对象 */
 export interface Pathable<T> {
 	[k: string]: Pathable<T> | T;
