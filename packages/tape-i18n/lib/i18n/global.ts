@@ -23,7 +23,11 @@ declare global {
 	 * ```
 	 */
 	interface globalLL {
-		/**基础库 */
+		/**
+		 * typesafe-i18n 和 tapelog 结合起来
+		 * @license MIT
+		 * @author accurtype
+		 */
 		'tape-i18n': typeof packageLL;
 	}
 	const globalLL: globalLL;

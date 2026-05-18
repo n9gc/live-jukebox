@@ -4,6 +4,7 @@
  * @author n9gc
  */
 declare module 'lib/types/dialog';
+const myPath = 'lib/types/dialog';
 
 import { getJsonCodec, LocalizedString } from 'lib/types/defines';
 import { Enumified, getSymbolCodec, mark } from 'lib/types/enum';
@@ -11,7 +12,7 @@ import { BaseSong } from 'lib/types/pure';
 import { Eventer, getAsyncLocalStorage, initLogger, keyStartWith } from 'lib/util';
 import * as z from 'zod';
 
-const { log } = initLogger('lib/types/dialog');
+const { log } = initLogger(myPath);
 
 /**对话的意思 */
 export type Meaning = Enumified<typeof Meaning>;

@@ -3,7 +3,7 @@
  * @license GPL-2.0-or-later
  * @author n9gc
  */
-declare module './utility';
+declare module 'reader-bili/utility';
 
 import { getDirname } from 'esm-entry';
 import { spawnSync } from 'node:child_process';

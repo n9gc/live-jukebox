@@ -3,15 +3,16 @@
  * @license GPL-2.0-or-later
  * @author n9gc
  */
-declare module '@/app/api/ws/route';
+declare module '#app/api/ws/route';
+const myPath = '#app/api/ws/route';
 
-import { dialogEventer, jukebox } from '@/app/lib/jukebox';
+import { dialogEventer, jukebox } from '#app/lib/jukebox';
 import { initLogger } from '@/i18n';
 import { Dialog, ServerMeanings } from 'lib/types';
 import type { WebSocket } from 'ws';
 import * as z from 'zod';
 
-const { log } = initLogger('view/server/ws');
+const { log } = initLogger(myPath);
 
 export function UPGRADE(
 	client: WebSocket,

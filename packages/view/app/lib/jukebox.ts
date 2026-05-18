@@ -3,7 +3,7 @@
  * @license GPL-2.0-or-later
  * @author n9gc
  */
-declare module '@/app/lib/jukebox';
+declare module '#app/lib/jukebox';
 
 import jukeboxConfig from 'config/jukebox.config';
 import { Jukebox } from 'lib/jukebox';

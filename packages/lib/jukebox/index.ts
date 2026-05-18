@@ -3,7 +3,8 @@
  * @license GPL-2.0-or-later
  * @author n9gc
  */
-declare module 'lib/jukebox';
+declare module 'lib/jukebox/index';
+const myPath = 'lib/jukebox/index';
 
 export * from './auto-picker';
 export * from './config';
@@ -19,7 +20,7 @@ import type { DialogEventer } from 'lib/types';
 import { Meaning } from 'lib/types';
 import { exhaust, initLogger } from 'lib/util';
 
-const { log, thr } = initLogger('lib/jukebox/jukebox');
+const { log, thr } = initLogger(myPath);
 
 /**点播机 */
 export class Jukebox {

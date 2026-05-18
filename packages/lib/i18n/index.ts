@@ -19,6 +19,7 @@ import { locale } from './locale';
 
 declare global {
 	interface globalLL {
+		/**基础库 */
 		lib: typeof packageLL;
 	}
 }

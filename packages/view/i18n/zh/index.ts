@@ -8,12 +8,14 @@ declare module '.';
 import type { Translation } from '../i18n-types';
 
 const zh: Translation = {
-	server: {
+	api: {
 		ws: {
-			dialogTypeError: '对话类型错误\n{parseError}\n{message|log}',
+			route: {
+				dialogTypeError: '对话类型错误\n{parseError}\n{message|log}',
+			},
 		},
 	},
-	client: {
+	lib: {
 		dialog: {
 			dialogTypeError: '对话类型错误\n{parseError}\n{message|log}',
 			socketError: 'Web Socket 错误：{event|log}',

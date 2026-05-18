@@ -5,15 +5,16 @@
  * @license GPL-2.0-or-later
  * @author n9gc
  */
-declare module '@/app/lib/dialog';
+declare module '#app/lib/dialog';
+const myPath = '#app/lib/dialog';
 
+import { useWebSocket } from '#app/lib/websocket';
 import { initLogger } from '@/i18n';
 import { Dialog } from 'lib/types';
 import { createContext, useCallback, useEffect, useState } from 'react';
 import * as z from 'zod';
-import { useWebSocket } from './websocket';
 
-const { log } = initLogger('view/client/dialog');
+const { log } = initLogger(myPath);
 
 /**当前对话和发送对话的元组 */
 export type DialogHandle = readonly [

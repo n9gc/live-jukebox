@@ -9,7 +9,6 @@ export type { Command, PickType } from 'lib/jukebox';
 export type {
 	ResultListCancel,
 	ResultListEnd,
-	ResultPick,
 } from 'lib/result';
 export type { Picker } from 'lib/types';
 export type { Song } from 'lib/player';

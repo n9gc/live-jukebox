@@ -54,7 +54,7 @@ const en: Base = {
 		},
 	},
 	jukebox: {
-		autoPicker: {
+		'auto-picker': {
 			pickFailed: 'Auto pick failed, because {result: ResultPick|enums}.',
 			picked: 'Auto pick a song named {title: string|quote} of {playerName: string|log}',
 			typeChanged: 'Change auto pick type to {pickType: PickType|log}',
@@ -64,7 +64,7 @@ const en: Base = {
 			parseFailed: '{message: string|quote} cannot be parsed as a {previous: Command|enums}',
 			parsed: '"{message: string|quote}" is a {type: Command|enums}',
 		},
-		jukebox: {
+		index: {
 			cancelFailed: '{picker: Picker|log} canceled and failed with {result: ResultListCancel|enums}',
 			canceled: '{picker: Picker|log} canceled song {title: string|quote} of {playerName: string|log}',
 			picked: 'A song of {playerName: string|log} named {title: string|quote} picked by {picker: Picker|log}',

@@ -3,7 +3,7 @@
  * @license GPL-2.0-or-later
  * @author n9gc
  */
-declare module '@/app/layout';
+declare module '#app/layout';
 
 import { Metadata } from 'next';
 

@@ -16,14 +16,14 @@ import { L } from './i18n-node';
 
 declare global {
 	interface globalLL {
-		/**B 站弹幕读取器 */
-		view: typeof packageLL;
+		/**播放器前端 */
+		'#app': typeof packageLL;
 	}
 }
 
 /**本包的多语言对象 */
 const packageLL = L[locale];
-globalLL.view = packageLL;
+globalLL['#app'] = packageLL;
 
 export const initLogger = getLoggerIniterWithLL(innerGlobalLL, LLMappers);
 

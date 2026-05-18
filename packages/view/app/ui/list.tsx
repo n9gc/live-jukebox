@@ -5,9 +5,9 @@
  * @license GPL-2.0-or-later
  * @author n9gc
  */
-declare module '@/app/ui/list';
+declare module '#app/ui/list';
 
-import { DialogContext } from '@/app/lib/dialog';
+import { DialogContext } from '#app/lib/dialog';
 import { Dialog, Meaning } from 'lib/types';
 import { getId } from 'lib/util';
 import { use } from 'react';

@@ -4,12 +4,13 @@
  * @author n9gc
  */
 declare module 'lib/jukebox/auto-picker';
+const myPath = 'lib/jukebox/auto-picker';
 
 import type { Song } from 'lib/player';
 import { Enumified, mark } from 'lib/types';
 import { getId, initLogger, randomInt } from 'lib/util';
 
-const { log, sendPrompt } = initLogger('lib/jukebox/autoPicker');
+const { log, sendPrompt } = initLogger(myPath);
 
 /**备选点歌器 */
 export abstract class AutoPicker {

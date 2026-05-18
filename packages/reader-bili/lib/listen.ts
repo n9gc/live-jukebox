@@ -3,7 +3,8 @@
  * @license GPL-2.0-or-later
  * @author n9gc
  */
-declare module './listen';
+declare module 'reader-bili/listen';
+const myPath = 'reader-bili/listen';
 
 import { ChildProcessWithoutNullStreams, spawn } from 'node:child_process';
 import { createInterface } from 'node:readline';
@@ -12,7 +13,7 @@ import { initLogger } from '../i18n';
 import { PyBiliDanmaku } from './types';
 import { pyPath, pyScriptPath, testExe } from './utility';
 
-const { run, log } = initLogger('reader-bili/listen');
+const { run, log } = initLogger(myPath);
 
 /**py 脚本需要的参数 */
 export const ListenDmConfig = z.object({

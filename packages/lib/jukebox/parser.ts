@@ -4,6 +4,7 @@
  * @author n9gc
  */
 declare module 'lib/jukebox/parser';
+const myPath = 'lib/jukebox/parser';
 
 import type { Player, Song } from 'lib/player';
 import { getPicker } from 'lib/player';
@@ -13,7 +14,7 @@ import { mark } from 'lib/types';
 import { Eventer, initLogger } from 'lib/util';
 
 /**弹幕解析器的日志器 */
-const { log, sendPrompt } = initLogger('lib/jukebox/parser');
+const { log, sendPrompt } = initLogger(myPath);
 
 /**命令类型 */
 export type Command = Enumified<typeof Command>;

@@ -52,7 +52,7 @@ const zh: Translation = {
 		},
 	},
 	jukebox: {
-		autoPicker: {
+		'auto-picker': {
 			pickFailed: '自动点歌失败，因为{result|enums}。',
 			picked: '自动点了 {playerName|log} 平台的{title|quote}作为备选歌曲。',
 			typeChanged: '备选点歌模式改为 {pickType|log}',
@@ -62,7 +62,7 @@ const zh: Translation = {
 			parseFailed: '无法作为{previous|enums}指令来解析：{message|quote}',
 			parsed: '得到一个{type|enums}：{message|quote}',
 		},
-		jukebox: {
+		index: {
 			cancelFailed: '由于 {result|enums} 导致 {picker|log} 的取消失败了',
 			canceled: '成功为 {picker|log} 取消了 {playerName|log} 平台的 {title|quote}',
 			picked: '{picker|log} 点歌了 {playerName|log} 平台的 {title|quote}',

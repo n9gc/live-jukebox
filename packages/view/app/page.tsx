@@ -5,11 +5,11 @@
  * @license GPL-2.0-or-later
  * @author n9gc
  */
-declare module '@/app/layout';
+declare module '#app/layout';
 
-import { DialogContext, useDialog } from '@/app/lib/dialog';
-import List from '@/app/ui/list';
-import Prompts from '@/app/ui/prompts';
+import { DialogContext, useDialog } from '#app/lib/dialog';
+import List from '#app/ui/list';
+import Prompts from '#app/ui/prompts';
 import { useMemo } from 'react';
 
 

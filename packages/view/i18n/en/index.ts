@@ -9,12 +9,14 @@ import type { ModuleTranslation } from 'tape-i18n/types';
 import type { BaseTranslation } from '../i18n-types';
 
 const en: BaseTranslation & ModuleTranslation = {
-	server: {
+	api: {
 		ws: {
-			dialogTypeError: 'not a correct dialog type\n{parseError: string}\n{message: string|log}',
+			route: {
+				dialogTypeError: 'not a correct dialog type\n{parseError: string}\n{message: string|log}',
+			},
 		},
 	},
-	client: {
+	lib: {
 		dialog: {
 			dialogTypeError: 'not a correct dialog type\n{parseError: string}\n{message: string|log}',
 			socketError: 'socket error: {event: Event|log}',

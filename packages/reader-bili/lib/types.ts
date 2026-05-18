@@ -3,7 +3,7 @@
  * @license GPL-2.0-or-later
  * @author n9gc
  */
-declare module './types';
+declare module 'reader-bili/types';
 
 import { Danmaku, getJsonCodec } from 'lib/types';
 import * as z from 'zod';

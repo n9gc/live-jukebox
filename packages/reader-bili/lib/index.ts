@@ -3,7 +3,7 @@
  * @license GPL-2.0-or-later
  * @author n9gc
  */
-declare module '.';
+declare module 'reader-bili';
 
 import { Reader } from 'lib/reader';
 import { ChildProcessWithoutNullStreams } from 'node:child_process';

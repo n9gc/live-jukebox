@@ -4,12 +4,13 @@
  * @author n9gc
  */
 declare module 'lib/types/enum';
+const myPath = 'lib/types/enum';
 
 import type { Asserted, UnionForced, ValueOf } from 'lib/types/defines';
 import { initLogger } from 'lib/util';
 import * as z from 'zod';
 
-const { log, thr, LL } = initLogger('lib/types/enum');
+const { log, thr, LL } = initLogger(myPath);
 
 /**类型没有限制的实现 */
 type EnumifiedImpl<T extends Enum | symbol> = T extends Enum

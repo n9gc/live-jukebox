@@ -3,7 +3,8 @@
  * @license GPL-2.0-or-later
  * @author n9gc
  */
-declare module './manage';
+declare module 'reader-bili/manage';
+const myPath = 'reader-bili/manage';
 
 import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
@@ -12,7 +13,7 @@ import { loadLogConfig, pipPath, testExe, venvPath } from './lib/utility';
 
 await loadLogConfig();
 
-const { thr, run } = initLogger('reader-bili/manage');
+const { thr, run } = initLogger(myPath);
 
 /**创建 .venv 文件夹 */
 function createVenv() {

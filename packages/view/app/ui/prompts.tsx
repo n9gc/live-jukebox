@@ -5,9 +5,9 @@
  * @license GPL-2.0-or-later
  * @author n9gc
  */
-declare module '@/app/ui/prompts';
+declare module '#app/ui/prompts';
 
-import { DialogContext } from '@/app/lib/dialog';
+import { DialogContext } from '#app/lib/dialog';
 import { LocalizedString, Meaning, ServerPrompt } from 'lib/types';
 import { use, useState } from 'react';
 
