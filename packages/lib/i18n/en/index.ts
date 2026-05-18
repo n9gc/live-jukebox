@@ -19,8 +19,8 @@ const en: Base = {
 		Meaning_ServerPrompt: 'Server\'s message to the client',
 		Meaning_ServerSongs: 'Server\'s list of songs',
 		ResultOk_Ok: 'OK',
-		ResultPick_End: 'all songs have finished',
-		ResultPick_NoMusic: 'no song in the list',
+		CommonPickerException_End: 'all songs have finished',
+		CommonPickerException_NoMusic: 'no song in the list',
 		ResultListAdd_SameId: 'another song with the same id',
 		ResultListCancel_Playing: 'cannot cancel while playing',
 		ResultListCancel_NoCancelable: 'nothing to cancel',
@@ -32,7 +32,7 @@ const en: Base = {
 		Command: 'Command:[{0: string}]',
 		Meaning: 'Dialog Object:[{0: string}]',
 		ResultOk: '{0: string}',
-		ResultPick: 'Auto pick failed with: {0: string}.',
+		CommonPickerException: '{0: string}.',
 		ResultListAdd: 'Adding to list failed with: {0: string}.',
 		ResultListCancel: 'Cancelling failed with: {0: string}.',
 		ResultListEnd: 'Marking the song as ended with: {0: string}.',
@@ -55,7 +55,7 @@ const en: Base = {
 	},
 	jukebox: {
 		autoPicker: {
-			pickFailed: '{result: ResultPick|enums}',
+			pickFailed: 'Auto pick failed, because {result: ResultPick|enums}.',
 			picked: 'Auto pick a song named {title: string|quote} of {playerName: string|log}',
 			typeChanged: 'Change auto pick type to {pickType: PickType|log}',
 		},

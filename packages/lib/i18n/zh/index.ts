@@ -19,8 +19,8 @@ const zh: Translation = {
 		Meaning_ServerPrompt: '服务端给客户端的消息',
 		Meaning_ServerSongs: '服务端的歌曲列表',
 		ResultOk_Ok: '一切安好',
-		ResultPick_End: '所有歌都放完了',
-		ResultPick_NoMusic: '歌单里没歌',
+		CommonPickerException_End: '所有歌都放完了',
+		CommonPickerException_NoMusic: '歌单里没歌',
 		ResultListAdd_SameId: '又点了 id 相同的一首歌',
 		ResultListCancel_Playing: '正在播放中',
 		ResultListCancel_NoCancelable: '没有可取消的',
@@ -32,7 +32,7 @@ const zh: Translation = {
 		Command: '弹幕指令 [{0}] ',
 		Meaning: '通信消息 [{0}] ',
 		ResultOk: '{0}',
-		ResultPick: '自动点歌失败，{0}',
+		CommonPickerException: '{0}',
 		ResultListAdd: '由于{0}，添加歌曲到歌单失败',
 		ResultListCancel: '无法取消，{0}',
 		ResultListEnd: '结束歌曲时，{0}',
@@ -53,7 +53,7 @@ const zh: Translation = {
 	},
 	jukebox: {
 		autoPicker: {
-			pickFailed: '{result|enums}。',
+			pickFailed: '自动点歌失败，因为{result|enums}。',
 			picked: '自动点了 {playerName|log} 平台的{title|quote}作为备选歌曲。',
 			typeChanged: '备选点歌模式改为 {pickType|log}',
 		},

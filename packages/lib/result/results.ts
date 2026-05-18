@@ -14,16 +14,6 @@ export namespace ResultOk {
 	export const Ok = Symbol();
 }
 
-/**备选点歌器的结果 */
-export type ResultPick = Enumified<typeof ResultPick>;
-export namespace ResultPick {
-	/**歌单里没歌 */
-	export const NoMusic = Symbol();
-	/**歌单放完了 */
-	export const End = Symbol();
-	export import Ok = ResultOk;
-}
-
 /**歌曲列表切换下一首歌的结果 */
 export type ResultListEnd = Enumified<typeof ResultListEnd>;
 export namespace ResultListEnd {
@@ -57,7 +47,6 @@ export namespace ResultListCancel {
 export type Result = Enumified<typeof Result>;
 export const Result = {
 	ResultOk,
-	ResultPick,
 	ResultListEnd,
 	ResultListAdd,
 	ResultListCancel,

@@ -6,17 +6,17 @@
 declare module 'lib/jukebox/auto-picker';
 
 import type { Song } from 'lib/player';
-import { AFResult, isNotOk, ResultOk, ResultPick, withData } from 'lib/result';
+import { Enumified, mark } from 'lib/types';
 import { getId, initLogger, randomInt } from 'lib/util';
 
-const { log } = initLogger('lib/jukebox/autoPicker');
+const { log, sendPrompt } = initLogger('lib/jukebox/autoPicker');
 
 /**备选点歌器 */
 export abstract class AutoPicker {
 	/**歌曲列表 */
 	songs: Song[] = [];
 	/**获得一首备选歌 */
-	abstract pick(this: this): AFResult<ResultPick, [ResultOk, Song]>;
+	abstract pick(this: this): Promise<Song | undefined>;
 
 	/**当前播放模式 */
 	protected abstract pickType: string;
@@ -40,53 +40,64 @@ export const enum PickType {
 	Circular = 'circular',
 }
 /**播放方式对应的 `pick` 函数 */
-type PickerMap = Record<PickType, AutoPicker['pick']>;
+type PickerMap = Record<PickType, () => Promise<Song | CommonPickerException>>;
 /**播放方式切换表 */
 const typeChangeMap: Record<PickType, PickType> = {
 	[PickType.Random]: PickType.Sequential,
 	[PickType.Sequential]: PickType.Circular,
 	[PickType.Circular]: PickType.Random,
 };
+/**通用备选点歌器可能的异常结果 */
+export type CommonPickerException = Enumified<typeof CommonPickerException>;
+export namespace CommonPickerException {
+	/**歌单里没歌 */
+	export const NoMusic = Symbol();
+	/**歌单放完了 */
+	export const End = Symbol();
+	mark({ CommonPickerException });
+}
 /**一种通用的备选点歌器 */
 export class CommonPicker extends AutoPicker implements PickerMap {
 	/**当前点到哪了 */
 	protected index = 0;
 	async [PickType.Random](this: this) {
-		if (this.songs.length === 0) return ResultPick.NoMusic;
+		if (this.songs.length === 0) return CommonPickerException.NoMusic;
 		this.index = await randomInt(0, this.songs.length);
 		const song = this.songs[this.index];
-		return withData(song);
+		return song;
 	};
 	async [PickType.Sequential](this: this) {
 		const song = this.songs.at(this.index++);
-		if (song) return withData(song);
+		if (song) return song;
 		return this.songs.length > 0
-			? ResultPick.End
-			: ResultPick.NoMusic;
+			? CommonPickerException.End
+			: CommonPickerException.NoMusic;
 	};
 	async [PickType.Circular](this: this) {
 		const song = this.songs.at(this.index++)
 			?? this.songs.at(this.index = 0);
-		if (song) return withData(song);
-		return ResultPick.NoMusic;
+		if (song) return song;
+		return CommonPickerException.NoMusic;
 	};
 
-	override async pick(this: this): AFResult<ResultPick, [ResultOk, Song]> {
+	async pick(this: this): Promise<Song | undefined> {
 		const result = await this[this.pickType]();
-		if (isNotOk(result)) {
+		if (typeof result === 'symbol') {
 			log.warn.pickFailed({ result });
-			return result;
+			sendPrompt.pickFailed({ result });
+			return;
 		}
-		const [_, song] = result;
-		log.info.picked(song);
-		return withData({
-			...song,
+		const song = {
+			...result,
 			id: getId(),
-		});
+		};
+		log.info.picked(song);
+		return song;
 	}
 	override changeType(this: this): void {
 		this.pickType = typeChangeMap[this.pickType];
 		log.info.typeChanged({ pickType: this.pickType });
+		sendPrompt.typeChanged({ pickType: this.pickType });
 	}
 	constructor(
 		override pickType: PickType = PickType.Circular,
