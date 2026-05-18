@@ -13,7 +13,7 @@ import { mark } from 'lib/types';
 import { Eventer, initLogger } from 'lib/util';
 
 /**弹幕解析器的日志器 */
-const { log } = initLogger('lib/jukebox/parser');
+const { log, sendPrompt } = initLogger('lib/jukebox/parser');
 
 /**命令类型 */
 export type Command = Enumified<typeof Command>;
@@ -98,6 +98,7 @@ export class Parser extends Eventer<ParserEvent> implements ParserMap {
 		this[type](danmakuDised).then(parsed => {
 			if (parsed === Command.Idk) {
 				const idkObject = { previous: type, danmaku } as const;
+				sendPrompt.parseFailed({ message: danmaku.message, previous: type });
 				log.warn.parseFailed({ message: danmaku.message, previous: type });
 				this.dispatch(Command.Idk, idkObject);
 				return;

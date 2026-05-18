@@ -61,7 +61,7 @@ const en: Base = {
 		},
 		parser: {
 			someoneSaid: `{ignore: boolean|bool|{yes:(ignored) }}{uname: string|log} said: {message: string|quote}.`,
-			parseFailed: 'Idk, {message: string|quote} is not a {previous: Command|enums}',
+			parseFailed: '{message: string|quote} cannot be parsed as a {previous: Command|enums}',
 			parsed: '"{message: string|quote}" is a {type: Command|enums}',
 		},
 		jukebox: {
