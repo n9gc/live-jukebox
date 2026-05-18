@@ -27,8 +27,11 @@ abstract class LLMapperTypeParameters {
 	ParametersTypeInput(n: never): unknown { return n; }
 
 	/**原多语言对象的参数的类型。不要把它用作值 */
-	readonly ParametersType: LLMapperTypeParameters.ParametersType<
-		ReturnType<this['ParametersTypeInput']>
+	readonly ParametersType: Ensured<
+		ReturnType<this['ParametersTypeInput']>,
+		readonly unknown[] & LLMapperTypeParameters.Reversable<
+			ReturnType<this['ParametersTypeInput']> extends readonly (infer I)[] ? I : never
+		>
 	> = [] as any;
 }
 namespace LLMapperTypeParameters {
@@ -39,10 +42,7 @@ namespace LLMapperTypeParameters {
 	 *
 	 * 来实现 LLMapper 内部的工具函数对 `this['ParametersType']` 的类型检查
 	 */
-	interface Reversable<T> { reverse(): T[] }
-	/**获得输入的多语言对象的参数 */
-	export type ParametersType<T> = Ensured<T, readonly unknown[]>
-		& Reversable<T extends readonly (infer I)[] ? I : never>;
+	export interface Reversable<T> { reverse(): T[] }
 
 	/**原键名是 K ，描述是 T 的情况下，得到新键名 */
 	export type NewKey<T extends LLMapper, K extends keyof any> = K extends string
