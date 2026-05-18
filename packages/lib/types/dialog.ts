@@ -80,7 +80,6 @@ export class DialogEventer extends Eventer<DialogEvent> {
 	/**
 	 * 向客户端发送提示
 	 * @param prompt 提示
-	 * @returns 是否发送成功
 	 */
 	static prompt(prompt: LocalizedString) {
 		const dialog = eventerStorage.getStore();
@@ -102,6 +101,10 @@ export class DialogEventer extends Eventer<DialogEvent> {
 			operation,
 			...parameters,
 		);
+	}
+
+	override dispatch<T extends Meaning>(this: this, event: T, data: DialogEvent[T]): this {
+		return this.run(() => super.dispatch(event, data));
 	}
 }
 

@@ -8,7 +8,7 @@ declare module 'lib/jukebox/parser';
 import type { Player, Song } from 'lib/player';
 import { getPicker } from 'lib/player';
 import type { Reader } from 'lib/reader';
-import type { Danmaku, Enumified, Picker } from 'lib/types';
+import type { Danmaku, DialogEventer, Enumified, Picker } from 'lib/types';
 import { mark } from 'lib/types';
 import { Eventer, initLogger } from 'lib/util';
 
@@ -72,12 +72,14 @@ export class Parser extends Eventer<ParserEvent> implements ParserMap {
 		protected readonly players: readonly Player[],
 		/**分辨弹幕属于哪种命令 */
 		protected readonly distinguisher: Distinguisher,
+		/**对话事件 */
+		protected readonly dialogEventer: DialogEventer,
 	) {
 		super();
 		for (const reader of readers) {
 			reader.addListener('danmaku', n => {
 				log.info.someoneSaid(n);
-				this.parse(n);
+				dialogEventer.run(() => this.parse(n));
 			});
 		}
 	}

@@ -51,8 +51,13 @@ export namespace LLMappers {
 			}
 		}
 	}
+	/**在客户端显示提示 */
 	export class sendPrompt extends LLMapper {
 		newKey = () => this.key;
+		/**
+		 * 通过当前上下文的 `DialogEventer` 让客户端显示一条提示
+		 * @param parameters 对应的多语言函数的参数
+		 */
 		async operation(...parameters: this['ParametersType']) {
 			const message = this.LLValue(...parameters);
 			const { DialogEventer } = await import('lib/types/dialog');

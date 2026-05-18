@@ -45,7 +45,7 @@ export class Jukebox {
 
 		const songList = this.songList = new SongList(autoPicker, cancelMethod);
 
-		this.parser = new Parser(readers, players, distinguisher)
+		this.parser = new Parser(readers, players, distinguisher, dialogEventer)
 			.addListener(
 				Command.Cancel,
 				this.songsAfter(picker => {
@@ -105,7 +105,7 @@ export class Jukebox {
 
 	/**手动触发一次歌曲列表的同步 */
 	async dispatchSongs(this: this) {
-		const result = await this.songList.getSongs();
+		const result = await this.dialogEventer.run(() => this.songList.getSongs());
 		log.info.dispathList();
 		// this.dialogEventer.dispatch(Meaning.ServerSongs, result);
 	}
