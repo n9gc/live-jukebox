@@ -1,0 +1,11 @@
+{
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"extends": "../../tsbase.json",
+	"compilerOptions": {
+		"outDir": "dist",
+		"types": ["node"]
+	},
+	"references": [{ "path": "../lib" }],
+	"files": ["./manage.ts"],
+	"include": ["lib/*.ts", "./i18n/*.ts", "./i18n/*/*.ts"]
+}

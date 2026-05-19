@@ -1,32 +1,32 @@
 {
 	"$schema": "https://json.schemastore.org/package",
 	"private": true,
-	"name": "reader-bili",
+	"name": "pylib",
 	"version": "0.1.0",
 	"license": "GPL-2.0-or-later",
 	"author": "n9gc",
-	"description": "使用 xfgryujk/blivedm 库来读取 B 站弹幕",
+	"description": "和 Python 各种库的对接",
 	"type": "module",
 	"exports": {
-		".": "./lib/index.ts",
-		"./manage": "./manage.ts",
-		"./*": "./lib/*.ts"
+		"./*": "./*"
 	},
 	"scripts": {
-		"prepare": "typesafe-i18n --no-watch",
+		"prepare": "pnpm prepare:i18n && pnpm prepare:pyenv",
+		"prepare:i18n": "typesafe-i18n --no-watch",
+		"prepare:pyenv": "tsx ./manage.ts prepare",
 
 		"dev:i18n": "typesafe-i18n"
 	},
 	"devDependencies": {
-		"reader-bili": "workspace:^"
+		"pylib": "workspace:^",
+
+		"@types/node": "latest"
 	},
 	"dependencies": {
 		"lib": "workspace:^",
 		"tape-i18n": "workspace:^",
-		"@types/node": "latest",
+
 		"zod": "latest",
-		"typesafe-i18n": "latest",
-		"@logtape/logtape": "latest",
-		"esm-entry": "latest"
+		"typesafe-i18n": "latest"
 	}
 }
