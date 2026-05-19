@@ -56,6 +56,7 @@ const zh: Translation = {
 			pickFailed: '自动点歌失败，因为{result|enums}。',
 			picked: '自动点了 {playerName|log} 平台的{title|quote}作为备选歌曲。',
 			typeChanged: '备选点歌模式改为 {pickType|log}',
+			autoPicker: '自动点歌机',
 		},
 		parser: {
 			someoneSaid: `{ignore|bool|{yes:（忽略）}}{uname|log}发弹幕说：{message|quote}。`,

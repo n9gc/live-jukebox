@@ -7,15 +7,15 @@ declare module 'lib/jukebox/auto-picker';
 const myPath = 'lib/jukebox/auto-picker';
 
 import type { Song } from 'lib/player';
-import { Enumified, mark } from 'lib/types';
+import { Enumified, mark, Picker } from 'lib/types';
 import { getId, initLogger, randomInt } from 'lib/util';
 
-const { log, sendPrompt } = initLogger(myPath);
+const { log, sendPrompt, LL } = initLogger(myPath);
 
 /**备选点歌器 */
 export abstract class AutoPicker {
 	/**歌曲列表 */
-	songs: Song[] = [];
+	songs: SongInfo[] = [];
 	/**获得一首备选歌 */
 	abstract pick(this: this): Promise<Song | undefined>;
 
@@ -31,6 +31,9 @@ export abstract class AutoPicker {
 	}
 }
 
+/**不带额外信息，只表示可以播放的歌的信息 */
+export type SongInfo = Pick<Song, 'title' | 'playerName' | 'info'>;
+
 /**播放方式 */
 export const enum PickType {
 	/**随机播放 */
@@ -41,7 +44,7 @@ export const enum PickType {
 	Circular = 'circular',
 }
 /**播放方式对应的 `pick` 函数 */
-type PickerMap = Record<PickType, () => Promise<Song | CommonPickerException>>;
+type PickerMap = Record<PickType, () => Promise<SongInfo | CommonPickerException>>;
 /**播放方式切换表 */
 const typeChangeMap: Record<PickType, PickType> = {
 	[PickType.Random]: PickType.Sequential,
@@ -81,6 +84,8 @@ export class CommonPicker extends AutoPicker implements PickerMap {
 		return CommonPickerException.NoMusic;
 	};
 
+	/**自动点歌机所显示的点歌人 */
+	protected readonly picker = Picker.parse(LL.autoPicker());
 	async pick(this: this): Promise<Song | undefined> {
 		const result = await this[this.pickType]();
 		if (typeof result === 'symbol') {
@@ -91,6 +96,8 @@ export class CommonPicker extends AutoPicker implements PickerMap {
 		const song = {
 			...result,
 			id: getId(),
+			picker: this.picker,
+			pickerDisplay: this.picker,
 		};
 		log.info.picked(song);
 		return song;
@@ -102,7 +109,7 @@ export class CommonPicker extends AutoPicker implements PickerMap {
 	}
 	constructor(
 		override pickType: PickType = PickType.Circular,
-		override songs: Song[] = [],
+		override songs: SongInfo[] = [],
 	) { super(); }
 }
 

@@ -5,10 +5,11 @@
  */
 declare module './player';
 
-import { Song } from 'lib/player';
-import { Danmaku } from 'lib/types';
-import { JSX } from 'react';
-import * as z from 'zod';
+import { getPicker, Song } from 'lib/player';
+import type { Danmaku } from 'lib/types';
+import { getId } from 'lib/util';
+import type { JSX } from 'react';
+import type * as z from 'zod';
 
 /**被注册过 */
 export const registered = Symbol();
@@ -46,6 +47,24 @@ export default abstract class Player<
 	/**显示在列表的元素 */
 	TitleEle(song: Song<K, S>): JSX.Element {
 		return <div>{song.title}</div>;
+	}
+	/**
+	 * 方便地包装出一个歌曲的函数
+	 * @param danmaku 用来获取点歌人的弹幕
+	 * @param song 需要包装的内容
+	 * @returns 歌曲对象
+	 */
+	packSong(
+		danmaku: Danmaku,
+		song: Omit<Song<K, S>, 'id' | 'picker' | 'pickerDisplay' | 'playerName'>,
+	): Song<K, S> {
+		return {
+			...song,
+			id: getId(),
+			picker: getPicker(danmaku),
+			pickerDisplay: danmaku.uname,
+			playerName: this.playerName,
+		};
 	}
 }
 

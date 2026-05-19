@@ -7,6 +7,7 @@ declare module 'lib/types/pure';
 
 import * as Schema from 'lib/dist/types-schema';
 import type { getId } from 'lib/util';
+import type * as z from 'zod';
 
 /**弹幕 */
 export const Danmaku = Schema.Danmaku;
@@ -21,10 +22,15 @@ export interface Danmaku {
 	readonly face: string;
 	/**是否忽略这条弹幕 */
 	readonly ignore: boolean;
+	/**哪个平台的弹幕 */
+	readonly readerName: string;
 }
 
-/**点歌的人，如果是备选歌单则为 `null` */
-export type Picker = string | null;
+/**
+ * 点歌的人，如果是备选歌单则为 `null`
+ * @schema string().brand('Picker')
+ */
+export type Picker = string & z.core.$brand<'Picker'>;
 export const Picker = Schema.Picker;
 
 /**
@@ -52,5 +58,7 @@ export interface BaseSong {
 	readonly info: unknown;
 	/**点歌的人 */
 	readonly picker: Picker;
+	/**点歌的人显示的名字 */
+	readonly pickerDisplay: string;
 }
 

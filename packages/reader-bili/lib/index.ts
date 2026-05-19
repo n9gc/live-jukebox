@@ -31,6 +31,7 @@ export default class BiliReader extends Reader {
 			const damaku: BiliDanmaku = {
 				...pyDanmaku,
 				ignore: config.isIgnored?.(pyDanmaku) ?? false,
+				readerName: 'bili',
 			};
 			this.dispatch('danmaku', damaku);
 		});

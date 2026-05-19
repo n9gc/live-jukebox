@@ -58,6 +58,7 @@ const en: Base = {
 			pickFailed: 'Auto pick failed, because {result: ResultPick|enums}.',
 			picked: 'Auto pick a song named {title: string|quote} of {playerName: string|log}',
 			typeChanged: 'Change auto pick type to {pickType: PickType|log}',
+			autoPicker: 'Auto Picker',
 		},
 		parser: {
 			someoneSaid: `{ignore: boolean|bool|{yes:(ignored) }}{uname: string|log} said: {message: string|quote}.`,

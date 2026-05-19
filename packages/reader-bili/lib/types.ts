@@ -45,5 +45,8 @@ export const BiliDanmaku = Danmaku
 export type BiliDanmaku = z.infer<typeof BiliDanmaku>;
 
 /**Py 传进来的 bili 弹幕 */
-export const PyBiliDanmaku = getJsonCodec(BiliDanmaku.omit({ ignore: true }));
+export const PyBiliDanmaku = getJsonCodec(BiliDanmaku.omit({
+	ignore: true,
+	readerName: true,
+}));
 export type PyBiliDanmaku = z.infer<typeof PyBiliDanmaku>;
