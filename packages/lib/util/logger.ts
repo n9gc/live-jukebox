@@ -5,7 +5,8 @@
  */
 declare module 'lib/util/logger';
 
-import { LocalizedString } from 'lib/types';
+import 'lib/i18n';
+import { LocalizedString } from 'lib/types/defines';
 import { getLoggerIniterWithLL, innerGlobalLL, LLMapper } from 'tape-i18n';
 import { capitalize } from 'tape-i18n/types';
 
