@@ -1,9 +1,9 @@
 /**
- * B 站弹幕读取器的实用函数和信息
+ * 对接 Python 库的实用函数和信息
  * @license GPL-2.0-or-later
  * @author n9gc
  */
-declare module 'reader-bili/utility';
+declare module 'pylib/utility';
 
 import { getDirname } from 'esm-entry';
 import { spawnSync } from 'node:child_process';
@@ -17,8 +17,6 @@ export const venvPath = path.join(getDirname(import.meta.url), '../.venv');
 export const pipPath = path.join(venvPath, isWindows ? 'Scripts/pip' : 'bin/pip');
 /**虚拟环境的 python */
 export const pyPath = path.join(venvPath, isWindows ? 'Scripts/python' : 'bin/python');
-/**py 对接脚本 */
-export const pyScriptPath = path.join(venvPath, '../py/listen.py');
 
 /**
  * 测试可执行文件

@@ -8,7 +8,9 @@
 	"description": "和 Python 各种库的对接",
 	"type": "module",
 	"exports": {
-		"./*": "./*"
+		".": "./lib/index.ts",
+		"./manage": "./manage.ts",
+		"./*": "./lib/*.ts"
 	},
 	"scripts": {
 		"prepare": "pnpm prepare:i18n && pnpm prepare:pyenv",

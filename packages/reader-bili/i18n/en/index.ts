@@ -9,13 +9,6 @@ import type { ModuleTranslation } from 'tape-i18n/types';
 import type { BaseTranslation } from '../i18n-types';
 
 const en: BaseTranslation & ModuleTranslation = {
-	manage: {
-		noPyExe: 'Cannot find {pyExe: string|log}, use $PY_EXE instead.',
-		initVenvFailed: 'init venv in {venvPath: string|log} failed',
-		noPip: 'venv pip not found in {pipPath: string|log}',
-		pipInstallFailed: 'pip install failed with {command: string[]|log}',
-		noOperation: 'what do you want to do?',
-	},
 	listen: {
 		notPrepared: 'notPrepared, cannot find {name: string|quote} in {path: string|log}. try running `pnpm i`',
 		cannotSpawn: 'spawn python in {pyScriptPath: string|log} with {config: ListenDmConfig|log} failed',

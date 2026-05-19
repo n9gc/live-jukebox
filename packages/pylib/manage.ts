@@ -1,10 +1,10 @@
 /**
- * B 站弹幕读取器的开发脚本
+ * 对接 Python 库的开发脚本
  * @license GPL-2.0-or-later
  * @author n9gc
  */
-declare module 'reader-bili/manage';
-const myPath = 'reader-bili/manage';
+declare module 'pylib/manage';
+const myPath = 'pylib/manage';
 
 import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';

@@ -5,10 +5,17 @@
  */
 declare module '.';
 
+import type { ModuleTranslation } from 'tape-i18n/types';
 import type { BaseTranslation } from '../i18n-types';
 
-const en: BaseTranslation = {
-	hi: 'Hi {name:string}! Please leave a star if you like this project: https://github.com/ivanhofer/typesafe-i18n',
+const en: BaseTranslation & ModuleTranslation = {
+	manage: {
+		noPyExe: 'Cannot find {pyExe: string|log}, use $PY_EXE instead.',
+		initVenvFailed: 'init venv in {venvPath: string|log} failed',
+		noPip: 'venv pip not found in {pipPath: string|log}',
+		pipInstallFailed: 'pip install failed with {command: string[]|log}',
+		noOperation: 'what do you want to do?',
+	},
 };
 
 export default en;
