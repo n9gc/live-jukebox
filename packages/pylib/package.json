@@ -13,14 +13,17 @@
 		"./*": "./lib/*.ts"
 	},
 	"scripts": {
-		"prepare": "pnpm prepare:i18n && pnpm prepare:pyenv",
+		"prepare": "pnpm run \"/^prepare:(i18n|ts-to-zod)/\" && pnpm prepare:pyenv",
 		"prepare:i18n": "typesafe-i18n --no-watch",
 		"prepare:pyenv": "tsx ./manage.ts prepare",
+		"prepare:ts-to-zod": "make-dir dist && ts-to-zod --all",
 
 		"dev:i18n": "typesafe-i18n"
 	},
 	"devDependencies": {
 		"pylib": "workspace:^",
+
+		"ts-to-zod": "latest",
 
 		"@types/node": "latest"
 	},

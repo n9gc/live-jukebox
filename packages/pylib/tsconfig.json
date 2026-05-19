@@ -6,6 +6,6 @@
 		"types": ["node"]
 	},
 	"references": [{ "path": "../lib" }],
-	"files": ["./manage.ts"],
-	"include": ["lib/*.ts", "./i18n/*.ts", "./i18n/*/*.ts"]
+	"files": ["./manage.ts", "ts-to-zod.config.mjs", "dist/types-schema.ts"],
+	"include": ["lib/**.ts", "./i18n/*.ts", "./i18n/*/*.ts"]
 }
