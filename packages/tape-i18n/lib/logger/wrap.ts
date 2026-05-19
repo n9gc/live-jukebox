@@ -9,10 +9,10 @@ import { getLogger, Logger, LogLevel } from '@logtape/logtape';
 import { nameLogFormatter } from 'tape-i18n/i18n/formatters';
 import { LLMapper, mergeMapped, WithMapped } from 'tape-i18n/logger/llmapper';
 import {
+	AllPathsOf,
 	Asserted,
 	FlatTranslationFunctions,
 	ModuleTranslationFunctions,
-	PathsOf,
 	visit,
 	Visited,
 } from 'tape-i18n/types';
@@ -54,7 +54,7 @@ export type VisitedLL<
 	T extends ModuleTranslationFunctions,
 	P extends string,
 > = Asserted<
-	Visited<T, Asserted<P, PathsOf<T, FlatTranslationFunctions, '/'>>, '/'>,
+	Visited<T, Asserted<P, AllPathsOf<T>>, '/'>,
 	FlatTranslationFunctions
 >;
 

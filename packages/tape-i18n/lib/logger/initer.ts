@@ -9,9 +9,8 @@ import { innerGlobalLL } from 'tape-i18n/i18n/global';
 import { LLMappers, mergeMapped, WithMapped } from 'tape-i18n/logger/llmapper';
 import { LoggerWrap, VisitedLL } from 'tape-i18n/logger/wrap';
 import type {
-	FlatTranslationFunctions,
+	AllPathsOf,
 	ModuleTranslationFunctions,
-	PathsOf,
 } from 'tape-i18n/types';
 
 /**重用相同模块的 LoggerWrap */
@@ -34,7 +33,7 @@ export function getLoggerIniterWithLL<
 	 * 获得把 logtape 和 i18n 一起包装起来的方便输出的对象
 	 * @param scope 当前模块的路径
 	 */
-	return <P extends PathsOf<T, FlatTranslationFunctions, '/'>>(scope: P):
+	return <P extends AllPathsOf<T>>(scope: P):
 		LoggerWrap<T, P> & WithMapped<VisitedLL<T, P>, C> => {
 		const memoriedWrap = wrapMap.get(scope);
 		if (memoriedWrap) return memoriedWrap as any;

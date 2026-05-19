@@ -6,7 +6,7 @@
 declare module 'tape-i18n/types/i18n';
 
 import * as z from 'zod';
-import { Pathable } from './utility';
+import { Pathable, PathsOf } from './utility';
 
 /**格式化器 */
 export type Formatters = Record<string, (value: any) => unknown>;
@@ -30,4 +30,8 @@ export type ModuleTranslationFunctions = Pathable<FlatTranslationFunctions>;
  * 为了避免 initLogger 函数无法识别模块名称，最好用这个类型限制模块多语言的定义
  */
 export type ModuleTranslation = Pathable<FlatTranslation>;
+
+/**得到模块多语言函数的所有路径 */
+export type AllPathsOf<T extends ModuleTranslationFunctions>
+	= PathsOf<T, FlatTranslationFunctions, '/'>;
 
