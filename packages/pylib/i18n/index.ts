@@ -1,0 +1,29 @@
+/**
+ * 对接 Python 库的多语言选项
+ * @license GPL-2.0-or-later
+ * @author n9gc
+ */
+declare module '.';
+
+export * from './i18n-node';
+export * from './i18n-types';
+export * from './i18n-util';
+
+import { locale } from 'lib/i18n';
+import { LLMappers } from 'lib/util';
+import { getLoggerIniterWithLL, innerGlobalLL } from 'tape-i18n';
+import { L } from './i18n-node';
+
+declare global {
+	interface globalLL {
+		/**对接 Python 库 */
+		pylib: typeof packageLL;
+	}
+}
+
+/**本包的多语言对象 */
+const packageLL = L[locale];
+globalLL.pylib = packageLL;
+
+export const initLogger = getLoggerIniterWithLL(innerGlobalLL, LLMappers);
+
