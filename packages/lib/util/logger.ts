@@ -5,8 +5,9 @@
  */
 declare module 'lib/util/logger';
 
-import { capitalize } from 'tape-i18n/types';
+import { LocalizedString } from 'lib/types';
 import { getLoggerIniterWithLL, innerGlobalLL, LLMapper } from 'tape-i18n';
+import { capitalize } from 'tape-i18n/types';
 
 /**额外的实用函数的描述 */
 export namespace LLMappers {
@@ -59,7 +60,11 @@ export namespace LLMappers {
 		 * @param parameters 对应的多语言函数的参数
 		 */
 		async operation(...parameters: this['ParametersType']) {
-			const message = this.LLValue(...parameters);
+			const message = LocalizedString.parse(
+				this.LLValue(...parameters)
+					.replaceAll('{{', '{')
+					.replaceAll('}}', '}'),
+			);
 			const { DialogEventer } = await import('lib/types/dialog');
 			DialogEventer.prompt(message);
 		}

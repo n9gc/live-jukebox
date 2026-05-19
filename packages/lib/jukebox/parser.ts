@@ -40,7 +40,12 @@ export interface ParserEvent {
 	/**来歌曲了 */
 	[Command.Songs]: readonly Song[];
 	/**有人取消歌曲了 */
-	[Command.Cancel]: Picker;
+	[Command.Cancel]: {
+		/**取消人的标识 */
+		readonly picker: Picker;
+		/**取消人的显示名称 */
+		readonly pickerDisplay: string;
+	};
 }
 /**分辨弹幕属于哪种命令 */
 export type Distinguisher = (danmaku: Danmaku) => [Command, Danmaku?];
@@ -123,7 +128,10 @@ export class Parser extends Eventer<ParserEvent> implements ParserMap {
 	}
 	/**找到发送取消弹幕的人的点歌身份 */
 	async [Command.Cancel](danmaku: Danmaku) {
-		return getPicker(danmaku);
+		return {
+			picker: getPicker(danmaku),
+			pickerDisplay: danmaku.uname,
+		};
 	}
 }
 

@@ -4,23 +4,15 @@
  * @author n9gc
  */
 declare module 'lib/jukebox/song-list';
+const myPath = 'lib/jukebox/song-list';
 
 import type { AutoPicker } from 'lib/jukebox/auto-picker';
 import type { Song } from 'lib/player';
-import {
-	AFResult,
-	FResult,
-	isNotOk,
-	justOk,
-	ResultListAdd,
-	ResultListCancel,
-	ResultListEnd,
-	ResultOk,
-	ResultPick,
-	withData,
-} from 'lib/result';
 import type { Enumified, Picker } from 'lib/types';
 import { mark } from 'lib/types';
+import { initLogger } from 'lib/util';
+
+const { thr, log, sendPrompt } = initLogger(myPath);
 
 /**取消播放的方法 */
 export type CancelMethod = Enumified<typeof CancelMethod>;
@@ -47,74 +39,85 @@ export class SongList {
 	protected readonly songs: Song[] = [];
 	/**
 	 * 获取当前歌曲队列
-	 * @returns 歌曲队列，如果为空则告诉你为啥为空
+	 * @returns 歌曲队列
 	 */
-	async getSongs(this: this): AFResult<ResultPick, [ResultOk, readonly Song[]]> {
-		if (this.songs.length > 0) return withData(this.songs);
-		const result = await this.autoPicker.pick();
-		if (isNotOk(result)) return result;
-		const [_, song] = result;
+	async getSongs(this: this): Promise<Song[]> {
+		if (this.songs.length > 0) return this.songs;
+		const song = await this.autoPicker.pick();
+		if (!song) return this.songs;
 		this.add(song);
-		return this.getSongs();
+		return this.songs;
 	}
 
 	/**
 	 * 添加一个歌曲
 	 * @param song 添加的歌曲
 	 */
-	add(this: this, song: Song): FResult<ResultListAdd, [ResultOk]> {
+	add(this: this, song: Song) {
 		if (
 			this.songs.some(({ id }) => id === song.id)
-		) return ResultListAdd.SameId;
+		) thr.sameSongAdded({ song });
 		this.songs.push(song);
-		return justOk();
+		log.info.picked(song);
 	}
 
 	/**
 	 * 歌曲播完了
 	 * @param song 播完的歌曲
 	 */
-	end(this: this, song: Song): FResult<
-		ResultListEnd,
-		[ResultOk] | [ResultListEnd.EndTooEarly, Song[]]
-	> {
+	end(this: this, song: Song) {
+		log.info.songEnd(song);
 		const songEnd = this.songs.shift();
-		if (!songEnd) return ResultListEnd.EndTooLate;
-		if (song.id !== songEnd.id) {
-			if (
-				this.songs.every(({ id }) => id !== song.id)
-			) {
-				this.songs.unshift(songEnd);
-				// 如果要被结束的歌根本不存在，说明客户端早晚了三秋了
-				return ResultListEnd.EndTooLate;
-			}
-			const index = this.songs.findIndex(({ id }) => id === song.id);
-			const removeds = this.songs.splice(0, index + 1);
-			// 如果结束的歌确实在歌单里，可能是服务器没跟上客户端
-			//
-			// 不能让客户端等着服务器
-			// 因为如果只有这一个客户端的话，服务器不会再继续往前走
-			// 会导致客户端等一辈子
-			return [ResultListEnd.EndTooEarly, removeds];
+		if (!songEnd) {
+			log.warn.endTooLate(song);
+			return;
 		}
-		return justOk();
+		if (song.id === songEnd.id) return;
+		if (
+			this.songs.every(({ id }) => id !== song.id)
+			// 如果要被结束的歌根本不存在，说明客户端早晚了三秋了
+		) {
+			this.songs.unshift(songEnd);
+			log.warn.endTooLate(song);
+			return;
+		}
+		// 如果结束的歌确实在歌单里，可能是服务器没跟上客户端
+		//
+		// 不能让客户端等着服务器
+		// 因为如果只有这一个客户端的话，服务器不会再继续往前走
+		// 会导致客户端等一辈子
+		const index = this.songs.findIndex(({ id }) => id === song.id);
+		const removeds = this.songs.splice(0, index + 1);
+		log.error.endTooEarly({
+			...song,
+			songs: removeds.map(({ title }) => title),
+		});
 	}
 
 	/**
 	 * 取消歌曲
-	 * @param picker 要取消的人
+	 * @param picker 要取消的人的标识
+	 * @param pickerDisplay 要取消的人的显示名称
 	 */
-	cancel(this: this, picker: Picker): FResult<ResultListCancel, [ResultOk, Song]> {
+	cancel(this: this, picker: Picker, pickerDisplay: string) {
 		if (
 			this.cancelMethod === CancelMethod.Blocking
 			&& this.songs.at(0)?.picker === picker
-		) return ResultListCancel.Playing;
+		) {
+			log.warn.cancelWhilePlaying({ pickerDisplay });
+			sendPrompt.cancelWhilePlaying({ pickerDisplay });
+		}
 		const song = this.songs.find(
 			(song, index) => song.picker === picker
 				&& (index !== 0 || this.cancelMethod === CancelMethod.Anyway),
 		);
-		if (!song) return ResultListCancel.NoCancelable;
-		return withData(song);
+		if (!song) {
+			log.warn.noCancelable({ pickerDisplay });
+			sendPrompt.noCancelable({ pickerDisplay });
+			return;
+		}
+		log.info.canceled({ ...song, pickerDisplay });
+		sendPrompt.canceled({ ...song, pickerDisplay });
 	}
 }
 

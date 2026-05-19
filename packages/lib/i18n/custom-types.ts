@@ -5,11 +5,7 @@
  */
 declare module 'lib/i18n/custom-types';
 
-export type { Command, PickType } from 'lib/jukebox';
-export type {
-	ResultListCancel,
-	ResultListEnd,
-} from 'lib/result';
+export type { Command, PickType, CommonPickerException } from 'lib/jukebox';
 export type { Picker } from 'lib/types';
 export type { Song } from 'lib/player';
 

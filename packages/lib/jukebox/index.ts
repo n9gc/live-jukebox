@@ -15,12 +15,11 @@ import type { JukeboxConfig } from 'lib/jukebox/config';
 import { getJukeboxConfig } from 'lib/jukebox/config';
 import { Command, Parser } from 'lib/jukebox/parser';
 import { SongList } from 'lib/jukebox/song-list';
-import { isNotOk, ResultListEnd, ResultOk, typeOf } from 'lib/result';
 import type { DialogEventer } from 'lib/types';
 import { Meaning } from 'lib/types';
-import { exhaust, initLogger } from 'lib/util';
+import { initLogger } from 'lib/util';
 
-const { log, thr } = initLogger(myPath);
+const { log } = initLogger(myPath);
 
 /**点播机 */
 export class Jukebox {
@@ -49,21 +48,15 @@ export class Jukebox {
 		this.parser = new Parser(readers, players, distinguisher, dialogEventer)
 			.addListener(
 				Command.Cancel,
-				this.songsAfter(picker => {
-					const result = songList.cancel(picker);
-					isNotOk(result)
-						? log.warn.cancelFailed({ picker, result })
-						: log.info.canceled(result[1]);
-					// this.dialogEventer.dispatch(Meaning.ServerCancelResult, result);
+				this.songsAfter(({ picker, pickerDisplay }) => {
+					songList.cancel(picker, pickerDisplay);
 				}),
 			)
 			.addListener(
 				Command.Songs,
 				this.songsAfter(songs => {
 					for (const song of songs) {
-						const result = songList.add(song);
-						log.info.picked(song);
-						if (isNotOk(result)) thr.sameSongAdded({ song });
+						songList.add(song);
 					}
 				}),
 			);
@@ -71,25 +64,7 @@ export class Jukebox {
 		dialogEventer
 			.addListener(
 				Meaning.ClientEnd,
-				this.songsAfter(song => {
-					log.info.songEnd(song);
-					const result = songList.end(song);
-					const type = typeOf(result);
-					switch (type) {
-						case ResultListEnd.EndTooEarly: {
-							break;
-						}
-						case ResultListEnd.EndTooLate: {
-							log.warn.endWithWarn({ result: type, title: song.title });
-							break;
-						}
-						case ResultOk.Ok: {
-							break;
-						}
-						default: { exhaust(type); }
-					}
-					// this.dialogEventer.dispatch(Meaning.ServerEndResult, result);
-				}),
+				this.songsAfter(song => songList.end(song)),
 			);
 	}
 
@@ -108,7 +83,7 @@ export class Jukebox {
 	async dispatchSongs(this: this) {
 		const result = await this.dialogEventer.run(() => this.songList.getSongs());
 		log.info.dispathList();
-		// this.dialogEventer.dispatch(Meaning.ServerSongs, result);
+		this.dialogEventer.dispatch(Meaning.ServerSongs, result);
 	}
 }
 

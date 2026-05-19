@@ -8,7 +8,7 @@
 declare module '#app/ui/list';
 
 import { DialogContext } from '#app/lib/dialog';
-import { Dialog, Meaning } from 'lib/types';
+import { Dialog, Meaning, Picker } from 'lib/types';
 import { getId } from 'lib/util';
 import { use } from 'react';
 
@@ -26,7 +26,8 @@ export default function List() {
 				title: '321',
 				playerName: 'bili',
 				info: '234',
-				picker: '345',
+				picker: Picker.parse('345'),
+				pickerDisplay: '543',
 			},
 		})}>
 			omg
