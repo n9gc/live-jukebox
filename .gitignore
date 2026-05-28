@@ -15,3 +15,4 @@ tsconfig.tsbuildinfo
 /.vim/
 i18n-*.ts
 i18n-*.tsx
+__pycache__
