@@ -13,10 +13,11 @@
 		"./*": "./lib/*.ts"
 	},
 	"scripts": {
-		"prepare": "pnpm run /^prepare:.*/",
+		"prepare": "pnpm run \"/^prepare:(i18n|uv|ts-to-zod)/\" && pnpm run prepare:py-type",
 		"prepare:i18n": "typesafe-i18n --no-watch",
 		"prepare:uv": "uv sync",
-		"prepare:ts-to-zod": "make-dir dist && ts-to-zod --all",
+		"prepare:ts-to-zod": "make-dir dist && ts-to-zod --all --skipValidation && ts-to-zod --all",
+		"prepare:py-type": "tsx manage.ts outSchema",
 
 		"dev:i18n": "typesafe-i18n"
 	},

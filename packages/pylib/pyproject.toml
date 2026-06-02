@@ -4,8 +4,15 @@ version = "0.1.0"
 requires-python = ">=3.12"
 dependencies = [
     "blivedm",
+    "datamodel-code-generator>=0.59.0",
 ]
 
 [tool.uv.sources]
 blivedm = { git = "ssh://git@github.com/xfgryujk/blivedm.git", branch = "master" }
+
+[tool.datamodel-codegen.profiles.py-type]
+formatters = []
+input_file_type = "jsonschema"
+reuse_model = true
+use_standard_collections = true
 
