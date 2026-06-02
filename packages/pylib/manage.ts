@@ -32,7 +32,7 @@ function datamodelGen(argument: Map<string, string | true>) {
 
 async function outSchema() {
 	for (const [service, schemas] of getSchemas()) {
-		await fsp.mkdir('dist/schemas');
+		await fsp.mkdir('dist/schemas', { recursive: true });
 		for (const schema of schemas) {
 			if (!schema.title) throw new Error('no title');
 			await fsp.writeFile(`dist/schemas/${schema.title}`, JSON.stringify(schema));

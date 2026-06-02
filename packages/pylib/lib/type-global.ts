@@ -33,6 +33,10 @@ declare global {
 
 Reflect.set(globalThis, 'PylibTypes', {});
 
+/**一个类型定义文件应该符合的结构 */
+export type TypesModule = Record<string, z.ZodType>
+	& Record<'Argument' | 'Data', z.ZodType>;
+
 /**
  * 注册一个模块的类型
  * @param name 模块名称
@@ -40,7 +44,7 @@ Reflect.set(globalThis, 'PylibTypes', {});
  */
 export function registerPylibTypes<
 	K extends keyof typeof PylibTypes,
-	O extends Record<string, z.ZodType> & typeof PylibTypes[K],
+	O extends TypesModule & typeof PylibTypes[K],
 >(name: K, value: O) {
 	PylibTypes[name] = value;
 }
@@ -49,6 +53,8 @@ export function registerPylibTypes<
 namespace demoDefine {
 	/**示例类型 */
 	export const SomeType = getJsonCodec(z.string());
+	export const Data = z.string();
+	export const Argument = z.string();
 }
 
 registerPylibTypes('demo', demoDefine);
@@ -56,8 +62,10 @@ registerPylibTypes('demo', demoDefine);
 /**得到 json schema */
 export function getSchemas() {
 	const schemas = new Map<string, z.core.ZodStandardJSONSchemaPayload<z.ZodType>[]>();
+	const mods = new Map<string, TypesModule>();
 	for (const service of Object.keys(PylibTypes)) {
-		const types = PylibTypes[service as never] as Record<string, z.ZodType>;
+		const types = PylibTypes[service as never] as TypesModule;
+		mods.set(service, types);
 		const list: z.core.ZodStandardJSONSchemaPayload<z.ZodType>[] = [];
 		for (const name of Object.keys(types)) {
 			const zodType = types[name];
@@ -67,6 +75,18 @@ export function getSchemas() {
 			list.push(schema);
 		}
 		schemas.set(service, list);
+	}
+	for (const name of ['Data', 'Argument'] as const) {
+		const schema = z
+			.union([...mods.entries()]
+				.map(([service, space]) => {
+					const t = space[name];
+					z.globalRegistry.remove(t);
+					return t.meta({ id: `${service}${name}` });
+				}))
+			.toJSONSchema({ metadata: z.registry(), reused: 'inline' });
+		schema.title = 'All' + name;
+		schemas.get('main')?.push(schema);
 	}
 	return schemas;
 }

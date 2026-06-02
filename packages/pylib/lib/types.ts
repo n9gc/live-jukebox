@@ -25,6 +25,10 @@ interface Base {
 	readonly service: 'main';
 }
 
+/**主函数的参数 @zod */
+export type Argument = never;
+export import Argument = Schema.Argument;
+
 /**调度器返回值的基本类型 @zod */
 interface BaseData extends Base {
 	/**事件类型 */
