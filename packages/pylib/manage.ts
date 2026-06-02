@@ -39,7 +39,7 @@ async function outSchema() {
 		}
 		datamodelGen(new Map<string, string | true>([
 			['input', 'dist/schemas/'],
-			['output', `dist/${service}_type`],
+			['output', `dist/${service}`],
 			['profile', 'py-type'],
 		]));
 		await fsp.rm('dist/schemas', { recursive: true });

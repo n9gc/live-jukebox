@@ -5,7 +5,6 @@
  */
 declare module 'pylib/type-global';
 
-import { getJsonCodec } from 'lib/types';
 import * as z from 'zod';
 
 declare global {
@@ -26,8 +25,8 @@ declare global {
 	 * ```
 	 */
 	namespace PylibTypes {
-		/**示例模块 */
-		export import demo = demoDefine;
+		/**全部联合类型 */
+		const all: typeof allDefined;
 	}
 }
 
@@ -49,44 +48,49 @@ export function registerPylibTypes<
 	PylibTypes[name] = value;
 }
 
-/**示例模块 */
-namespace demoDefine {
-	/**示例类型 */
-	export const SomeType = getJsonCodec(z.string());
-	export const Data = z.string();
-	export const Argument = z.string();
+/**以 `Map` 形式获得所有类型 */
+function getMods() {
+	const mods = new Map<string, (typeof PylibTypes)[Exclude<keyof typeof PylibTypes, 'all'>]>();
+	for (const service of Object.keys(PylibTypes)) {
+		if (service === 'all') continue;
+		const types = PylibTypes[service as never] as TypesModule;
+		mods.set(service, types as any);
+	}
+	return mods;
 }
 
-registerPylibTypes('demo', demoDefine);
+/**全部联合类型 */
+const allDefined = {
+	get Data() {
+		return z.union([...getMods().values()].map(n => n.Data));
+	},
+	get Argument() {
+		return z.union([...getMods().values()].map(n => n.Argument));
+	},
+};
+
+registerPylibTypes('all', allDefined);
 
 /**得到 json schema */
 export function getSchemas() {
-	const schemas = new Map<string, z.core.ZodStandardJSONSchemaPayload<z.ZodType>[]>();
-	const mods = new Map<string, TypesModule>();
-	for (const service of Object.keys(PylibTypes)) {
-		const types = PylibTypes[service as never] as TypesModule;
-		mods.set(service, types);
+	const schemas = new Map<string, z.core.ZodStandardJSONSchemaPayload<z.ZodType>[]>([
+		['all', (['Data', 'Argument'] as const).map(name => {
+			const schema = allDefined[name]
+				.toJSONSchema({ metadata: z.registry(), reused: 'inline' });
+			schema.title = name;
+			return schema;
+		})],
+	]);
+	for (const [service, types] of getMods()) {
 		const list: z.core.ZodStandardJSONSchemaPayload<z.ZodType>[] = [];
 		for (const name of Object.keys(types)) {
-			const zodType = types[name];
+			const zodType = types[name as never] as z.ZodType;
 			if (!(zodType instanceof z.ZodCodec)) continue;
 			const schema = zodType.toJSONSchema();
 			schema.title = name;
 			list.push(schema);
 		}
 		schemas.set(service, list);
-	}
-	for (const name of ['Data', 'Argument'] as const) {
-		const schema = z
-			.union([...mods.entries()]
-				.map(([service, space]) => {
-					const t = space[name];
-					z.globalRegistry.remove(t);
-					return t.meta({ id: `${service}${name}` });
-				}))
-			.toJSONSchema({ metadata: z.registry(), reused: 'inline' });
-		schema.title = 'All' + name;
-		schemas.get('main')?.push(schema);
 	}
 	return schemas;
 }
