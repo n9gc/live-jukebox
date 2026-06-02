@@ -5,7 +5,6 @@
  */
 declare module 'pylib/types';
 
-import { getJsonCodec } from 'lib/types';
 import { registerPylibTypes } from 'pylib/type-global';
 import * as Schema from '../dist/lib-types';
 import * as self from './types';
@@ -25,8 +24,8 @@ interface Base {
 	readonly service: 'main';
 }
 
-/**主函数的参数 @zod */
-export type Argument = never;
+/**主函数的参数 @zod @schema object() */
+export type Argument = unknown & {};
 export import Argument = Schema.Argument;
 
 /**调度器返回值的基本类型 @zod */
@@ -102,7 +101,7 @@ export interface DataBadInstance extends BaseData, WithTraceback, FromService {
 export import DataBadInstance = Schema.DataBadInstance;
 
 
-/**调用返回的数据 @zod */
+/**调用返回的数据 @zod @discriminated event */
 export type Data
 	= DataServiceNotProvided
 	| DataUncaught
@@ -112,5 +111,5 @@ export type Data
 	| DataNoMain
 	| DataNotService
 	| DataBadInstance;
-export const Data = getJsonCodec(Schema.Data);
+export import Data = Schema.Data;
 

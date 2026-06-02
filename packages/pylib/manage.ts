@@ -55,8 +55,22 @@ async function metaType() {
 			if (!initializer) continue;
 
 			const name = declaration.getName();
-			const initText = initializer.getText();
-			declaration.setInitializer(`${initText}.meta({ id: '${name}' })`);
+			let initText = initializer.getText();
+			initText += `.meta({ id: '${name}' })`;
+
+			const disTag = declaration
+				.getVariableStatement()
+				?.getJsDocs()
+				.flatMap(d => d.getTags())
+				.findLast(tag => tag.getTagName() === 'discriminated');
+			if (disTag) {
+				initText = initText.replaceAll(
+					'.union(',
+					`.discriminatedUnion('${disTag.getCommentText()}', `,
+				);
+			}
+
+			declaration.setInitializer(initText);
 		}
 		await fsp.writeFile(filePath, source.getFullText());
 	}

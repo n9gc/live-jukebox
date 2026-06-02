@@ -5,7 +5,7 @@
  */
 declare module 'pylib/bili/types';
 
-import { Danmaku, getJsonCodec } from 'lib/types';
+import { Danmaku } from 'lib/types';
 import { registerPylibTypes } from 'pylib/type-global';
 import * as z from 'zod';
 import * as Schema from '../../dist/lib-bili-types';
@@ -51,11 +51,11 @@ export interface ArgumentClose extends Base {
 }
 export import ArgumentClose = Schema.ArgumentClose;
 
-/**监听 B 站弹幕的参数 @zod */
+/**监听 B 站弹幕的参数 @zod @discriminated operation */
 export type Argument
 	= ArgumentOpen
 	| ArgumentClose;
-export const Argument = getJsonCodec(Schema.Argument);
+export import Argument = Schema.Argument;
 
 /**文本 @zod */
 export type DmTypeTexts = 0;
@@ -76,6 +76,10 @@ export import DmType = Schema.DmType;
 /**Py 获取 bili 弹幕得到的事件数据 */
 export const DataDanmaku = Base
 	.safeExtend({
+		/**数据类型 */
+		data: z.literal('danmaku'),
+		/**房间号 */
+		roomId: z.string(),
 		/**弹幕类型 */
 		dmType: DmType,
 		/**用户ID */
@@ -89,20 +93,19 @@ export const DataDanmaku = Base
 		/**用户等级 */
 		userLevel: z.number(),
 	})
-	.and(
-		Danmaku.omit({
+	.safeExtend({
+		...Danmaku.omit({
 			ignore: true,
 			readerName: true,
-		}),
-	)
-	.readonly()
+		}).shape,
+	})
 	.meta({ id: 'DataDanmaku' });
 export type DataDanmaku = z.infer<typeof DataDanmaku>;
 
 /**监听 B 站弹幕可能的返回值 */
-export const Data = getJsonCodec(z.union([
+export const Data = z.discriminatedUnion('data', [
 	DataDanmaku,
-])).meta({ id: 'Data' });
+]).meta({ id: 'Data' });
 export type Data = z.infer<typeof Data>;
 
 /**bili 弹幕 */

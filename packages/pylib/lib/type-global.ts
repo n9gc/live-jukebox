@@ -32,9 +32,13 @@ declare global {
 
 Reflect.set(globalThis, 'PylibTypes', {});
 
+/**必须要定义的类型名称 */
+const mustTypeNames = ['Argument', 'Data'] as const;
+/**必须要定义的类型名称 */
+type MustTypeName = typeof mustTypeNames[number];
 /**一个类型定义文件应该符合的结构 */
 export type TypesModule = Record<string, z.ZodType>
-	& Record<'Argument' | 'Data', z.ZodType>;
+	& Record<MustTypeName, z.ZodType>;
 
 /**
  * 注册一个模块的类型
@@ -59,13 +63,28 @@ function getMods() {
 	return mods;
 }
 
+/**类型体操 */
+function atLeastOne<T>(n: T[]): [T, ...T[]] {
+	const first = n.at(0);
+	if (!first) throw new Error('not at least one');
+	return [first, ...n.slice(1)];
+}
+
+/**`name` 字段的全部联合类型 */
+function allUnion<K extends MustTypeName>(name: K) {
+	return z.discriminatedUnion(
+		'service',
+		atLeastOne([...getMods().values()].map(n => n[name])),
+	);
+}
+
 /**全部联合类型 */
 const allDefined = {
 	get Data() {
-		return z.union([...getMods().values()].map(n => n.Data));
+		return allUnion('Data');
 	},
 	get Argument() {
-		return z.union([...getMods().values()].map(n => n.Argument));
+		return allUnion('Argument');
 	},
 };
 
@@ -74,7 +93,7 @@ registerPylibTypes('all', allDefined);
 /**得到 json schema */
 export function getSchemas() {
 	const schemas = new Map<string, z.core.ZodStandardJSONSchemaPayload<z.ZodType>[]>([
-		['all', (['Data', 'Argument'] as const).map(name => {
+		['all', mustTypeNames.map(name => {
 			const schema = allDefined[name]
 				.toJSONSchema({ metadata: z.registry(), reused: 'inline' });
 			schema.title = name;
@@ -83,9 +102,8 @@ export function getSchemas() {
 	]);
 	for (const [service, types] of getMods()) {
 		const list: z.core.ZodStandardJSONSchemaPayload<z.ZodType>[] = [];
-		for (const name of Object.keys(types)) {
-			const zodType = types[name as never] as z.ZodType;
-			if (!(zodType instanceof z.ZodCodec)) continue;
+		for (const name of mustTypeNames) {
+			const zodType = types[name];
 			const schema = zodType.toJSONSchema();
 			schema.title = name;
 			list.push(schema);
