@@ -4,13 +4,9 @@ lib.base
 """
 
 from abc import ABC, abstractmethod
-from asyncio import Lock, Task, create_task, gather
-import json
+from asyncio import Queue, Task, create_task, gather
 import traceback
-from typing import Any, Callable, Coroutine, override
-
-type AVoid = Coroutine[Any, Any, None]
-"""空返回的异步函数的调用后结果"""
+from typing import Any, Awaitable, Callable, Coroutine, override
 
 
 class BaseService(ABC):
@@ -19,14 +15,14 @@ class BaseService(ABC):
     def __init__(
             self,
             name: str,
-            out_lock: Lock,
-            unmount: Callable[[], AVoid],
-            error: Callable[[str], AVoid]
+            out_queue: Queue[dict[str, Any]],
+            unmount: Callable[[], None],
+            error: Callable[[str], None]
     ) -> None:
         self.name = name
         """模块被调用时的名称"""
-        self._out_lock = out_lock
-        """输出锁"""
+        self._out_queue = out_queue
+        """输出队列"""
         self._unmount = unmount
         """取消注册服务"""
         self.error = error
@@ -36,36 +32,20 @@ class BaseService(ABC):
         self.max_error_no = 200
         """长期运行函数的最大错误数量，防止循环错误"""
 
-    async def _dumps(self, n: Any):
-        """序列化为 json 字符串"""
-        try:
-            return json.dumps(n)
-        except:
-            await self.out(
-                service='main',
-                event='jsonOutFailed',
-                name=self.name,
-                info=traceback.format_exc(),
-            )
-
-    async def out(self, **info):
+    def out(self, **info):
         """输出信息"""
         if 'service' not in info:
             info['service'] = self.name
-        json_str = await self._dumps(info)
-        if json_str is None:
-            return
-        async with self._out_lock:
-            print(json_str, flush=True)
+        self._out_queue.put_nowait(info)
 
-    def catch_joined(self, joined: AVoid, restart: AVoid):
+    def catch_joined(self, joined: Awaitable[Any], restart: Awaitable[Any]):
         """捕获长期运行函数里的错误"""
         async def catcher():
             try:
                 await joined
             except:
                 self._error_no += 1
-                await self.error(traceback.format_exc())
+                self.error(traceback.format_exc())
                 if self._error_no < self.max_error_no:
                     await restart
         create_task(catcher())
@@ -81,7 +61,7 @@ class BaseService(ABC):
 
     async def stop(self):
         """终止服务"""
-        await self._unmount()
+        self._unmount()
 
 
 class BaseCallee(BaseService, ABC):
@@ -95,7 +75,7 @@ class BaseCallee(BaseService, ABC):
         try:
             await self.main(arg)
         except:
-            await self.error(traceback.format_exc())
+            self.error(traceback.format_exc())
         finally:
             await self.stop()
 
@@ -107,7 +87,7 @@ class TaskManager:
         self._tasks_running: set[Task[None]] = set()
         """所有正在执行的任务"""
 
-    def add_task(self, coroutine: AVoid):
+    def add_task(self, coroutine: Coroutine[Any, Any, Any]):
         """添加一个任务"""
         task = create_task(coroutine)
         self._tasks_running.add(task)

@@ -3,16 +3,16 @@ lib.bili.listen
 监听 b 站直播弹幕服务
 """
 
-from asyncio import Lock, gather
+from asyncio import Queue, gather
 import http.cookies
 from itertools import chain
 from typing import Any, Callable, Tuple, override
 
 from aiohttp import ClientSession
-
 import blivedm
 import blivedm.models.web as web_models
-from lib.base import AVoid, BaseService, TaskManager
+
+from lib.base import BaseService, TaskManager
 
 
 def init_session(sess_data: str) -> ClientSession:
@@ -57,8 +57,8 @@ class MyHandler(blivedm.BaseHandler):
 class Main(BaseService, TaskManager):
     """服务本身"""
 
-    def __init__(self, name: str, out_lock: Lock, unmount: Callable[[], AVoid], error: Callable[[str], AVoid]) -> None:
-        super().__init__(name, out_lock, unmount, error)
+    def __init__(self, name: str, out_queue: Queue[dict[str, Any]], unmount: Callable[[], None], error: Callable[[str], None]) -> None:
+        super().__init__(name, out_queue, unmount, error)
         self._runnings: dict[
             int,
             Tuple[str, ClientSession, blivedm.BLiveClient],
@@ -84,13 +84,12 @@ class Main(BaseService, TaskManager):
 
                 session = init_session(sess_data)
                 client = blivedm.BLiveClient(room_id, session=session)
-                handler = MyHandler(
-                    lambda info: self.add_task(self.out(**info)),
-                )
+                handler = MyHandler(lambda info: self.out(**info))
                 client.set_handler(handler)
                 client.start()
                 self._runnings[room_id] = (sess_data, session, client)
-                self.catch_joined(client.join(), self.got_message(arg))
+                self.catch_joined(client.join(), self.got_message(
+                    {**arg, 'operation': 'restart'}))
             case 'close':
                 room_id = int(arg['roomId'])
                 running = self._runnings.pop(room_id)
