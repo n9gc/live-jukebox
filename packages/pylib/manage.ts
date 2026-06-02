@@ -7,10 +7,12 @@ declare module 'pylib/manage';
 const myPath = 'pylib/manage';
 
 import { spawnSync } from 'node:child_process';
+import * as fsp from 'node:fs/promises';
 import { getSchemas } from 'pylib';
+import { Project } from 'ts-morph';
 import { initLogger } from './i18n';
 import { loadLogConfig } from './lib/utility';
-import * as fsp from 'node:fs/promises';
+import configs from './ts-to-zod.config.mjs';
 
 await loadLogConfig();
 
@@ -43,8 +45,26 @@ async function outSchema() {
 		await fsp.rm('dist/schemas', { recursive: true });
 	}
 }
+
+const project = new Project();
+async function metaType() {
+	for (const filePath of configs.map(n => n.output)) {
+		const source = project.addSourceFileAtPath(filePath);
+		for (const declaration of source.getVariableDeclarations()) {
+			const initializer = declaration.getInitializer();
+			if (!initializer) continue;
+
+			const name = declaration.getName();
+			const initText = initializer.getText();
+			declaration.setInitializer(`${initText}.meta({ id: '${name}' })`);
+		}
+		await fsp.writeFile(filePath, source.getFullText());
+	}
+}
+
 const scripts: Partial<Record<string, () => void>> = {
 	outSchema,
+	metaType,
 };
 
 (

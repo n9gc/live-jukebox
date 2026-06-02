@@ -95,13 +95,14 @@ export const DataDanmaku = Base
 			readerName: true,
 		}),
 	)
-	.readonly();
+	.readonly()
+	.meta({ id: 'DataDanmaku' });
 export type DataDanmaku = z.infer<typeof DataDanmaku>;
 
 /**监听 B 站弹幕可能的返回值 */
 export const Data = getJsonCodec(z.union([
 	DataDanmaku,
-]));
+])).meta({ id: 'Data' });
 export type Data = z.infer<typeof Data>;
 
 /**bili 弹幕 */

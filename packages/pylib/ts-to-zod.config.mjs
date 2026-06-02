@@ -4,7 +4,7 @@ import path from 'node:path';
 
 const typeFiles = await Array.fromAsync(glob('lib/**/types.ts'));
 
-/**@type {TsToZodConfig} */
+/**@satisfies {TsToZodConfig} */
 const configs = typeFiles.map(input => ({
 	jsDocTagFilter: tags => tags.some(tag => tag.name === 'zod'),
 	name: `types:${input}`,

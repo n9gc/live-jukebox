@@ -15,4 +15,5 @@ formatters = []
 input_file_type = "jsonschema"
 reuse_model = true
 use_standard_collections = true
+all_exports_scope = "recursive"
 
