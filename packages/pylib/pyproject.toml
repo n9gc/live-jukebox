@@ -1,0 +1,11 @@
+[project]
+name = "pylib"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "blivedm",
+]
+
+[tool.uv.sources]
+blivedm = { git = "ssh://git@github.com/xfgryujk/blivedm.git", branch = "master" }
+

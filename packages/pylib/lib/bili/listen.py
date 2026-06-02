@@ -10,8 +10,8 @@ from typing import Any, Callable, Tuple, override
 
 from aiohttp import ClientSession
 
-import blivedm.blivedm as blivedm
-import blivedm.blivedm.models.web as web_models
+import blivedm
+import blivedm.models.web as web_models
 from lib.base import AVoid, BaseService, TaskManager
 
 

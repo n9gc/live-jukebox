@@ -1,4 +1,0 @@
-[submodule "packages/pylib/blivedm"]
-	path = packages/pylib/blivedm
-	url = https://github.com/xfgryujk/blivedm.git
-	branch = 5a55a288cf2f9d1198d2a394e38233280a795126

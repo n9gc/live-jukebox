@@ -10,10 +10,6 @@ import type { BaseTranslation } from '../i18n-types';
 
 const en: BaseTranslation & ModuleTranslation = {
 	manage: {
-		noPyExe: 'Cannot find {pyExe: string|log}, use $PY_EXE instead.',
-		initVenvFailed: 'init venv in {venvPath: string|log} failed',
-		noPip: 'venv pip not found in {pipPath: string|log}',
-		pipInstallFailed: 'pip install failed with {command: string[]|log}',
 		noOperation: 'what do you want to do?',
 	},
 };

@@ -16,3 +16,4 @@ tsconfig.tsbuildinfo
 i18n-*.ts
 i18n-*.tsx
 __pycache__
+uv.lock
