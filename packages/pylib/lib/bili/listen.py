@@ -57,8 +57,8 @@ class MyHandler(blivedm.BaseHandler):
 class Main(BaseService, TaskManager):
     """服务本身"""
 
-    def __init__(self, name: str, out_queue: Queue[dict[str, Any]], unmount: Callable[[], None], error: Callable[[str], None]) -> None:
-        super().__init__(name, out_queue, unmount, error)
+    def __init__(self) -> None:
+        super().__init__()
         self._runnings: dict[
             int,
             Tuple[str, ClientSession, blivedm.BLiveClient],

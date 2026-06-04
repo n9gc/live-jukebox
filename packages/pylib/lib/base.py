@@ -6,52 +6,63 @@ lib.base
 from abc import ABC, abstractmethod
 from asyncio import Queue, Task, create_task, gather
 import traceback
-from typing import Any, Awaitable, Callable, Coroutine, override
+from typing import Any, Awaitable, Coroutine
 
 
-class BaseService(ABC):
+class Outable(ABC):
+    """可以输出信息的"""
+
+    @property
+    @abstractmethod
+    def _name(self) -> str:
+        """模块被调用时的名称，不要手动实现它"""
+
+    @property
+    @abstractmethod
+    def _out_queue(self) -> Queue[dict[str, Any]]:
+        """输出队列，不要手动实现它"""
+
+    def out(self, **info):
+        """输出信息"""
+        if 'service' not in info:
+            info['service'] = self._name
+        self._out_queue.put_nowait(info)
+
+
+class BaseService(Outable, ABC):
     """服务基类"""
 
-    def __init__(
-            self,
-            name: str,
-            out_queue: Queue[dict[str, Any]],
-            unmount: Callable[[], None],
-            error: Callable[[str], None]
-    ) -> None:
-        self.name = name
-        """模块被调用时的名称"""
-        self._out_queue = out_queue
-        """输出队列"""
-        self._unmount = unmount
-        """取消注册服务"""
-        self.error = error
-        """报错函数"""
+    def __init__(self) -> None:
         self._error_no = 0
         """长期运行函数的错误数量"""
         self.max_error_no = 200
         """长期运行函数的最大错误数量，防止循环错误"""
 
-    def out(self, **info):
-        """输出信息"""
-        if 'service' not in info:
-            info['service'] = self.name
-        self._out_queue.put_nowait(info)
+    @abstractmethod
+    def _unmount(self):
+        """取消注册服务，不要手动实现它"""
+
+    @abstractmethod
+    def _error(self, info: str, /):
+        """报错函数，不要手动实现它"""
 
     def catch_joined(self, joined: Awaitable[Any], restart: Awaitable[Any]):
         """捕获长期运行函数里的错误"""
         async def catcher():
             try:
                 await joined
-            except:
+            except Exception:
                 self._error_no += 1
-                self.error(traceback.format_exc())
+                self._error(traceback.format_exc())
                 if self._error_no < self.max_error_no:
-                    await restart
+                    try:
+                        await restart
+                    except Exception:
+                        self._error(traceback.format_exc())
         create_task(catcher())
 
     @abstractmethod
-    async def got_message(self, arg: dict[str, Any]):
+    async def got_message(self, arg: dict[str, Any], /):
         """
         新的消息进入
         注意这个函数不能是一个死循环
@@ -64,22 +75,6 @@ class BaseService(ABC):
         self._unmount()
 
 
-class BaseCallee(BaseService, ABC):
-    """如果不想要多次接受消息的服务，而是只接受一次消息的异步函数"""
-    @abstractmethod
-    async def main(self, arg: dict[str, Any]):
-        """主函数"""
-
-    @override
-    async def got_message(self, arg: dict[str, Any]):
-        try:
-            await self.main(arg)
-        except:
-            self.error(traceback.format_exc())
-        finally:
-            await self.stop()
-
-
 class TaskManager:
     """管理分散的任务"""
 
@@ -87,9 +82,10 @@ class TaskManager:
         self._tasks_running: set[Task[None]] = set()
         """所有正在执行的任务"""
 
-    def add_task(self, coroutine: Coroutine[Any, Any, Any]):
+    def add_task(self, task: Coroutine[Any, Any, Any] | Task[Any], /):
         """添加一个任务"""
-        task = create_task(coroutine)
+        if not isinstance(task, Task):
+            task = create_task(task)
         self._tasks_running.add(task)
         task.add_done_callback(lambda task: self._tasks_running.remove(task))
 
