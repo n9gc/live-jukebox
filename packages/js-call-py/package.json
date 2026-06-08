@@ -1,0 +1,47 @@
+{
+	"$schema": "https://json.schemastore.org/package",
+	"name": "js-call-py",
+	"version": "0.1.0",
+	"license": "MIT",
+	"author": "n9gc",
+	"description": "export python function to js typesafely through rpc based on child_process and stdio",
+	"keywords": [
+		"typesafe",
+		"python",
+		"rpc",
+		"nodejs"
+	],
+	"type": "module",
+	"exports": {
+		".": "./lib/index.ts"
+	},
+	"bugs": {
+		"url": "https://github.com/n9gc/js-call-py/issues"
+	},
+	"homepage": "https://github.com/n9gc/js-call-py#readme",
+	"repository": {
+		"url": "git+https://github.com/n9gc/js-call-py",
+		"type": "git"
+	},
+	"scripts": {
+		"build:pipeline": "tsc --outDir . && node pack.ts",
+
+		"clear:tsc": "rimraf -g -- **/*.{d.ts,js} tsconfig.tsbuildinfo",
+
+		"prepublishOnly": "pnpm run /^build:.*/",
+		"postpublish": "pnpm run /^clear:.*/"
+	},
+	"files": [
+		"*",
+		"!tsconfig.json",
+		"!**/*.ts",
+		"**/*.d.ts",
+		"!*.swp",
+		"!pnpm-lock.yaml"
+	],
+	"devDependencies": {
+	},
+	"dependencies": {
+		"zod": "^4.0.0"
+	}
+}
