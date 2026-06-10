@@ -10,5 +10,6 @@
 		"moduleResolution": "nodenext",
 		"outDir": "dist"
 	},
+	"files": ["ts-to-zod.config.mjs", "dist/config-types-schema.ts"],
 	"include": ["**/*.ts"]
 }

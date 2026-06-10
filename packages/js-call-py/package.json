@@ -24,6 +24,9 @@
 		"type": "git"
 	},
 	"scripts": {
+		"prepare": "pnpm run /^prepare:.*/",
+		"prepare:ts-to-zod": "make-dir dist && ts-to-zod --all",
+
 		"build:tsc": "tsc --outDir .",
 
 		"clear:tsc": "rimraf -g -- **/*.{d.ts,js} tsconfig.tsbuildinfo",
@@ -40,9 +43,12 @@
 		"!pnpm-lock.yaml"
 	],
 	"devDependencies": {
+		"ts-to-zod": "latest",
 		"@types/node": "latest"
 	},
 	"dependencies": {
+		"json-schema-typed": "^8.0.2",
+		"ajv": "^8.20.0",
 		"@oclif/core": "^4.11.4",
 		"zod": "^4.0.0"
 	},
