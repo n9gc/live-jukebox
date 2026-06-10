@@ -24,7 +24,7 @@
 		"type": "git"
 	},
 	"scripts": {
-		"build:pipeline": "tsc --outDir . && node pack.ts",
+		"build:tsc": "tsc --outDir .",
 
 		"clear:tsc": "rimraf -g -- **/*.{d.ts,js} tsconfig.tsbuildinfo",
 
@@ -40,8 +40,22 @@
 		"!pnpm-lock.yaml"
 	],
 	"devDependencies": {
+		"@types/node": "latest"
 	},
 	"dependencies": {
+		"@oclif/core": "^4.11.4",
 		"zod": "^4.0.0"
+	},
+	"bin": {
+		"js-call-py": "./bin/run.js"
+	},
+	"oclif": {
+		"commands": {
+			"strategy": "explicit",
+			"target": "./lib/cli-commands/index"
+		},
+		"bin": "js-call-py",
+		"dirname": "js-call-py",
+		"topicSeparator": " "
 	}
 }

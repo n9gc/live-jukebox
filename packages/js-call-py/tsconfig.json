@@ -2,6 +2,12 @@
 	"$schema": "https://json.schemastore.org/tsconfig",
 	"extends": "../../tsbase.json",
 	"compilerOptions": {
+		"types": ["node"],
+
+		"rewriteRelativeImportExtensions": true,
+		"emitDeclarationOnly": false,
+		"module": "nodenext",
+		"moduleResolution": "nodenext",
 		"outDir": "dist"
 	},
 	"include": ["**/*.ts"]
