@@ -53,6 +53,13 @@ class FakeAsyncLocalStorage<T> {
 		return this.defaultValue;
 	}
 
+	withScope(): Disposable & { dispose(): void } {
+		return {
+			[Symbol.dispose]() { /* empty */ },
+			dispose() { /* empty */ },
+		};
+	}
+
 	name: string;
 	constructor(options?: AsyncLocalStorageOptions) {
 		this.name = options?.name ?? '';
