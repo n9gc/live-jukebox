@@ -6,16 +6,15 @@
 declare module './types.ts';
 
 import { Ajv } from 'ajv';
-import { JSONSchema as JSONSchemaImported } from 'json-schema-typed/draft-2020-12';
+import { JSONSchema as JSONSchemaType } from 'json-schema-typed/draft-2020-12';
 import * as z from 'zod';
 import * as Schema from '../../dist/config-types-schema.ts';
 
 const ajv = new Ajv();
 
-/**可验证的 JSON Schema @zoded */
-export type JSONSchema = JSONSchemaImported;
-export const JSONSchema = z
-	.custom<JSONSchemaImported>()
+/**可验证的 JSON Schema */
+export const JSONSchemaSchema = z
+	.custom<JSONSchemaType>()
 	.superRefine((input, context) => {
 		const valid = ajv.validateSchema(input);
 		if (valid) return;
@@ -44,37 +43,36 @@ export const JSONSchema = z
 
 /**
  * 很多个 JSON Schema
- * @schema array(JSONSchema).readonly(); import { JSONSchema } from '../lib/config/types.ts';
+ * @schema clone(JSONSchemaSchema); import { JSONSchemaSchema } from '../lib/config/types.ts'
  */
-export type Schemas = readonly JSONSchema[];
-export const Schemas = Schema.Schemas;
+export type JSONSchema = JSONSchemaType;
+export const JSONSchema = Schema.JSONSchema;
 
 /**定义一个导出的函数 */
-export interface Callee {
+export interface Endpoint {
 	/**唯一的名字 */
 	readonly name: string;
-	/**可能的输入 */
-	readonly input: Schemas;
-	/**可能的输出 */
-	readonly output: Schemas;
+	/**可能的输入的类型限制 */
+	readonly input: JSONSchema;
+	/**可能的输出的类型限制 */
+	readonly output: JSONSchema;
 }
-export const Callee = Schema.Callee;
+export const Endpoint = Schema.Endpoint;
 
 /**
  * 多个函数
- * @schema array(Callee).readonly()
+ * @schema array(Endpoint).readonly()
  */
-export type Callees = readonly Callee[];
-export const Callees = Schema.Callees;
+export type Endpoints = readonly Endpoint[];
+export const Endpoints = Schema.Endpoints;
 
 /**配置定义 */
 export interface Config {
-	/**同步或阻塞函数 */
-	readonly syncs: Callees;
 	/**异步函数 */
-	readonly asyncs: Callees;
+	readonly handlers?: Endpoints;
 	/**服务 */
-	readonly services: Callees;
+	readonly services?: Endpoints;
+	/**模版文件输出的目录 */
+	readonly targetDir: string;
 }
 export const Config = Schema.Config;
-
