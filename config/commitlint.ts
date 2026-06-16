@@ -8,7 +8,7 @@ export const {
 	enableMultipleScopes,
 	scopeEnum,
 } = permuteScope(packages, scopeEnumSeparator);
-export const defaultScope = await scanChangedScopes(packages, rootName, enableMultipleScopes).catch(_ => []);
+export const defaultScope = await scanChangedScopes(packages, rootName, enableMultipleScopes);
 
 const prompt = {
 	types: [

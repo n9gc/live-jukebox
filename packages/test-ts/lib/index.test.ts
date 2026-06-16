@@ -1,4 +1,4 @@
-import test from 'tape';
+import { test } from 'tape';
 import hello from '.';
 
 test('问候一下', t => {
