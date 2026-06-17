@@ -24,7 +24,8 @@ export default class BiliPlayer extends Player<'bili', typeof BiliInfo> {
 		if (!match) return void 0;
 
 		const bvid = match[1];
-		const page = match[2] ? Number.parseInt(match[2], 10) : void 0;
+		const page = match[2] ? Math.trunc(Number(match[2])) : void 0;
+		page;
 		const videoInfo = await getVideoInfo(bvid);
 		if (!videoInfo) return void 0;
 		return void 0;

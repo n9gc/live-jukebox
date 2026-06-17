@@ -12,10 +12,10 @@ export const VideoInfo = z.object({
 	code: z.literal(0),
 	message: z.literal('OK'),
 	ttl: z.number(),
-	data: z.array(z.object({
+	data: z.object({
 		cid: z.number(),
 		page: z.number(),
-	})),
+	}).array(),
 }).readonly();
 export type VideoInfo = z.infer<typeof VideoInfo>;
 
