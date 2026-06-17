@@ -19,7 +19,7 @@ export function getConfigGetter<T extends ConfigIniter>(initer: T): (config: Con
 	return (config: Configable<T>) => {
 		const result: Configable<T> = {};
 		for (const key of keys) {
-			const value: any = key in config && config[key] !== void 0
+			const value: any = Object.hasOwn(config, key) && config[key] !== void 0
 				? config[key]
 				: initer[key]();
 			result[key] = value;

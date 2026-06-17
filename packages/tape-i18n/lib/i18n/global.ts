@@ -39,5 +39,6 @@ declare global {
  */
 export type innerGlobalLL = { [I in keyof globalLL]: globalLL[I] };
 export const innerGlobalLL: innerGlobalLL = { 'tape-i18n': packageLL } as any;
+// eslint-disable-next-line unicorn/no-top-level-side-effects
 Reflect.set(globalThis, 'globalLL', innerGlobalLL);
 

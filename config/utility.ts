@@ -39,27 +39,32 @@ export function permuteScope(
 	packages: readonly Project[],
 	scopeEnumSeparator: string,
 ) {
-	const enableMultipleScopes = packages.length < 8;
+	const isMultipleScopes = packages.length < 8;
 	let scopeEnum = packages.map(({ manifest: { name = '' } }) => name);
-	if (enableMultipleScopes) {
+	if (isMultipleScopes) {
 		scopeEnum = [...allList(new Set(scopeEnum))].map(n => n.join(scopeEnumSeparator));
 	}
 	return {
 		scopeEnum,
-		enableMultipleScopes,
+		isMultipleScopes,
 	};
 }
 
 export async function scanChangedScopes(
 	packages: readonly Project[],
 	rootName: string,
-	enableMultipleScopes: boolean,
+	isMultipleScopes: boolean,
 ): Promise<string[] | string> {
-	const { openRepository } = await import('es-git');
-	const repo = await openRepository(rootPath);
-	const statusNow = repo.statuses();
-	const scopes = new Set([...new Set([...statusNow
-		.iter()]
+	let esGit;
+	try {
+		esGit = await import('es-git');
+	} catch {
+		return isMultipleScopes ? [] : '';
+	}
+	const repo = await esGit.openRepository(rootPath);
+	const filePaths = new Set(repo
+		.statuses()
+		.iter()
 		.filter(entry => {
 			const status = entry.status();
 			return status.indexNew
@@ -79,16 +84,15 @@ export async function scanChangedScopes(
 				?.oldFile()
 				.path(),
 		])
-		.filter(n => typeof n === 'string'))
-		.values()]
-		.map(relative => rootPath + relative)
-		.map(filePath => packages
-			.filter(({ dir }) => filePath.startsWith(dir))
-			.map(({ manifest: { name = '' } }) => name))
-		.flatMap(n => (n.length > 0 ? n : [rootName])));
-	if (scopes.has(rootName)) return enableMultipleScopes ? [] : '';
-	if (enableMultipleScopes) return [...scopes];
-	return scopes.size === 1 ? scopes.values().next().value! : '';
+		.filter(n => typeof n === 'string')
+		.map(relative => rootPath + relative));
+	const scopes = packages
+		.filter(({ dir }) => filePaths.values()
+			.some(filePath => filePath.startsWith(dir)))
+		.map(({ manifest: { name = '' } }) => name);
+	if (scopes.includes(rootName)) return isMultipleScopes ? [] : '';
+	if (isMultipleScopes) return scopes;
+	return scopes.at(0) ?? '';
 }
 
 
@@ -102,14 +106,11 @@ export async function isExist(filePath: string) {
 }
 
 export async function referTsProjects(packages: readonly Project[]) {
-	const references = await Promise.all(packages
-		.map(({ dir }) => dir)
-		.map(async directory => (await isExist(`${directory}/tsconfig.json`) ? [directory] : [])))
-		.then(n => n
-			.flat()
-			.map(directory => path.relative(rootPath, directory))
-			.map(directory => `./${directory}`)
-			.map(path => ({ path })));
+	const references: { readonly path: string }[] = [];
+	for (const { dir } of packages) {
+		if (!await isExist(`${dir}/tsconfig.json`)) continue;
+		references.push({ path: `./${path.relative(rootPath, dir)}` });
+	}
 	const tsconfig: Tsconfig = {
 		$schema: 'https://json.schemastore.org/tsconfig.json',
 		files: [],

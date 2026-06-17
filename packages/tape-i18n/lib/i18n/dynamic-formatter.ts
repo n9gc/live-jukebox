@@ -40,7 +40,8 @@ export function createFormatters<
 >(formatters: T, ...infos: I): Intersected<DynamicFormatters<I[number]>> & T {
 	const checkDynamics = (p: keyof any): undefined | Function => {
 		if (typeof p !== 'string') return;
-		for (const { sign: [start, end], format } of infos) {
+		for (const { sign, format } of infos) {
+			const [start, end] = sign;
 			if (!p.startsWith(start) || !p.endsWith(end)) continue;
 			const key = p.slice(start.length, -end.length || void 0);
 			return (data: any) => format(key, data);
@@ -48,10 +49,8 @@ export function createFormatters<
 		return;
 	};
 	return new Proxy<any>(formatters, {
-		get(target, p, receiver) {
-			return checkDynamics(p)
-				?? Reflect.get(target, p, receiver);
-		},
+		get: (target, p, receiver) => checkDynamics(p)
+			?? Reflect.get(target, p, receiver),
 	});
 }
 

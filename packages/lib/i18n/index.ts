@@ -12,6 +12,7 @@ export * from './i18n-types';
 export * from './i18n-util';
 export * from './locale';
 
+import { getLogger } from '@logtape/logtape';
 import type * as lib from 'lib';
 import type { AllEnumTranslation } from './enum';
 import { L } from './i18n-node';
@@ -32,7 +33,9 @@ globalLL.lib = packageLL;
 export type Base = AllEnumTranslation
 	& Record<keyof typeof lib, Record<string, Record<string, string>>>;
 
-// eslint-disable-next-line no-console
-console.log(packageLL.i18n.index.langDetected({ locale }));
-
+/**输出当前检测到的语言 */
+export function logDetectedLang() {
+	getLogger(['lib', 'i18n', 'index'])
+		.info(packageLL.i18n.index.langDetected({ locale }));
+}
 

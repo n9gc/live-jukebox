@@ -32,9 +32,7 @@ export function tapeFomatters<T extends Formatters>(formatters: T) {
 			 * - 这个只能用于字符串，而 `log_*` 可以用于任何能被 logtape 输出的值。
 			 * @param message 字符串
 			 */
-			rawLog(message: string) {
-				return message.replaceAll('{', '{{').replaceAll('}', '}}');
-			},
+			rawLog: (message: string) => message.replaceAll('{', '{{').replaceAll('}', '}}'),
 		}),
 		{
 			sign: ['log_', ''],

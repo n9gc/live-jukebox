@@ -1,5 +1,6 @@
 import { configure, getConsoleSink } from '@logtape/logtape';
 import { getPrettyFormatter } from '@logtape/pretty';
+import { logDetectedLang } from 'lib/i18n';
 import { getAsyncLocalStorage } from 'lib/util';
 
 // 配置 logtape
@@ -31,4 +32,6 @@ await configure({
 		},
 	],
 });
+
+logDetectedLang();
 

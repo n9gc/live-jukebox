@@ -111,11 +111,10 @@ export function visit<
 	S extends string = '.',
 >(object: M, path: P, spliter?: S): Visited<M, P, S>;
 export function visit(object: any, path: string, spliter = '.'): {} {
-	let key;
 	while (true) {
 		const index = path.indexOf(spliter);
 		if (index === -1) return object?.[path];
-		key = path.slice(0, index);
+		const key = path.slice(0, index);
 		path = path.slice(index + spliter.length);
 		object = object?.[key];
 	}

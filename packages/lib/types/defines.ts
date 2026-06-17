@@ -28,9 +28,7 @@ export function getJsonCodec<T extends z.ZodType>(schema: T) {
 				return z.NEVER;
 			}
 		},
-		encode(value) {
-			return JSON.stringify(value);
-		},
+		encode: value => JSON.stringify(value),
 	});
 }
 

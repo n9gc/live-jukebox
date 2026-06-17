@@ -36,13 +36,13 @@ const markedMap = new WeakMap<symbol, symbol>();
  * @param enums 导出枚举的模块
  * @throws {Error} 有重复名称的枚举时
  */
-export function mark(enums: Record<string, Enum>): true {
+export function mark(enums: Record<string, Enum>) {
 	for (const name of Object.keys(enums).toReversed()) {
 		const enumObject = enums[name];
 		log.trace.markingObject({ name });
-		for (const key of Object.keys(enumObject)) {
+		for (const key of Object.keys(enumObject)) markValue: {
 			const oriSym = enumObject[key];
-			if (typeof oriSym !== 'symbol') continue;
+			if (typeof oriSym !== 'symbol') break markValue;
 			let sym = markedMap.get(oriSym);
 			if (!sym) {
 				sym = Symbol.for(`${name}.${key}`);
@@ -58,7 +58,6 @@ export function mark(enums: Record<string, Enum>): true {
 			enumObject[key] = sym;
 		}
 	}
-	return true;
 }
 
 /**
@@ -67,8 +66,7 @@ export function mark(enums: Record<string, Enum>): true {
  * @returns 集合里装着各个成员
  */
 export function getVariants<T extends Enum>(enumObject: T, r = new Set<symbol>()): Set<Enumified<T>> {
-	for (const key of Object.keys(enumObject)) {
-		const child = enumObject[key];
+	for (const child of Object.values(enumObject)) {
 		if (typeof child === 'symbol') {
 			r.add(child);
 		} else {

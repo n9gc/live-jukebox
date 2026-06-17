@@ -15,7 +15,7 @@ const getLL = () => packageLL.i18n.formatters;
 export const packageFormatters = createFormatters(
 	tapeFomatters({
 		/**把布尔值变成 yes 和 no */
-		bool: (value: boolean) => (value ? 'yes' : 'no'),
+		bool: (isTrue: boolean) => (isTrue ? 'yes' : 'no'),
 		/**翻译枚举 */
 		enums: translateEnum as (n: symbol) => string,
 		/**把东西用引号引起来 */
@@ -25,7 +25,7 @@ export const packageFormatters = createFormatters(
 			.map(n => packageFormatters.quote(n))
 			.join(getLL().quotedSpliter()),
 		/**获取一个东西的 `length` */
-		length: (n: { readonly length: number }) => `${n.length}`,
+		length: (n: { readonly length: number }) => n.length.toString(),
 	}),
 	{
 		sign: ['join(', ')'],

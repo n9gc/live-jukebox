@@ -19,7 +19,7 @@
 		"eslint-plugin-import-zod": "latest",
 		"eslint-import-resolver-typescript": "latest",
 		"@types/eslint-plugin-security": "latest",
-		"eslint-plugin-unicorn": "latest",
+		"eslint-plugin-unicorn": "^67.0.0",
 		"typescript-eslint": "^8.58.2",
 		"globals": "^17.*.*",
 

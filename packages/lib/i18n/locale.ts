@@ -17,7 +17,7 @@ function normalize(tag: string): string {
 	return bcp47Normalize(tag, {
 		warning(reason, code, offset) {
 			logger.warn(
-				`parse {tag} error: {reason}, with code={code} at offset={offset}.`
+				'parse {tag} error: {reason}, with code={code} at offset={offset}.'
 				+ `\nsee code at https://github.com/wooorm/bcp-47#warnings`,
 				{ code, offset, reason, tag },
 			);
@@ -52,5 +52,6 @@ export function intlDetector(): string[] {
 
 /**最终检测出的语言 */
 export const locale = detectLocale(environmentDetector, intlDetector);
+// eslint-disable-next-line unicorn/no-top-level-side-effects
 tapeI18nLocalesNow.unshift(locale);
 

@@ -13,10 +13,13 @@ export type Formatters = Record<string, (value: any) => unknown>;
 
 /**单一模块文件的多语言函数 */
 export type FlatTranslationFunctions = Record<string, (...parameters: any[]) => any>;
-export const FlatTranslationFunctions = z.record(z.string(), z.function({
-	input: z.array(z.any()),
-	output: z.any(),
-}));
+export const FlatTranslationFunctions = z.record(
+	z.string(),
+	z.function({
+		input: z.any().array(),
+		output: z.any(),
+	}),
+);
 
 /**单一模块文件的多语言函数 */
 export type FlatTranslation = Record<string, string>;
