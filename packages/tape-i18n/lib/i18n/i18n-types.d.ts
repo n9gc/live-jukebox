@@ -1,0 +1,27 @@
+import type { BaseTranslation as BaseTranslationType, LocalizedString, RequiredParams } from 'typesafe-i18n';
+export type BaseTranslation = BaseTranslationType;
+export type BaseLocale = 'en';
+export type Locales = 'en' | 'zh';
+export type Translation = RootTranslation;
+export type Translations = RootTranslation;
+type RootTranslation = {
+    test: {
+        /**
+         * h​e​l​l​o​,​ ​{​n​a​m​e​}​!
+         * @param {string} name
+         */
+        hello: RequiredParams<'name'>;
+    };
+};
+export type TranslationFunctions = {
+    test: {
+        /**
+         * hello, {name}!
+         */
+        hello: (arg: {
+            name: string;
+        }) => LocalizedString;
+    };
+};
+export type Formatters = {};
+export {};

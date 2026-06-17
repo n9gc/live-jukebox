@@ -1,0 +1,25 @@
+/**
+ * 多语言相关的类型
+ * @license MIT
+ * @author n9gc
+ */
+declare module 'tape-i18n/types/i18n';
+import * as z from 'zod';
+import { Pathable, PathsOf } from './utility';
+/**格式化器 */
+export type Formatters = Record<string, (value: any) => unknown>;
+/**单一模块文件的多语言函数 */
+export type FlatTranslationFunctions = Record<string, (...parameters: any[]) => any>;
+export declare const FlatTranslationFunctions: z.ZodRecord<z.ZodString, z.ZodFunction<z.ZodArray<z.ZodAny>, z.ZodAny>>;
+/**单一模块文件的多语言函数 */
+export type FlatTranslation = Record<string, string>;
+export declare const FlatTranslation: z.ZodRecord<z.ZodString, z.ZodString>;
+/**一个模块应有的多语言函数结构 */
+export type ModuleTranslationFunctions = Pathable<FlatTranslationFunctions>;
+/**
+ * 一个模块应有的多语言定义结构
+ * 为了避免 initLogger 函数无法识别模块名称，最好用这个类型限制模块多语言的定义
+ */
+export type ModuleTranslation = Pathable<FlatTranslation>;
+/**得到模块多语言函数的所有路径 */
+export type AllPathsOf<T extends ModuleTranslationFunctions> = PathsOf<T, FlatTranslationFunctions, '/'>;

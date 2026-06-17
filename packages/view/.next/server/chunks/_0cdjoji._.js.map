@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../../../packages/view/instrumentation.ts"],"sourcesContent":["/**\n * 服务端最先执行的内容\n * @license GPL-2.0-or-later\n * @author n9gc\n */\ndeclare module './instrumentation';\n\n/**注册函数 */\nexport async function register() {\n\tawait import('config/logtape.config');\n}\n\n\n"],"names":["register"],"mappings":"uCAQO,eAAeA,IACrB,MAAA,EAAA,CAAA,CAAA,IACD"}

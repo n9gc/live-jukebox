@@ -23,12 +23,13 @@ jobs:
                   version: latest
 
             - name: Use Node.js
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@master
               with:
                   node-version: 24.x
 
             - name: Init enviroument
               run: |
+                  pnpm --version
                   pnpm i
 
             - name: Set commitlint config
@@ -50,7 +51,7 @@ jobs:
               with:
                   submodules: recursive
 
-            - uses: pnpm/action-setup@v4
+            - uses: pnpm/action-setup@master
               with:
                   version: latest
 
@@ -66,6 +67,7 @@ jobs:
 
             - name: Init enviroument
               run: |
+                  pnpm --version
                   pnpm i
 
             - name: Test All
