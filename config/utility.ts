@@ -39,27 +39,27 @@ export function permuteScope(
 	packages: readonly Project[],
 	scopeEnumSeparator: string,
 ) {
-	const enableMultipleScopes = packages.length < 8;
+	const isMultipleScopes = packages.length < 8;
 	let scopeEnum = packages.map(({ manifest: { name = '' } }) => name);
-	if (enableMultipleScopes) {
+	if (isMultipleScopes) {
 		scopeEnum = [...allList(new Set(scopeEnum))].map(n => n.join(scopeEnumSeparator));
 	}
 	return {
 		scopeEnum,
-		enableMultipleScopes,
+		isMultipleScopes,
 	};
 }
 
 export async function scanChangedScopes(
 	packages: readonly Project[],
 	rootName: string,
-	enableMultipleScopes: boolean,
+	isMultipleScopes: boolean,
 ): Promise<string[] | string> {
 	let esGit;
 	try {
 		esGit = await import('es-git');
 	} catch {
-		return enableMultipleScopes ? [] : '';
+		return isMultipleScopes ? [] : '';
 	}
 	const repo = await esGit.openRepository(rootPath);
 	const filePaths = new Set(repo
@@ -90,8 +90,8 @@ export async function scanChangedScopes(
 		.filter(({ dir }) => filePaths.values()
 			.some(filePath => filePath.startsWith(dir)))
 		.map(({ manifest: { name = '' } }) => name);
-	if (scopes.includes(rootName)) return enableMultipleScopes ? [] : '';
-	if (enableMultipleScopes) return scopes;
+	if (scopes.includes(rootName)) return isMultipleScopes ? [] : '';
+	if (isMultipleScopes) return scopes;
 	return scopes.at(0) ?? '';
 }
 

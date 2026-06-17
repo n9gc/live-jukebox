@@ -5,10 +5,10 @@ import { scanChangedScopes, listPackages, permuteScope } from './utility.ts';
 export const { packages, rootName } = await listPackages();
 export const scopeEnumSeparator = ', ';
 export const {
-	enableMultipleScopes,
+	isMultipleScopes,
 	scopeEnum,
 } = permuteScope(packages, scopeEnumSeparator);
-export const defaultScope = await scanChangedScopes(packages, rootName, enableMultipleScopes);
+export const defaultScope = await scanChangedScopes(packages, rootName, isMultipleScopes);
 
 const prompt = {
 	types: [
@@ -25,7 +25,7 @@ const prompt = {
 	allowBreakingChanges: ['add', 'refactor', 'fix', 'revert', 'merge'],
 
 	scopes: packages.map(({ manifest: { name = '' } }) => name),
-	enableMultipleScopes,
+	enableMultipleScopes: isMultipleScopes,
 	scopeEnumSeparator,
 	allowEmptyScopes: true,
 	customScopesAlias: '<自己写>',
