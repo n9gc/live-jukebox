@@ -16,10 +16,10 @@ import type { AsyncLocalStorage, AsyncLocalStorageOptions } from 'node:async_hoo
 import * as z from 'zod';
 
 /**全局 id */
-let id = 0n;
+const id = { now: 0n };
 /**获得一个全局 id */
 export function getId(): `song:${bigint}` & z.core.$brand<'SongId'> {
-	return `song:${id++}` as any;
+	return `song:${id.now++}` as any;
 }
 
 /**获得一个随机数，用 crypto.randomInt */

@@ -34,6 +34,8 @@ const config: ConfigArray = defineConfig(
 			'no-unused-vars': 'off',
 			'no-console': 'error',
 			'security/detect-object-injection': 'off',
+			'unicorn/consistent-class-member-order': 'off',
+			'unicorn/prefer-minimal-ternary': 'off',
 		},
 	},
 	includeIgnoreFile(pathTo('../.gitignore')),

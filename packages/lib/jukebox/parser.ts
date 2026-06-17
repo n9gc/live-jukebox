@@ -94,24 +94,23 @@ export class Parser extends Eventer<ParserEvent> implements ParserMap {
 	 * 分析弹幕，并以事件的形式派发给自己的监听器
 	 * @param danmaku 弹幕
 	 */
-	parse(this: this, danmaku: Danmaku) {
+	async parse(this: this, danmaku: Danmaku) {
 		danmaku = {
 			...danmaku,
 			message: danmaku.message.trim(),
 		};
 		const r = this.distinguisher(danmaku);
 		const [type, danmakuDised = danmaku] = r;
-		this[type](danmakuDised).then(parsed => {
-			if (parsed === Command.Idk) {
-				const idkObject = { previous: type, danmaku } as const;
-				sendPrompt.parseFailed({ message: danmaku.message, previous: type });
-				log.warn.parseFailed({ message: danmaku.message, previous: type });
-				this.dispatch(Command.Idk, idkObject);
-				return;
-			}
-			log.info.parsed({ message: danmaku.message, type });
-			this.dispatch(type, parsed);
-		});
+		const parsed = await this[type](danmakuDised);
+		if (parsed === Command.Idk) {
+			const idkObject = { previous: type, danmaku } as const;
+			sendPrompt.parseFailed({ message: danmaku.message, previous: type });
+			log.warn.parseFailed({ message: danmaku.message, previous: type });
+			this.dispatch(Command.Idk, idkObject);
+			return;
+		}
+		log.info.parsed({ message: danmaku.message, type });
+		this.dispatch(type, parsed);
 	}
 	/**不知道弹幕是啥意思，那就直接返回吧 */
 	async [Command.Idk](danmaku: Danmaku) {

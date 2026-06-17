@@ -18,9 +18,7 @@ export default class Eventer<O> {
 	 * @param listener 监听器
 	 */
 	addListener<T extends keyof O>(this: this, event: T, listener: Listener<O[T]>) {
-		(this.listenerMap[event]
-			?? (this.listenerMap[event] = new Set())
-		).add(listener);
+		(this.listenerMap[event] ??= new Set()).add(listener);
 		return this;
 	}
 	/**
@@ -29,7 +27,8 @@ export default class Eventer<O> {
 	 * @param data 数据
 	 */
 	dispatch<T extends keyof O>(this: this, event: T, data: O[T]) {
-		for (const listener of this.listenerMap[event] ?? []) {
+		const listeners = this.listenerMap[event] ?? [];
+		for (const listener of listeners) {
 			listener(data);
 		}
 		return this;
