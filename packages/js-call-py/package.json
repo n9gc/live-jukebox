@@ -25,7 +25,7 @@
 	},
 	"scripts": {
 		"prepare": "pnpm run /^prepare:.*/",
-		"prepare:ts-to-zod": "make-dir dist && ts-to-zod --all",
+		"prepare:ts-to-zod": "make-dir dist && ts-to-zod --all --skipValidation && ts-to-zod --all",
 
 		"build:tsc": "tsc --outDir .",
 
