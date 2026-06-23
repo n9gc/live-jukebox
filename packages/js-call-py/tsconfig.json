@@ -12,6 +12,7 @@
 	},
 	"files": [
 		"ts-to-zod.config.mjs",
+		"dist/lib-caller-types.ts",
 		"dist/lib-config-types.ts"
 	],
 	"include": ["**/*.ts"]
