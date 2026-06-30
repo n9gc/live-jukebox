@@ -1,22 +1,25 @@
 /**
- * 配置文件定义
+ * 调用器通用部分
  * @license MIT
  * @author n9gc
  */
 declare module './index.ts';
 
 import { LiteEmit } from 'lite-emit';
-import { ChildProcessWithoutNullStreams, spawn } from 'node:child_process';
+import type { ChildProcessWithoutNullStreams } from 'node:child_process';
+import { spawn } from 'node:child_process';
 import { createInterface } from 'node:readline';
-import { Readable } from 'node:stream';
+import type { Readable } from 'node:stream';
 import * as z from 'zod';
-import {
+import type {
 	HandlerInput,
 	HandlerOutput,
 	Service,
 	ServiceEventMap,
 	ServiceInfo,
 } from './types.ts';
+
+export * from './types.ts';
 
 /**对 Python 进程的钩子函数 */
 export interface Hooks<
@@ -61,6 +64,8 @@ export abstract class Caller<
 	/**启动 python 的入口文件 */
 	abstract readonly pythonScriptFile: string;
 
+	/**捕获一些事件的钩子 */
+	protected readonly hooks: Hooks<SI, SO, HI, HO>;
 	/**进程对象 */
 	readonly proce: ChildProcessWithoutNullStreams;
 
@@ -69,10 +74,11 @@ export abstract class Caller<
 		return this.pythonScriptFile;
 	}
 
-	constructor(
-		/**捕获一些事件的钩子 */
-		protected readonly hooks: Hooks<SI, SO, HI, HO>,
-	) {
+	/**
+	 * @param hooks 捕获一些事件的钩子
+	 */
+	constructor(hooks: Hooks<SI, SO, HI, HO>) {
+		this.hooks = hooks;
 		this.proce = spawn('uv', ['run', this.getPythonScriptFile()]);
 
 		if (hooks.onError) this.proce.on('error', hooks.onError);

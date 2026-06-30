@@ -5,7 +5,9 @@
  */
 declare module './index.ts';
 
-import { CallerConfig } from './types.ts';
+import type { CallerConfig } from './types.ts';
+
+export * from './types.ts';
 
 /**
  * 带类型补全地定义配置

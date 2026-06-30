@@ -5,4 +5,5 @@
  */
 declare module 'js-call-py';
 
-export const hh = 123;
+export * from './caller/index.ts';
+export * from './config/index.ts';

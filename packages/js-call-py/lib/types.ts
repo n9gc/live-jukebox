@@ -6,7 +6,7 @@
 declare module './types.ts';
 
 import { Ajv } from 'ajv';
-import { JSONSchema as JSONSchemaImported } from 'json-schema-typed/draft-2020-12';
+import type { JSONSchema as JSONSchemaImported } from 'json-schema-typed/draft-2020-12';
 import * as z from 'zod';
 
 const ajv = new Ajv();

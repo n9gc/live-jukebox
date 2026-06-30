@@ -5,7 +5,7 @@
  */
 declare module './types.ts';
 
-import { JSONSchema as JSONSchemaType } from 'json-schema-typed/draft-2020-12';
+import type { JSONSchema as JSONSchemaType } from 'json-schema-typed/draft-2020-12';
 import * as Schema from '../../dist/lib-config-types.ts';
 
 /**
