@@ -11,6 +11,7 @@
 		"outDir": "dist"
 	},
 	"files": [
+		"package.json",
 		"ts-to-zod.config.mjs",
 		"dist/lib-caller-types.ts",
 		"dist/lib-config-types.ts"

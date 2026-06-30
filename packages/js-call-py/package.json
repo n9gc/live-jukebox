@@ -57,14 +57,5 @@
 	},
 	"bin": {
 		"js-call-py": "./bin/run.js"
-	},
-	"oclif": {
-		"commands": {
-			"strategy": "explicit",
-			"target": "./lib/cli-commands/index"
-		},
-		"bin": "js-call-py",
-		"dirname": "js-call-py",
-		"topicSeparator": " "
 	}
 }
