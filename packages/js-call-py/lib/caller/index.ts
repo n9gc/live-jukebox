@@ -5,20 +5,15 @@
  */
 declare module './index.ts';
 
-import { LiteEmit } from 'lite-emit';
 import type { ChildProcessWithoutNullStreams } from 'node:child_process';
 import { spawn } from 'node:child_process';
 import { createInterface } from 'node:readline';
 import type { Readable } from 'node:stream';
 import * as z from 'zod';
-import type {
-	HandlerInput,
-	HandlerOutput,
-	Service,
-	ServiceEventMap,
-	ServiceInfo,
-} from './types.ts';
+import { Service } from './service.ts';
+import type { HandlerInput, HandlerOutput, ServiceInfo } from './types.ts';
 
+export * from './service.ts';
 export * from './types.ts';
 
 /**对 Python 进程的钩子函数 */
@@ -42,10 +37,10 @@ export interface Hooks<
 
 /**这个类型只用来在不知道 schema 的情况下描述一个类型的 {@link z.ZodCodec} */
 interface Codec<T> {
-	safeDecode(n: string):
+	safeDecode(this: this, n: string):
 		| { success: true; data: T }
 		| { success: false; error: z.ZodError<T> };
-	safeEncode(n: T):
+	safeEncode(this: this, n: T):
 		| { success: true; data: string }
 		| { success: false; error: z.ZodError<string> };
 }
@@ -70,14 +65,14 @@ export abstract class Caller<
 	readonly proce: ChildProcessWithoutNullStreams;
 
 	/**为了防止 ts 报错说不能在构造函数里使用抽象属性 */
-	private getPythonScriptFile() {
+	private getPythonScriptFile(this: this) {
 		return this.pythonScriptFile;
 	}
 
 	/**
 	 * @param hooks 捕获一些事件的钩子
 	 */
-	constructor(hooks: Hooks<SI, SO, HI, HO>) {
+	constructor(hooks: Hooks<SI, SO, HI, HO> = {}) {
 		this.hooks = hooks;
 		this.proce = spawn('uv', ['run', this.getPythonScriptFile()]);
 
@@ -106,7 +101,7 @@ export abstract class Caller<
 	}
 
 	/**向 Python 进程发送数据 */
-	protected send(data: SI | HI) {
+	protected send(this: this, data: SI | HI) {
 		const r = this.inputCodec.safeEncode(data);
 		if (!r.success) {
 			if (this.hooks.onWrongInput) this.hooks.onWrongInput(data, r.error);
@@ -125,7 +120,11 @@ export abstract class Caller<
 	 * @param inputs 异步函数的参数
 	 * @returns 异步函数的返回值
 	 */
-	protected async handle<N extends HI['name']>(name: N, inputs: Extract<HI, { name: N }>['inputs']) {
+	protected async handle<N extends HI['name']>(
+		this: this,
+		name: N,
+		inputs: Extract<HI, { name: N }>['inputs'],
+	) {
 		const callId = this.idMap.get(name) ?? 0n;
 		this.idMap.set(name, callId + 1n);
 		const { promise, resolve } = Promise.withResolvers<HO>();
@@ -151,24 +150,15 @@ export abstract class Caller<
 	 * @param name 服务的名称
 	 * @returns 服务的事件，可用于随意跟服务交流
 	 */
-	protected getService<N extends SI['name']>(name: N):
-	Service<Extract<SI, { name: N }>, Extract<SO, { name: N }>> {
-		const inputer = new LiteEmit<ServiceEventMap<Extract<SI, { name: N }>['data']>>();
-		inputer.on('*', (...data: Extract<SI, { name: N }>['data']) => {
-			this.send({
+	protected getService<N extends SI['name']>(name: N) {
+		return new Service<Extract<SI, { name: N }>, Extract<SO, { name: N }>>(
+			data => this.send({
 				type: 'service',
 				name,
 				data,
-			} as Extract<SI, { name: N }>);
-		});
-		const outputer = new LiteEmit<ServiceEventMap<Extract<SO, { name: N }>['data']>>();
-		this.serviceResolverMap.set(name, (data: readonly unknown[]) => (inputer.emit as any)(...data));
-		return {
-			emit: inputer.emit.bind(inputer),
-			on: outputer.on.bind(outputer),
-			off: outputer.off.bind(outputer),
-			once: outputer.once.bind(outputer),
-		};
+			} as Extract<SI, { name: N }>),
+			listener => this.serviceResolverMap.set(name, listener),
+		);
 	}
 }
 

@@ -5,7 +5,6 @@
  */
 declare module './types.ts';
 
-import { LiteEmit } from 'lite-emit';
 import * as z from 'zod';
 import * as Schema from '../../dist/lib-caller-types.ts';
 import { jsonCodec } from '../types.ts';
@@ -46,11 +45,8 @@ export interface ServiceInfo {
 	readonly type: 'service';
 	/**服务的名字 */
 	readonly name: string;
-	/**
-	 * 和服务对接的数据
-	 * @schema tuple([z.string()], z.unknown()).readonly(),
-	 */
-	readonly data: readonly [string, ...unknown[]];
+	/**和服务对接的数据 */
+	readonly data: unknown;
 }
 export const ServiceInfo = Schema.ServiceInfo;
 
@@ -101,28 +97,15 @@ export function HandlerOutputCodec<
  * @returns 编解码器
  */
 export function ServiceInfoCodec<
-	T extends z.ZodTuple<readonly [z.ZodLiteral<string>, ...z.ZodType[]]>,
+	T extends z.ZodType,
 	N extends string,
->(name: N, info: readonly T[]) {
+>(name: N, data: T) {
 	return jsonCodec(
 		z.object({
 			...ServiceInfo.shape,
 			name: z.literal(name),
-			data: z.union(info.map(n => n.readonly())),
+			data,
 		}).readonly(),
 	);
 }
 
-/**
- * 根据一个表示服务输入或输出的所有可能类型的元组联合类型
- * 得到对应的 LiteEmit 所需的事件表
- * @zoded
- */
-export type ServiceEventMap<T extends readonly any[]> = {
-	[I in T[0]]: T extends readonly [I, ...infer K] ? K : never;
-};
-
-/**服务对应的 LiteEmit 事件，给用户用 @zoded */
-export type Service<I extends ServiceInfo, O extends ServiceInfo>
-	= Pick<LiteEmit<ServiceEventMap<I['data']>>, 'emit'>
-	& Omit<LiteEmit<ServiceEventMap<O['data']>>, 'emit'>;

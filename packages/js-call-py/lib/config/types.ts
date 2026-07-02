@@ -9,20 +9,23 @@ import type { JSONSchema as JSONSchemaType } from 'json-schema-typed/draft-2020-
 import * as Schema from '../../dist/lib-config-types.ts';
 
 /**
- * 很多个 JSON Schema
+ * 用于内部使用的 JSON Schema zod 类型
  * @schema lazy(() => JI); import { JSONSchema as JI } from '../lib/types.ts'
  */
 type JSONSchema = JSONSchemaType;
+
+/**
+ * 很多个 JSON Schema
+ * @schema array(JSONSchema).readonly()
+ */
+type JSONSchemas = readonly JSONSchema[];
 
 /**定义一个导出的异步函数 */
 export interface HandlerConfig {
 	/**唯一的名字 */
 	readonly name: string;
-	/**
-	 * 输入的类型限制
-	 * @schema array(JSONSchema).readonly().optional()
-	 */
-	readonly inputs?: readonly JSONSchema[];
+	/**输入的类型限制 */
+	readonly inputs?: JSONSchemas;
 	/**输出的类型限制 */
 	readonly output?: JSONSchema;
 }
@@ -32,10 +35,10 @@ export const HandlerConfig = Schema.HandlerConfig;
 export interface ServiceConfig {
 	/**唯一的名字 */
 	readonly name: string;
-	/**可能的输入的类型限制，使用键名方便区分 */
-	readonly inputs?: Record<string, JSONSchema>;
-	/**可能的输出的类型限制，使用键名方便区分 */
-	readonly outputs?: Record<string, JSONSchema>;
+	/**可能的输入的类型限制 */
+	readonly input?: JSONSchema;
+	/**可能的输出的类型限制 */
+	readonly output?: JSONSchema;
 }
 export const ServiceConfig = Schema.ServiceConfig;
 
