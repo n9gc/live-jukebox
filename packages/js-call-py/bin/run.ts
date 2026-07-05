@@ -24,7 +24,7 @@ await execute({
 	dir: import.meta.url,
 	development: process.env.NODE_ENV === 'development',
 	loadOptions: {
-		root: import.meta.dirname + '/..',
+		root: new URL('..', import.meta.url).pathname,
 		pjson: {
 			...packageInfo,
 			oclif: {
