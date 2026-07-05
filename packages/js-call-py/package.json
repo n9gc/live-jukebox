@@ -27,7 +27,7 @@
 	},
 	"scripts": {
 		"prepare": "pnpm run /^prepare:.*/",
-		"prepare:ts-to-zod": "make-dir dist && ts-to-zod --all --skipValidation && ts-to-zod --all",
+		"prepare:ts-to-zod": "make-dir dist && ts-to-zod --all --skipValidation && ts-to-zod --all && node manage.ts metaType",
 
 		"build:tsc": "tsc --outDir .",
 
@@ -49,6 +49,7 @@
 		"@types/node": "latest"
 	},
 	"dependencies": {
+		"ts-morph": "^28.0.0",
 		"cosmiconfig": "^9.0.2",
 		"lite-emit": "^4.0.0",
 		"json-schema-typed": "^8.0.2",
