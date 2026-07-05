@@ -5,7 +5,7 @@
  */
 declare module './index.ts';
 
-export * from './hello.ts';
+export * from './gen.ts';
 
 export * as default from './index.ts';
 
