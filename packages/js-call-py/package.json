@@ -50,6 +50,7 @@
 	},
 	"dependencies": {
 		"ts-morph": "^28.0.0",
+		"@utilize/zod": "^0.4.1",
 		"cosmiconfig": "^9.0.2",
 		"lite-emit": "^4.0.0",
 		"json-schema-typed": "^8.0.2",

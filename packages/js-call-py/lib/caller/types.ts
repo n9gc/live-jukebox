@@ -9,6 +9,15 @@ import * as z from 'zod';
 import * as Schema from '../../dist/lib-caller-types.ts';
 import { jsonCodec } from '../types.ts';
 
+/**和 py 沟通的信息的类型 @zoded */
+export type InfoTypes = (typeof InfoTypes)[number];
+export const InfoTypes = [
+	'HandlerInput',
+	'HandlerOutput',
+	'ServiceInput',
+	'ServiceOutput',
+] as const;
+
 /**@schema lazy(() => bigintCodec); import { bigintCodec } from '../lib/types.ts' */
 type Bigint = bigint;
 

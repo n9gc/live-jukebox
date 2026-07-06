@@ -63,3 +63,16 @@ export interface CallerConfig {
 	readonly targetDir: string;
 }
 export const CallerConfig = Schema.CallerConfig;
+
+/**空返回值的函数的 Schema ，异步函数的输出 Schema 为空时使用*/
+export const voidSchema = {
+	$id: 'Void',
+	type: 'null',
+} satisfies JSONSchemaType<null>;
+
+/**永远不是任何东西的 Schema ，服务的输入输出 Schema 为空时使用 */
+export const neverSchema = {
+	$id: 'Never',
+	anyOf: [],
+} satisfies JSONSchemaType<never>;
+
